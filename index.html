@@ -148,7 +148,6 @@
       transform: translate(-50%, 5px); 
     }
 
-    /* Restauración de las clases del Modal de Pedidos (Vitales para el formulario) */
     .val-feedback {
       font-size: 0.75rem;
       margin-top: 3px;
@@ -156,7 +155,6 @@
     }
     .is-invalid ~ .val-feedback-invalid { display: block; color: #dc3545; }
 
-    /* Recalibración de la barra de búsqueda para despejar el logotipo */
     .search-container {
       position: sticky;
       top: 85px; 
@@ -228,7 +226,6 @@
 
   <nav class="navbar navbar-dark sticky-top" style="background-color: var(--navbar-bg); z-index: 1050; border-bottom: 2px solid var(--brand-orange);">
     <div class="container py-2 d-flex justify-content-center align-items-center">
-      <!-- LOGOTIPO CORPORATIVO -->
       <img src="https://i.ibb.co/FqDJfm1P/LOGO-LIMZAGROUP.png" alt="LIMZAGROUP Logo" style="max-height: 55px; width: auto; object-fit: contain;">
     </div>
   </nav>
@@ -257,7 +254,7 @@
       <div>
         <div class="text-muted" style="font-size: 0.75rem;">Total Estimado</div>
         <div class="d-flex align-items-baseline gap-2">
-          <span id="totalBarra" class="fw-bold fs-4 text-primary">$0.00</span>
+          <span id="totalBarra" class="fw-bold fs-4 text-primary">$0,00</span>
           <span id="itemsBarra" class="badge bg-secondary rounded-pill small">0 ítems</span>
         </div>
       </div>
@@ -268,7 +265,6 @@
     </div>
   </div>
 
-  <!-- Modal de Orden Principal -->
   <div class="modal fade" id="modalFinalizar" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
@@ -281,7 +277,7 @@
           <div class="bg-light p-3 rounded-4 mb-3 border">
             <div class="d-flex justify-content-between mb-2">
               <span class="small fw-bold text-muted">RESUMEN DE SELECCIÓN</span>
-              <span class="small fw-bold text-primary" id="modalTotal">$0.00</span>
+              <span class="small fw-bold text-primary" id="modalTotal">$0,00</span>
             </div>
             <div id="modalListaItems" class="small overflow-auto" style="max-height: 120px;"></div>
           </div>
@@ -315,7 +311,6 @@
     </div>
   </div>
 
-  <!-- Modal de Alerta Táctica (Reemplaza los molestos pop-ups del navegador) -->
   <div class="modal fade" id="modalAlerta" tabindex="-1" aria-hidden="true" style="z-index: 1060;">
     <div class="modal-dialog modal-dialog-centered modal-sm">
       <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
@@ -331,8 +326,8 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    // INSTRUCCIÓN CRÍTICA: Pega aquí la URL Web App que te generó Google Apps Script
-    const URL_API_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbyBra8VbHUyhNa8QHouv_AsqYgyzitEzfOoG6kDwVjetXn-XLh4lNRA0xHIYtIADbYh/exec";
+    // INSTRUCCIÓN CRÍTICA: Cambia el texto entre comillas por la URL de tu App Script
+    const URL_API_APPS_SCRIPT = "TU_URL_DE_APPS_SCRIPT_AQUI";
 
     let catalogo = [];
     let carrito = {}; 
@@ -346,7 +341,6 @@
       cargarCatalogoRemoto();
     };
 
-    // Protocolo de conexión externa para traer los productos
     function cargarCatalogoRemoto() {
       fetch(URL_API_APPS_SCRIPT)
         .then(res => res.json())
@@ -363,7 +357,6 @@
       filtrarCatalogo();
     }
 
-    // --- SISTEMA DE ALERTA PERSONALIZADO ---
     function mostrarAlertaPersonalizada(titulo, mensaje, tipo) {
       const icono = document.getElementById('alertaIcono');
       if (tipo === 'exito') {
@@ -432,7 +425,7 @@
             <div class="fw-bold fs-6 mb-3 text-dark lh-sm">${prod.nombre}</div>
             
             <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
-              <span class="price-tag">$${prod.precio.toFixed(2)}</span>
+              <span class="price-tag">$${prod.precio.toFixed(2).replace('.', ',')}</span>
               
               <div id="ctrl-${prod.codigo}">
                 ${renderBotonesTarjeta(prod.codigo, cant)}
@@ -598,7 +591,7 @@
         total += i.precio * i.cantidad;
         count += i.cantidad;
       });
-      document.getElementById('totalBarra').innerText = '$' + total.toFixed(2);
+      document.getElementById('totalBarra').innerText = '$' + total.toFixed(2).replace('.', ',');
       document.getElementById('itemsBarra').innerText = `${count} ${count === 1 ? 'ítem' : 'ítems'}`;
       document.getElementById('btnAbrirModal').disabled = items.length === 0;
     }
@@ -620,11 +613,11 @@
         htmlLista += `
           <div class="d-flex justify-content-between align-items-center py-2 border-bottom border-light">
             <span class="text-truncate me-2" style="font-size: 0.9rem;"><strong>${i.cantidad}x</strong> ${i.nombre}</span>
-            <span class="fw-bold text-dark">$${sub.toFixed(2)}</span>
+            <span class="fw-bold text-dark">$${sub.toFixed(2).replace('.', ',')}</span>
           </div>
         `;
       });
-      document.getElementById('modalTotal').innerText = '$' + total.toFixed(2);
+      document.getElementById('modalTotal').innerText = '$' + total.toFixed(2).replace('.', ',');
       document.getElementById('modalListaItems').innerHTML = htmlLista;
       revisarTodosLosCampos();
       modalInstance.show();
@@ -671,7 +664,6 @@
       document.getElementById('btnEnviar').disabled = !(v1 && v2 && v3);
     }
 
-    // Protocolo de transmisión de órdenes a la API de Google Apps Script
     function enviarPedido(e) {
       e.preventDefault();
       if (!(validarCampoVendedor() && validarCampoCliente() && validarCampoRif())) {
@@ -684,7 +676,7 @@
       btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Procesando...';
 
       const items = Object.values(carrito);
-      const resumenTexto = items.map(i => `${i.cantidad}x [${i.codigo}] ${i.nombre} ($${(i.precio * i.cantidad).toFixed(2)})`).join(" | ");
+      const resumenTexto = items.map(i => `${i.cantidad}x [${i.codigo}] ${i.nombre} ($${(i.precio * i.cantidad).toFixed(2).replace('.', ',')})`).join(" | ");
       const total = items.reduce((acc, i) => acc + (i.precio * i.cantidad), 0);
       const itemsDetalle = items.map(i => ({codigo: i.codigo, nombre: i.nombre, cantidad: i.cantidad, precio: i.precio}));
       const rifVal = document.getElementById('clienteRif').value.trim().toUpperCase();
@@ -695,7 +687,7 @@
         rif: rifVal !== '' ? rifVal : 'N/A',
         resumenTexto: resumenTexto,
         itemsDetalle: itemsDetalle,
-        totalDolares: total.toFixed(2)
+        totalDolares: total.toFixed(2) 
       };
 
       fetch(URL_API_APPS_SCRIPT, {
