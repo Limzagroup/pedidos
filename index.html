@@ -3,13 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <title>Portal de Pedidos de LIMZA GROUP</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://kowerg.github.io" crossorigin>
+  <link rel="preload" as="image" href="https://kowerg.github.io/limzagroup/LIMZAGROUP_LOGO.webp" fetchpriority="high">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
   <style>
     :root {
-      --navbar-bg: #0f172a;
-      --bg-color: #f1f5f9;
+      --navbar-bg: #000000;
+      --bg-color: #e9ecef;
       --brand-orange: #f97316;
       --brand-orange-hover: #ea580c;
       --brand-orange-light: #fff7ed;
@@ -65,50 +68,75 @@
     }
     
     .badge-cat { 
-      background-color: #ffedd5; 
-      color: #c2410c; 
+      background-color: transparent;
+      color: var(--brand-orange); 
       font-weight: 600; 
-      font-size: 0.70rem; 
-      border-radius: 50px;
-      padding: 4px 10px;
+      font-size: 0.75rem; 
+      border-radius: 0;
+      padding: 0;
     }
-    .price-tag { font-weight: 800; color: #0f172a; font-size: 1.25rem; }
+    .price-tag {
+      color: #0f172a;
+      font-size: 1.25rem;
+    }
     
     .qty-control-box {
       display: flex;
       align-items: center;
-      background: #ffffff;
-      border: 1px solid #cbd5e1;
+      justify-content: center;
+      gap: 3px;
+      min-width: 120px;
+      background: var(--brand-orange);
+      border: 1px solid var(--brand-orange);
       border-radius: 50px;
       overflow: hidden;
-      height: 34px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+      height: 44px;
+      padding: 2px 5px;
+      box-shadow: 0 2px 6px rgba(249, 115, 22, 0.18);
     }
     .qty-btn {
-      width: 32px;
-      height: 34px;
+      width: 24px;
+      min-width: 24px;
+      height: 28px;
+      min-height: 28px;
+      flex: 0 0 24px;
       border: none;
       background: transparent;
-      color: #0f172a;
+      color: #ffffff;
       font-weight: bold;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       user-select: none;
+      font-size: 1.1rem;
+      border-radius: 50%;
       transition: background 0.2s;
     }
-    .qty-btn:active { background: #e2e8f0; }
+    .qty-btn:hover, .qty-btn:active {
+      background: transparent;
+      opacity: 0.75;
+    }
     .qty-input {
-      width: 36px;
-      height: 34px;
+      width: 48px;
+      min-width: 48px;
+      height: 26px;
       border: none;
+      border-radius: 6px;
       text-align: center;
       font-weight: 700;
-      background: transparent;
+      background: #ffffff;
+      color: #0f172a;
       outline: none;
       font-size: 0.95rem;
       padding: 0;
+      appearance: textfield;
+      -moz-appearance: textfield;
+    }
+    .qty-input::-webkit-inner-spin-button,
+    .qty-input::-webkit-outer-spin-button {
+      margin: 0;
+      -webkit-appearance: none;
     }
 
     .bottom-checkout-bar {
@@ -128,7 +156,7 @@
       top: 90px; 
       left: 50%;
       transform: translateX(-50%);
-      background: #0f172a;
+      background: #000000;
       color: white;
       padding: 12px 24px;
       border-radius: 8px; 
@@ -148,6 +176,7 @@
       transform: translate(-50%, 5px); 
     }
 
+    /* Restauración de las clases del Modal de Pedidos (Vitales para el formulario) */
     .val-feedback {
       font-size: 0.75rem;
       margin-top: 3px;
@@ -155,6 +184,7 @@
     }
     .is-invalid ~ .val-feedback-invalid { display: block; color: #dc3545; }
 
+    /* Recalibración de la barra de búsqueda para despejar el logotipo */
     .search-container {
       position: sticky;
       top: 85px; 
@@ -162,11 +192,11 @@
       background-color: var(--bg-color); 
       padding-top: 15px;
       padding-bottom: 10px;
-      transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+      transition: clip-path 0.18s ease-out;
+      clip-path: inset(0 0 0 0);
     }
     .search-container.hidden {
-      transform: translateY(-150%); 
-      opacity: 0;
+      clip-path: inset(0 0 100% 0);
       pointer-events: none; 
     }
 
@@ -192,6 +222,15 @@
       font-size: 0.95rem;
       outline: none;
       color: #0f172a;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+    .modern-search-input::-webkit-search-cancel-button,
+    .modern-search-input::-webkit-search-decoration,
+    .modern-search-input::-webkit-search-results-button,
+    .modern-search-input::-webkit-search-results-decoration {
+      display: none;
+      -webkit-appearance: none;
     }
     .modern-search-input::placeholder {
       color: #94a3b8;
@@ -213,96 +252,1028 @@
     .modern-search-clear:hover {
       color: #ef4444;
     }
+
+    .order-summary {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 8px 16px 14px;
+    }
+
+    .order-summary-list {
+      height: 260px;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .order-summary-list::-webkit-scrollbar {
+      display: none;
+    }
+
+    .order-summary-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 6px 12px;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .order-summary-row:last-child {
+      border-bottom: 0;
+    }
+
+    .order-summary-name {
+      min-width: 0;
+      color: #0f172a;
+      font-weight: 600;
+      overflow-wrap: anywhere;
+    }
+
+    .order-summary-details {
+      min-width: 0;
+    }
+
+    .order-summary-meta {
+      margin-top: 3px;
+      color: #64748b;
+      font-size: 0.78rem;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+    }
+
+    .order-summary-subtotal {
+      color: #334155;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .order-summary-actions {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .order-qty-control {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 38px;
+      padding: 3px 6px;
+      border: 1px solid #e2e8f0;
+      border-radius: 999px;
+      background: #f8fafc;
+    }
+
+    .order-qty-button {
+      width: 32px;
+      height: 32px;
+      min-height: 32px;
+      padding: 0;
+      border: 0;
+      border-radius: 50%;
+      background: #ffffff;
+      color: #334155;
+      font-size: 1rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .order-qty-button:hover:not(:disabled) {
+      background: var(--brand-orange-light);
+      color: var(--brand-orange-hover);
+    }
+
+    .order-qty-button:disabled {
+      color: #94a3b8;
+      cursor: not-allowed;
+    }
+
+    .order-qty-value {
+      min-width: 18px;
+      text-align: center;
+      color: #0f172a;
+      font-weight: 700;
+    }
+
+    .order-total {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      padding: 16px 2px 2px;
+      border-top: 1px solid #e2e8f0;
+      margin-top: 10px;
+    }
+
+    .order-total-label {
+      color: #475569;
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    .price-tag,
+    .order-total-value,
+    #totalBarra {
+      font-family: system-ui, -apple-system, sans-serif;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .price-tag {
+      font-weight: 500;
+    }
+
+    .order-total-value,
+    #totalBarra {
+      font-weight: 800;
+    }
+
+    #itemsBarra {
+      background: #333333 !important;
+      color: #f5f5f5 !important;
+    }
+
+    .order-total-value {
+      color: var(--brand-orange-hover);
+      font-size: 1.65rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .order-customer-details {
+      padding-top: 16px;
+    }
+
+    .order-modal-dialog {
+      max-width: 540px;
+    }
+
+    @media (max-width: 575.98px) {
+      .order-modal-dialog {
+        margin: 0.5rem;
+        min-height: calc(100% - 1rem);
+      }
+
+      .order-summary {
+        padding-right: 12px;
+        padding-left: 12px;
+      }
+
+    }
+
+    :root {
+      color-scheme: light;
+      --surface: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --border-color: #cbd5e1;
+      --focus-ring: 0 0 0 3px rgba(249, 115, 22, 0.35);
+    }
+
+    body {
+      color: var(--text-main);
+      padding-bottom: calc(100px + env(safe-area-inset-bottom));
+      line-height: 1.5;
+    }
+
+    .skip-link {
+      position: fixed;
+      top: 8px;
+      left: 8px;
+      z-index: 2000;
+      padding: 10px 14px;
+      color: #ffffff;
+      background: var(--navbar-bg);
+      border-radius: 8px;
+      transform: translateY(-150%);
+    }
+
+    .skip-link:focus {
+      transform: translateY(0);
+      color: #ffffff;
+    }
+
+    :focus-visible {
+      outline: 3px solid var(--brand-orange);
+      outline-offset: 3px;
+      box-shadow: var(--focus-ring);
+    }
+
+    .btn, .form-control, .qty-btn, .modern-search-clear {
+      min-height: 44px;
+    }
+
+    .btn.btn-delete-icon {
+      min-height: 34px;
+    }
+
+    .btn-delete-icon {
+      width: 34px;
+      min-width: 34px;
+      height: 34px;
+      min-height: 34px;
+      flex: 0 0 34px;
+      padding: 0;
+      appearance: textfield;
+      -moz-appearance: textfield;
+    }
+    .qty-input::-webkit-inner-spin-button,
+    .qty-input::-webkit-outer-spin-button {
+      margin: 0;
+      -webkit-appearance: none;
+    }
+
+    .qty-editor-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      min-width: 178px;
+      height: 44px;
+      padding: 2px 6px;
+      overflow: hidden;
+      border: 1px solid var(--brand-orange);
+      border-radius: 50px;
+      background: var(--brand-orange);
+      box-shadow: 0 2px 6px rgba(249, 115, 22, 0.18);
+    }
+
+    .qty-editor-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .qty-editor-delete {
+      width: 40px;
+      min-width: 40px;
+      height: 40px;
+      min-height: 40px;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #dc3545;
+      border-radius: 50%;
+      background: #ffffff;
+      color: #dc3545;
+      transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, color 0.15s ease-in-out;
+    }
+
+    .qty-editor-delete:hover,
+    .qty-editor-delete:active {
+      border-color: #dc3545;
+      background: #dc3545;
+      color: #ffffff;
+    }
+
+    .qty-editor-pill.is-expanding {
+      transform-origin: right center;
+      animation: qtyEditorExpand 220ms cubic-bezier(0.2, 0.75, 0.25, 1);
+    }
+
+    .qty-editor-confirm {
+      width: 32px;
+      min-width: 32px;
+      height: 32px;
+      min-height: 32px;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+      font-size: 1.1rem;
+    }
+
+    .qty-editor-pill .qty-input {
+      width: 56px;
+      min-width: 56px;
+    }
+
+    .qty-editor-confirm:hover,
+    .qty-editor-confirm:active {
+      background: rgba(255, 255, 255, 0.3);
+      color: #ffffff;
+    }
+
+    .qty-editor-pill .qty-btn {
+      height: 28px;
+      min-height: 28px;
+    }
+
+    @keyframes qtyEditorExpand {
+      from {
+        opacity: 0.65;
+        transform: scaleX(0.72);
+      }
+      to {
+        opacity: 1;
+        transform: scaleX(1);
+      }
+    }
+
+    .btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.65;
+    }
+
+    #btnAbrirModal {
+      white-space: nowrap;
+    }
+
+    #btnAbrirModal {
+      border-radius: 10px !important;
+    }
+
+    .navbar {
+      box-shadow: 0 4px 18px rgba(15, 23, 42, 0.16);
+    }
+
+    .card-product {
+      height: 100%;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+    }
+
+    .card-product:not(.out-of-stock):hover {
+      border-color: #94a3b8;
+      box-shadow: 0 8px 22px rgba(15, 23, 42, 0.08);
+      transform: translateY(-2px);
+    }
+
+    .card-product.out-of-stock {
+      opacity: 1;
+      color: var(--text-muted);
+      background: #f8fafc;
+    }
+
+    .bottom-checkout-bar {
+      padding-bottom: calc(14px + env(safe-area-inset-bottom));
+      padding-right: 4px;
+      padding-left: 4px;
+      background: rgba(255, 255, 255, 0.97);
+      backdrop-filter: blur(12px);
+    }
+
+    .bottom-checkout-bar .container {
+      padding-right: 8px !important;
+      padding-left: 8px !important;
+    }
+
+    .checkout-summary {
+      min-width: 0;
+      flex: 1 1 auto;
+    }
+
+    .checkout-figures {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 0 0.5rem;
+    }
+
+    #totalBarra,
+    #itemsBarra,
+    #btnAbrirModal {
+      white-space: nowrap;
+    }
+
+    #btnAbrirModal {
+      flex: 0 0 auto;
+    }
+
+    .modern-search-input:focus,
+    .qty-input:focus {
+      outline: none;
+    }
+
+    .modern-search-input:focus-visible {
+      outline: none;
+      box-shadow: none;
+    }
+
+    .modern-search-clear {
+      min-width: 44px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .form-control {
+      border-color: var(--border-color);
+    }
+
+    .form-control:focus {
+      border-color: var(--brand-orange);
+      box-shadow: var(--focus-ring);
+    }
+
+    .val-feedback {
+      font-size: 0.8125rem;
+      font-weight: 600;
+    }
+
+    @media (max-width: 575.98px) {
+      .bottom-checkout-bar .container {
+        gap: 8px;
+      }
+
+      .bottom-checkout-bar .btn {
+        gap: 0.3rem !important;
+        padding: 0.55rem 0.6rem !important;
+        font-size: 0.82rem;
+      }
+
+      .bottom-checkout-bar .btn i {
+        font-size: 1rem !important;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    .navbar .container {
+      position: relative;
+    }
+
+    .theme-toggle {
+      position: absolute;
+      left: 12px;
+      width: 42px;
+      min-width: 42px;
+      height: 42px;
+      min-height: 42px;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #3a3a3a;
+      border-radius: 12px;
+      background: #242424;
+      color: #f5f5f5;
+      font-size: 1.1rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .theme-toggle:hover {
+        border-color: var(--brand-orange);
+        background: #333333;
+        color: var(--brand-orange);
+        box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2), 0 4px 12px rgba(249, 115, 22, 0.28);
+      }
+    }
+
+    .theme-toggle:active {
+      border-color: var(--brand-orange);
+      background: #333333;
+      color: var(--brand-orange);
+      box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2), 0 4px 12px rgba(249, 115, 22, 0.28);
+      transform: scale(0.96);
+    }
+
+    .theme-toggle:focus:not(:focus-visible) {
+      outline: none;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    }
+
+    .theme-toggle:focus-visible {
+      box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.32), 0 4px 12px rgba(249, 115, 22, 0.24);
+    }
+
+    :root {
+      color-scheme: dark;
+      --navbar-bg: #000000;
+      --bg-color: #121212;
+      --brand-orange-light: #2b1d13;
+      --surface: #181818;
+      --text-main: #f5f5f5;
+      --text-muted: #b3b3b3;
+      --border-color: #3a3a3a;
+      --focus-ring: 0 0 0 3px rgba(249, 115, 22, 0.38);
+    }
+
+    body {
+      background: radial-gradient(ellipse at top, #202020 0, #121212 48rem);
+      color: var(--text-main);
+    }
+
+    .text-dark {
+      color: #f5f5f5 !important;
+    }
+
+    .text-muted {
+      color: var(--text-muted) !important;
+    }
+
+    .search-container {
+      background: #121212;
+    }
+
+    .modern-search-wrapper {
+      background: #242424;
+      border-color: #3a3a3a;
+      box-shadow: none;
+    }
+
+    .modern-search-wrapper:focus-within {
+      background: #2a2a2a;
+      border-color: var(--brand-orange);
+      box-shadow: 0 0 0 1px var(--brand-orange);
+    }
+
+    .modern-search-input {
+      color: #ffffff;
+    }
+
+    .modern-search-input::placeholder,
+    .modern-search-icon {
+      color: #b3b3b3;
+    }
+
+    .card-product {
+      color: #f5f5f5;
+      background: #181818;
+      border-color: #282828;
+      box-shadow: none;
+    }
+
+    .card-product:not(.out-of-stock):hover {
+      background: #222222;
+      border-color: #414141;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.28);
+    }
+
+    .card-product.in-cart {
+      background: #241b15;
+      border-color: var(--brand-orange);
+      box-shadow: inset 3px 0 0 var(--brand-orange);
+    }
+
+    .card-product.out-of-stock {
+      color: var(--text-muted);
+      background: #181818;
+      border-color: #282828;
+    }
+
+    .price-tag {
+      color: #ffffff;
+    }
+
+    .bottom-checkout-bar {
+      background: rgba(24, 24, 24, 0.96);
+      border-color: #303030;
+      box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.3);
+    }
+
+    .order-summary {
+      background: #181818;
+      border-color: #333333;
+    }
+
+    .order-summary-row {
+      border-color: #333333;
+    }
+
+    .order-summary-name,
+    .order-qty-value,
+    .order-total-label,
+    .order-summary-subtotal {
+      color: #f5f5f5;
+    }
+
+    .order-summary-meta {
+      color: #b3b3b3;
+    }
+
+    .order-qty-control {
+      background: #242424;
+      border-color: #3a3a3a;
+    }
+
+    .order-qty-button {
+      background: #333333;
+      color: #f5f5f5;
+    }
+
+    .order-qty-button:hover:not(:disabled) {
+      background: #414141;
+      color: var(--brand-orange);
+    }
+
+    .order-total {
+      border-color: #333333;
+    }
+
+    .order-total-value {
+      color: var(--brand-orange);
+    }
+
+    .qty-input {
+      background: #252525;
+      color: #ffffff;
+    }
+
+    .qty-editor-pill {
+      box-shadow: 0 3px 12px rgba(249, 115, 22, 0.22);
+    }
+
+    .qty-editor-delete {
+      background: #181818;
+    }
+
+    .modal-content {
+      color: #f5f5f5;
+      background: #181818;
+      border: 1px solid #333333 !important;
+    }
+
+    .modal-header {
+      color: #f5f5f5;
+    }
+
+    .btn-close {
+      filter: invert(1) grayscale(100%) brightness(200%);
+      opacity: 0.75;
+    }
+
+    .form-label {
+      color: #e5e5e5;
+    }
+
+    .form-control {
+      color: #ffffff;
+      background-color: #242424;
+      border-color: #3a3a3a;
+    }
+
+    .form-control::placeholder {
+      color: #9a9a9a;
+    }
+
+    .form-control:focus {
+      color: #ffffff;
+      background-color: #2a2a2a;
+      border-color: var(--brand-orange);
+    }
+
+    .toast-aviso {
+      background: #242424;
+      border: 1px solid #3a3a3a;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+    }
+
+    .btn-light {
+      color: #d4d4d4 !important;
+      background: #242424 !important;
+      border-color: #3a3a3a !important;
+    }
+
+    body.light-mode {
+      color-scheme: light;
+      --bg-color: #f5f5f5;
+      --brand-orange-light: #fff3e8;
+      --surface: #ffffff;
+      --text-main: #191919;
+      --text-muted: #6b6b6b;
+      --border-color: #e5e5e5;
+      --focus-ring: 0 0 0 3px rgba(249, 115, 22, 0.35);
+      background: linear-gradient(180deg, #f0f0f0 0, #f7f7f7 280px, #f5f5f5 100%);
+      color: #191919;
+    }
+
+    body.light-mode .text-dark {
+      color: #191919 !important;
+    }
+
+    body.light-mode .text-muted {
+      color: #6b6b6b !important;
+    }
+
+    body.light-mode .search-container {
+      background: #f0f0f0;
+    }
+
+    body.light-mode .modern-search-wrapper {
+      background: #ffffff;
+      border-color: transparent;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    body.light-mode .modern-search-wrapper:focus-within {
+      background: #ffffff;
+      border-color: var(--brand-orange);
+      box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.22);
+    }
+
+    body.light-mode .modern-search-input {
+      color: #191919;
+    }
+
+    body.light-mode .modern-search-input::placeholder,
+    body.light-mode .modern-search-icon {
+      color: #777777;
+    }
+
+    body.light-mode .card-product {
+      color: #191919;
+      background: #ffffff;
+      border-color: transparent;
+      border-radius: 18px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+    }
+
+    body.light-mode .card-product:not(.out-of-stock):hover {
+      background: #fafafa;
+      border-color: #e5e5e5;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.1);
+    }
+
+    body.light-mode .card-product.in-cart {
+      background: #fff8f2;
+      border-color: var(--brand-orange);
+      box-shadow: inset 3px 0 0 var(--brand-orange), 0 3px 12px rgba(249, 115, 22, 0.1);
+    }
+
+    body.light-mode .card-product.out-of-stock {
+      color: #777777;
+      background: #f0f0f0;
+      border-color: transparent;
+    }
+
+    body.light-mode .price-tag {
+      color: #191919;
+    }
+
+    body.light-mode .bottom-checkout-bar {
+      background: rgba(255, 255, 255, 0.96);
+      border-color: #e5e5e5;
+      box-shadow: 0 -5px 22px rgba(0, 0, 0, 0.1);
+    }
+
+    body.light-mode #itemsBarra {
+      background: #eeeeee !important;
+      color: #404040 !important;
+      border: 0;
+    }
+
+    body.light-mode .order-summary {
+      background: #ffffff;
+      border-color: #e5e5e5;
+      border-radius: 18px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    body.light-mode .order-summary-row {
+      border-color: #e8e8e8;
+    }
+
+    body.light-mode .order-summary-name,
+    body.light-mode .order-qty-value,
+    body.light-mode .order-total-label,
+    body.light-mode .order-summary-subtotal {
+      color: #191919;
+    }
+
+    body.light-mode .order-summary-meta {
+      color: #6b6b6b;
+    }
+
+    body.light-mode .order-qty-control {
+      background: #f5f5f5;
+      border-color: #e5e5e5;
+    }
+
+    body.light-mode .order-qty-button {
+      background: #ffffff;
+      color: #333333;
+    }
+
+    body.light-mode .order-qty-button:hover:not(:disabled) {
+      background: #fff3e8;
+      color: var(--brand-orange-hover);
+    }
+
+    body.light-mode .order-total {
+      border-color: #e5e5e5;
+    }
+
+    body.light-mode .order-total-value {
+      color: var(--brand-orange-hover);
+    }
+
+    body.light-mode .qty-input {
+      background: #ffffff;
+      color: #191919;
+    }
+
+    body.light-mode .qty-editor-delete {
+      background: #ffffff;
+    }
+
+    body.light-mode .modal-content {
+      color: #191919;
+      background: #ffffff;
+      border: 1px solid #e5e5e5 !important;
+      border-radius: 20px;
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.18) !important;
+    }
+
+    body.light-mode .modal-header,
+    body.light-mode .form-label {
+      color: #191919;
+    }
+
+    body.light-mode .btn-close {
+      filter: none;
+      opacity: 0.7;
+    }
+
+    body.light-mode .form-control {
+      color: #191919;
+      background-color: #f7f7f7;
+      border-color: #e5e5e5;
+      border-radius: 10px;
+    }
+
+    body.light-mode .form-control::placeholder {
+      color: #777777;
+    }
+
+    body.light-mode .form-control:focus {
+      color: #191919;
+      background-color: #ffffff;
+      border-color: var(--brand-orange);
+      box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.18);
+    }
+
+    body.light-mode .toast-aviso {
+      background: #ffffff;
+      border: 1px solid #e5e5e5;
+      color: #191919;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
+    }
+
+    body.light-mode .btn-light {
+      color: #626262 !important;
+      background: #f2f2f2 !important;
+      border-color: #e5e5e5 !important;
+    }
+
+    body.light-mode .theme-toggle {
+      border-color: #4a4a4a;
+      background: #ffffff;
+      color: #333333;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.24);
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      body.light-mode .theme-toggle:hover {
+        border-color: var(--brand-orange);
+        background: #fff3e8;
+        color: var(--brand-orange-hover);
+        box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2), 0 4px 12px rgba(249, 115, 22, 0.28);
+      }
+    }
+
+    body.light-mode .theme-toggle:active {
+      border-color: var(--brand-orange);
+      background: #fff3e8;
+      color: var(--brand-orange-hover);
+      box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2), 0 4px 12px rgba(249, 115, 22, 0.28);
+      transform: scale(0.96);
+    }
+
+    body.light-mode .theme-toggle:focus:not(:focus-visible) {
+      outline: none;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.24);
+    }
+
+    body.light-mode .theme-toggle:focus-visible {
+      box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.32), 0 4px 12px rgba(249, 115, 22, 0.24);
+    }
+
+    body.light-mode .btn-primary {
+      background-color: var(--brand-orange) !important;
+      border-color: var(--brand-orange) !important;
+      color: #ffffff !important;
+    }
+
   </style>
 </head>
 <body>
 
-  <div id="toastAviso" class="toast-aviso">
+  <a class="skip-link" href="#contenidoPrincipal">Saltar al contenido</a>
+
+  <div id="toastAviso" class="toast-aviso" role="status" aria-live="polite" aria-atomic="true">
     <div class="d-flex align-items-center justify-content-center gap-2">
-      <i class="bi bi-check-circle-fill" style="color: #22c55e;"></i> 
+      <i class="bi bi-check-circle-fill text-primary"></i> 
       <span id="toastTexto">Producto agregado</span>
     </div>
   </div>
 
-  <nav class="navbar navbar-dark sticky-top" style="background-color: var(--navbar-bg); z-index: 1050; border-bottom: 2px solid var(--brand-orange);">
+  <nav class="navbar navbar-dark sticky-top" aria-label="Navegación principal" style="background-color: var(--navbar-bg); z-index: 1050; border-bottom: 3px solid var(--brand-orange);">
     <div class="container py-2 d-flex justify-content-center align-items-center">
-      <img src="https://i.ibb.co/FqDJfm1P/LOGO-LIMZAGROUP.png" alt="LIMZAGROUP Logo" style="max-height: 55px; width: auto; object-fit: contain;">
+      <!-- LOGOTIPO CORPORATIVO -->
+      <img src="https://kowerg.github.io/limzagroup/LIMZAGROUP_LOGO.webp" alt="LIMZA GROUP" width="220" height="55" fetchpriority="high" style="max-height: 55px; width: auto; object-fit: contain;">
+      <button id="btnCambiarTema" class="theme-toggle" type="button" aria-label="Cambiar a modo claro" title="Cambiar a modo claro">
+        <i class="bi bi-sun" aria-hidden="true"></i>
+      </button>
     </div>
   </nav>
 
+  <main id="contenidoPrincipal" tabindex="-1">
   <div id="searchWrapper" class="container search-container">
     <div class="modern-search-wrapper">
-      <i class="bi bi-search modern-search-icon"></i>
-      <input type="text" id="buscador" class="modern-search-input" placeholder="Buscar código, producto o marca..." oninput="manejarEntradaBuscador()">
-      <button class="modern-search-clear d-none" id="btnLimpiarBuscador" type="button" onclick="limpiarBuscadorManualmente()">
-        <i class="bi bi-x-circle-fill"></i>
+      <label class="visually-hidden" for="buscador">Buscar productos por código, nombre o categoría</label>
+      <i class="bi bi-search modern-search-icon" aria-hidden="true"></i>
+      <input type="search" id="buscador" class="modern-search-input" placeholder="Buscar código, producto o marca..." autocomplete="off">
+      <button class="modern-search-clear d-none" id="btnLimpiarBuscador" type="button" aria-label="Limpiar búsqueda">
+        <i class="bi bi-x-circle-fill" aria-hidden="true"></i>
       </button>
     </div>
   </div>
 
   <div class="container py-2">
-    <div id="cargando" class="text-center py-5">
-      <div class="spinner-border text-primary" role="status"></div>
+    <div id="cargando" class="text-center py-5" role="status" aria-live="polite" aria-busy="true">
+      <div class="spinner-border text-primary" aria-hidden="true"></div>
       <p class="mt-2 text-muted fw-semibold small">Sincronizando inventario...</p>
     </div>
 
-    <div id="contenedorProductos" class="row g-2 g-md-3"></div>
+    <div id="contenedorProductos" class="row g-2 g-md-3" role="region" aria-label="Catálogo de productos" aria-live="polite" aria-relevant="additions text"></div>
   </div>
+  </main>
 
-  <div class="bottom-checkout-bar">
+  <div class="bottom-checkout-bar d-none" id="barraCheckout" aria-hidden="true">
     <div class="container d-flex justify-content-between align-items-center p-0">
-      <div>
-        <div class="text-muted" style="font-size: 0.75rem;">Total Estimado</div>
-        <div class="d-flex align-items-baseline gap-2">
-          <span id="totalBarra" class="fw-bold fs-4 text-primary">$0,00</span>
-          <span id="itemsBarra" class="badge bg-secondary rounded-pill small">0 ítems</span>
+      <div class="checkout-summary">
+        <div class="text-muted" style="font-size: 0.75rem;">Total estimado</div>
+        <div class="checkout-figures">
+          <span id="totalBarra" class="fw-bold fs-4 text-primary" aria-live="polite">$0.00</span>
+          <span id="itemsBarra" class="badge bg-secondary rounded-pill small" aria-live="polite">0 productos</span>
         </div>
       </div>
-      <button class="btn btn-primary px-4 py-2 fw-bold rounded-3 shadow-sm d-flex align-items-center gap-2" id="btnAbrirModal" onclick="abrirModalFinalizar()" disabled>
-        <span>Continuar</span>
-        <i class="bi bi-arrow-right-short fs-5"></i>
+      <button class="btn btn-primary px-3 py-2 fw-bold rounded-3 shadow-sm d-flex align-items-center gap-2" id="btnAbrirModal" disabled>
+        <span>Revisar Pedido</span>
+        <i class="bi bi-arrow-right-short fs-5" aria-hidden="true"></i>
       </button>
     </div>
   </div>
 
-  <div class="modal fade" id="modalFinalizar" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
-    <div class="modal-dialog modal-dialog-centered">
+  <!-- Modal de Orden Principal -->
+  <div class="modal fade" id="modalFinalizar" tabindex="-1" aria-hidden="true" aria-labelledby="tituloModalFinalizar" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable order-modal-dialog">
       <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
         <div class="modal-header border-bottom-0 pb-0">
-          <h5 class="modal-title fw-bold text-dark"><i class="bi bi-receipt me-2 text-primary"></i>Datos del Pedido</h5>
+          <h2 class="modal-title fs-5 fw-bold text-dark" id="tituloModalFinalizar"><i class="bi bi-receipt me-2 text-primary" aria-hidden="true"></i>Revisar Pedido</h2>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
         </div>
         <div class="modal-body">
           
-          <div class="bg-light p-3 rounded-4 mb-3 border">
-            <div class="d-flex justify-content-between mb-2">
-              <span class="small fw-bold text-muted">RESUMEN DE SELECCIÓN</span>
-              <span class="small fw-bold text-primary" id="modalTotal">$0,00</span>
+          <section class="order-summary mb-3" aria-label="Resumen del pedido">
+            <div id="modalListaItems" class="order-summary-list" role="list" aria-label="Productos incluidos en el pedido"></div>
+            <div class="order-total" aria-live="polite">
+              <span class="order-total-label">Total estimado</span>
+              <span class="order-total-value" id="modalTotal">$0.00</span>
             </div>
-            <div id="modalListaItems" class="small overflow-auto" style="max-height: 120px;"></div>
-          </div>
+          </section>
 
-          <form id="formularioPedido" novalidate onsubmit="enviarPedido(event)">
+          <form id="formularioPedido" class="order-customer-details" novalidate>
             <div class="mb-2">
-              <label class="form-label small fw-semibold">Nombre del Vendedor *</label>
-              <input type="text" id="vendedorNombre" class="form-control rounded-3 px-3" placeholder="Ej: María González" required oninput="validarCampoVendedor()">
-              <div class="val-feedback val-feedback-invalid px-2">Ingresa un nombre válido.</div>
+              <label for="vendedorNombre" class="form-label small fw-semibold">Nombre del vendedor</label>
+              <input type="text" id="vendedorNombre" class="form-control rounded-3 px-3" placeholder="Ej: María González" autocomplete="name" aria-describedby="vendedorAyuda" aria-required="true" required>
+              <div id="vendedorAyuda" class="val-feedback val-feedback-invalid px-2"></div>
             </div>
             <div class="mb-2">
-              <label class="form-label small fw-semibold">Nombre del Cliente / Empresa *</label>
-              <input type="text" id="clienteNombre" class="form-control rounded-3 px-3" placeholder="Persona o Razón Social" required oninput="validarCampoCliente()">
-              <div class="val-feedback val-feedback-invalid px-2">Ingresa una empresa válida.</div>
+              <label for="clienteNombre" class="form-label small fw-semibold">Nombre del cliente</label>
+              <input type="text" id="clienteNombre" class="form-control rounded-3 px-3" placeholder="Persona o Razón Social" autocomplete="organization" aria-describedby="clienteAyuda" aria-required="true" required>
+              <div id="clienteAyuda" class="val-feedback val-feedback-invalid px-2"></div>
             </div>
             <div class="mb-3">
               <div class="d-flex justify-content-between px-1">
-                <label class="form-label small fw-semibold">RIF del Cliente</label>
+                <label for="clienteRif" class="form-label small fw-semibold">RIF del cliente</label>
                 <span class="text-muted small" style="font-size: 0.72rem;">(Opcional)</span>
               </div>
-              <input type="text" id="clienteRif" class="form-control rounded-3 px-3" placeholder="Ej: J-123456789" oninput="validarCampoRif()">
-              <div class="val-feedback val-feedback-invalid px-2">Formato inválido.</div>
+              <input type="text" id="clienteRif" class="form-control rounded-3 px-3" placeholder="Ej: J-123456789" autocomplete="off" aria-describedby="rifAyuda">
+              <div id="rifAyuda" class="val-feedback val-feedback-invalid px-2">Formato inválido. Usa V- o J- seguido de 6 a 9 dígitos.</div>
             </div>
             <button type="submit" id="btnEnviar" class="btn btn-primary w-100 py-2 mt-2 fw-bold rounded-3 shadow-sm" disabled>
-              <i class="bi bi-send-check me-2"></i>Finalizar Pedido
+              <i class="bi bi-send-check me-2"></i>Enviar Pedido
             </button>
           </form>
 
@@ -311,12 +1282,13 @@
     </div>
   </div>
 
-  <div class="modal fade" id="modalAlerta" tabindex="-1" aria-hidden="true" style="z-index: 1060;">
+  <!-- Modal de Alerta Táctica (Reemplaza los molestos pop-ups del navegador) -->
+  <div class="modal fade" id="modalAlerta" tabindex="-1" aria-hidden="true" aria-labelledby="alertaTitulo" aria-describedby="alertaMensaje" style="z-index: 1060;">
     <div class="modal-dialog modal-dialog-centered modal-sm">
       <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
         <div class="modal-body text-center p-4">
-          <i id="alertaIcono" class="bi bi-check-circle-fill text-success" style="font-size: 3.5rem;"></i>
-          <h5 id="alertaTitulo" class="mt-3 fw-bold text-dark">Título</h5>
+          <i id="alertaIcono" class="bi bi-check-circle-fill text-primary" aria-hidden="true" style="font-size: 3.5rem;"></i>
+          <h2 id="alertaTitulo" class="fs-5 mt-3 fw-bold text-dark">Título</h2>
           <p id="alertaMensaje" class="text-muted small mb-4">Mensaje descriptivo</p>
           <button type="button" class="btn btn-primary w-100 py-2 fw-bold rounded-3 shadow-sm" data-bs-dismiss="modal">Aceptar</button>
         </div>
@@ -326,41 +1298,168 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    // INSTRUCCIÓN CRÍTICA: Cambia el texto entre comillas por la URL de tu App Script
-    const URL_API_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbyBra8VbHUyhNa8QHouv_AsqYgyzitEzfOoG6kDwVjetXn-XLh4lNRA0xHIYtIADbYh/exec";
+    const URL_API_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbx7RMTNeNMbOh75BtZIPhBpjjDS6Ft_PqBrw8cESDqjXxqaBmga1GsU_a6UUJ8ZSNh9/exec";
+    const CACHE_CATALOGO_LOCAL_KEY = 'limza-catalogo-v1';
+    const CACHE_CATALOGO_LOCAL_MAX_AGE_MS = 60 * 1000;
 
     let catalogo = [];
-    let carrito = {}; 
-    let itemEditando = null; 
+    let catalogoCacheCargado = false;
+    let catalogoRenderizado = false;
+    let carrito = {};
+    let itemEditando = null;
+    let posicionScrollAntesDeBuscar = null;
     let modalInstance = null;
     let modalAlertaInstance = null;
 
-    window.onload = function() {
-      modalInstance = new bootstrap.Modal(document.getElementById('modalFinalizar'));
-      modalAlertaInstance = new bootstrap.Modal(document.getElementById('modalAlerta'));
-      cargarCatalogoRemoto();
-    };
+    const getById = (id) => document.getElementById(id);
 
+    function initApp() {
+      modalInstance = new bootstrap.Modal(getById('modalFinalizar'));
+      modalAlertaInstance = new bootstrap.Modal(getById('modalAlerta'));
+
+      const temaGuardado = leerTemaGuardado();
+      aplicarTema(temaGuardado);
+      getById('btnCambiarTema').addEventListener('click', alternarTema);
+      getById('buscador').addEventListener('input', manejarEntradaBuscador);
+      getById('btnLimpiarBuscador').addEventListener('click', limpiarBuscadorManualmente);
+      getById('btnAbrirModal').addEventListener('click', abrirModalFinalizar);
+      getById('vendedorNombre').addEventListener('input', validarCampoVendedor);
+      getById('clienteNombre').addEventListener('input', validarCampoCliente);
+      getById('clienteRif').addEventListener('input', validarCampoRif);
+      getById('formularioPedido').addEventListener('submit', enviarPedido);
+
+      let lastScrollTop = 0;
+      const searchWrapper = getById('searchWrapper');
+
+      if (searchWrapper) {
+        window.addEventListener('scroll', function() {
+          const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+          if (currentScroll > lastScrollTop && currentScroll > 10) {
+            searchWrapper.classList.add('hidden');
+          } else {
+            searchWrapper.classList.remove('hidden');
+          }
+          lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
+        }, false);
+      }
+
+      cargarCatalogoRemoto();
+    }
+
+    function leerTemaGuardado() {
+      try {
+        return localStorage.getItem('limza-tema') === 'claro' ? 'claro' : 'oscuro';
+      } catch (err) {
+        console.warn('No se pudo recuperar la preferencia de tema:', err);
+        return 'oscuro';
+      }
+    }
+
+    function aplicarTema(tema) {
+      const esClaro = tema === 'claro';
+      document.body.classList.toggle('light-mode', esClaro);
+
+      const botonTema = getById('btnCambiarTema');
+      const temaDestino = esClaro ? 'oscuro' : 'claro';
+      botonTema.setAttribute('aria-label', `Cambiar a modo ${temaDestino}`);
+      botonTema.title = `Cambiar a modo ${temaDestino}`;
+      botonTema.innerHTML = `<i class="bi bi-${esClaro ? 'moon' : 'sun'}" aria-hidden="true"></i>`;
+    }
+
+    function alternarTema(event) {
+      const tema = document.body.classList.contains('light-mode') ? 'oscuro' : 'claro';
+      aplicarTema(tema);
+      try {
+        localStorage.setItem('limza-tema', tema);
+      } catch (err) {
+        console.warn('No se pudo guardar la preferencia de tema:', err);
+      }
+      if (event.detail > 0) event.currentTarget.blur();
+    }
+
+    document.addEventListener('DOMContentLoaded', initApp);
+
+    // Protocolo de conexión externa para traer los productos
     function cargarCatalogoRemoto() {
-      fetch(URL_API_APPS_SCRIPT)
-        .then(res => res.json())
-        .then(datos => renderizarCatalogo(datos))
+      const catalogoGuardado = leerCatalogoGuardado();
+      if (catalogoGuardado && Date.now() - catalogoGuardado.guardadoEn <= CACHE_CATALOGO_LOCAL_MAX_AGE_MS) {
+        catalogoCacheCargado = true;
+        renderizarCatalogo(catalogoGuardado.productos);
+      }
+
+      fetch(URL_API_APPS_SCRIPT, { cache: 'no-store' })
+        .then(res => {
+          if (!res.ok) {
+            throw new Error(`HTTP ${res.status}`);
+          }
+          return res.json();
+        })
+        .then(datos => {
+          const lista = Array.isArray(datos)
+            ? datos
+            : (Array.isArray(datos?.catalogo) ? datos.catalogo : null);
+          if (!lista) {
+            throw new Error(datos?.mensaje || 'El servidor devolvió un catálogo con formato inválido.');
+          }
+          guardarCatalogoLocal(lista);
+          if (!catalogoRenderizado || JSON.stringify(lista) !== JSON.stringify(catalogo)) {
+            renderizarCatalogo(lista);
+          }
+        })
         .catch(err => {
-          document.getElementById('cargando').innerHTML = '<div class="text-danger fw-bold">Error de sincronización con el servidor de inventario.</div>';
+          const cargando = document.getElementById('cargando');
+          const mensaje = catalogoCacheCargado
+            ? 'No se pudo actualizar el inventario. Se muestra el catálogo guardado recientemente.'
+            : 'Error de sincronización con el servidor de inventario.';
+          cargando.innerHTML = `<div class="text-danger fw-bold">${mensaje}</div>`;
+          cargando.classList.remove('d-none');
+          cargando.setAttribute('aria-busy', 'false');
+          cargando.setAttribute('role', 'alert');
           console.error("Fallo de red:", err);
         });
     }
 
+    function leerCatalogoGuardado() {
+      try {
+        const guardado = localStorage.getItem(CACHE_CATALOGO_LOCAL_KEY);
+        if (!guardado) return null;
+
+        const datos = JSON.parse(guardado);
+        if (!Array.isArray(datos.productos) || !Number.isFinite(datos.guardadoEn)) {
+          localStorage.removeItem(CACHE_CATALOGO_LOCAL_KEY);
+          return null;
+        }
+        return datos;
+      } catch (err) {
+        console.warn('No se pudo leer el catálogo guardado:', err);
+        return null;
+      }
+    }
+
+    function guardarCatalogoLocal(productos) {
+      try {
+        localStorage.setItem(CACHE_CATALOGO_LOCAL_KEY, JSON.stringify({
+          guardadoEn: Date.now(),
+          productos
+        }));
+      } catch (err) {
+        console.warn('No se pudo guardar el catálogo localmente:', err);
+      }
+    }
+
     function renderizarCatalogo(datos) {
-      catalogo = datos;
+      catalogo = Array.isArray(datos) ? datos : [];
+      catalogoRenderizado = true;
       document.getElementById('cargando').classList.add('d-none');
+      document.getElementById('cargando').setAttribute('aria-busy', 'false');
       filtrarCatalogo();
     }
 
+    // --- SISTEMA DE ALERTA PERSONALIZADO ---
     function mostrarAlertaPersonalizada(titulo, mensaje, tipo) {
       const icono = document.getElementById('alertaIcono');
       if (tipo === 'exito') {
-        icono.className = 'bi bi-check-circle-fill text-success';
+        icono.className = 'bi bi-check-circle-fill text-primary';
       } else if (tipo === 'error') {
         icono.className = 'bi bi-x-circle-fill text-danger';
       } else {
@@ -374,30 +1473,57 @@
     function manejarEntradaBuscador() {
       const q = document.getElementById('buscador').value;
       const btnLimpiar = document.getElementById('btnLimpiarBuscador');
+      if (q.trim() && posicionScrollAntesDeBuscar === null) {
+        posicionScrollAntesDeBuscar = window.scrollY;
+      }
       if (q.length > 0) {
         btnLimpiar.classList.remove('d-none');
       } else {
         btnLimpiar.classList.add('d-none');
       }
       filtrarCatalogo();
+      if (!q.trim() && posicionScrollAntesDeBuscar !== null) {
+        restaurarPosicionAntesDeBuscar();
+      }
+    }
+
+    function restaurarPosicionAntesDeBuscar() {
+      const posicion = posicionScrollAntesDeBuscar;
+      posicionScrollAntesDeBuscar = null;
+      if (posicion === null) return;
+      requestAnimationFrame(() => window.scrollTo(0, posicion));
     }
 
     function limpiarBuscadorManualmente() {
       document.getElementById('buscador').value = '';
       document.getElementById('btnLimpiarBuscador').classList.add('d-none');
       filtrarCatalogo();
+      restaurarPosicionAntesDeBuscar();
+      document.getElementById('buscador').focus();
     }
 
     function filtrarCatalogo() {
       const q = document.getElementById('buscador').value.toLowerCase().trim();
       const contenedor = document.getElementById('contenedorProductos');
       contenedor.innerHTML = '';
+      const tarjetas = document.createDocumentFragment();
 
-      const filtrados = catalogo.filter(p => 
-        p.nombre.toLowerCase().includes(q) || 
-        p.codigo.toLowerCase().includes(q) ||
-        p.categoria.toLowerCase().includes(q)
+      const coincidenciasCodigoExacto = q
+        ? catalogo.filter(p => String(p.codigo || '').trim().toLowerCase() === q)
+        : [];
+      const marcaCoincidente = q && catalogo.some(p =>
+        String(p.categoria || '').trim().toLowerCase() === q
       );
+      const filtrados = coincidenciasCodigoExacto.length
+        ? coincidenciasCodigoExacto
+        : catalogo.filter(p => {
+          const marca = String(p.categoria || '').trim().toLowerCase();
+          if (marcaCoincidente) return marca === q;
+
+          return String(p.nombre || '').toLowerCase().includes(q) ||
+            String(p.codigo || '').toLowerCase().includes(q) ||
+            marca.includes(q);
+        });
 
       if (filtrados.length === 0) {
         contenedor.innerHTML = '<div class="col-12 text-center text-muted py-5">No se encontraron productos coincidentes.</div>';
@@ -418,14 +1544,14 @@
         col.innerHTML = `
           <div class="card card-product p-3 mb-1 ${clasesExtras}" id="card-${prod.codigo}">
             <div class="d-flex justify-content-between align-items-start mb-2">
-              <span class="badge badge-cat">${prod.categoria}</span>
+              <span class="badge badge-cat" aria-label="Marca: ${prod.categoria}">${prod.categoria}</span>
               <span class="text-muted small fw-semibold">${prod.codigo}</span>
             </div>
             
             <div class="fw-bold fs-6 mb-3 text-dark lh-sm">${prod.nombre}</div>
             
             <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
-              <span class="price-tag">$${prod.precio.toFixed(2).replace('.', ',')}</span>
+              <span class="price-tag">$${prod.precio.toFixed(2)} <span class="visually-hidden">por unidad</span></span>
               
               <div id="ctrl-${prod.codigo}">
                 ${renderBotonesTarjeta(prod.codigo, cant)}
@@ -433,30 +1559,31 @@
             </div>
           </div>
         `;
-        contenedor.appendChild(col);
+        tarjetas.appendChild(col);
       });
+      contenedor.appendChild(tarjetas);
     }
 
-    function renderBotonesTarjeta(codigo, cant) {
+    function renderBotonesTarjeta(codigo, cant, animarEditor = false) {
       const prod = catalogo.find(p => p.codigo === codigo);
       
       if (prod && !prod.disponible) {
         return `
           <button class="btn btn-light btn-sm rounded-pill px-3 py-1 fw-bold text-muted border shadow-none d-flex align-items-center gap-1" 
-                  style="height: 34px; cursor: not-allowed;" disabled title="Producto Agotado">
-            <i class="bi bi-slash-circle"></i>
+                  style="height: 34px; cursor: not-allowed;" disabled title="Producto agotado" aria-label="${prod.nombre}, producto agotado">
+            <i class="bi bi-slash-circle" aria-hidden="true"></i>
             <span>No disponible</span>
           </button>
         `;
       }
 
-      const estaEditando = (itemEditando === codigo);
+      const estaEditando = itemEditando === codigo;
 
       if (cant === 0 && !estaEditando) {
         return `
           <button class="btn btn-primary btn-sm rounded-pill px-4 py-1 fw-bold shadow-sm d-flex align-items-center gap-1" 
-                  style="height: 34px;" onclick="iniciarAgregar('${codigo}')">
-            <i class="bi bi-plus-lg"></i>
+                  style="height: 34px;" onclick="iniciarAgregar('${codigo}')" aria-label="Agregar ${prod.nombre} al pedido">
+            <i class="bi bi-plus-lg" aria-hidden="true"></i>
             <span>Agregar</span>
           </button>
         `;
@@ -465,103 +1592,100 @@
       if (estaEditando) {
         const displayCant = cant > 0 ? cant : 1;
         return `
-          <div class="d-flex align-items-center gap-2">
-            ${cant > 0 ? `
-              <button class="btn btn-outline-danger btn-sm rounded-circle shadow-sm" 
-                      style="width: 34px; height: 34px; padding: 0; display: flex; align-items: center; justify-content: center;"
-                      onclick="eliminarProducto('${codigo}')" title="Eliminar ítem">
-                <i class="bi bi-trash3"></i>
-              </button>
-            ` : ''}
-            <div class="qty-control-box">
-              <button class="qty-btn" type="button" onclick="modificarCantidad('${codigo}', -1)">-</button>
-              <input type="number" id="input-qty-${codigo}" class="qty-input" value="${displayCant}" min="1" onchange="establecerCantidadManual('${codigo}', this.value)">
-              <button class="qty-btn" type="button" onclick="modificarCantidad('${codigo}', 1)">+</button>
-            </div>
-            <button class="btn btn-success btn-sm rounded-pill px-3 fw-bold shadow-sm d-flex align-items-center gap-1" 
-                    style="height: 34px;" onclick="finalizarEdicionItem('${codigo}')" title="Confirmar">
-              <i class="bi bi-check-lg"></i> Listo
+          <div class="qty-editor-actions">
+            <button class="qty-editor-delete" type="button" onclick="eliminarProducto('${codigo}')"
+                    title="Eliminar producto" aria-label="Eliminar ${prod.nombre} del pedido">
+              <i class="bi bi-trash3" aria-hidden="true"></i>
             </button>
+            <div class="qty-editor-pill${animarEditor ? ' is-expanding' : ''}" role="group" aria-label="Cantidad de ${prod.nombre}">
+                <button class="qty-btn" type="button" onclick="modificarCantidad('${codigo}', -1)" aria-label="Reducir cantidad de ${prod.nombre}">−</button>
+                <input type="number" id="input-qty-${codigo}" class="qty-input" value="${displayCant}" min="1" onchange="establecerCantidadManual('${codigo}', this.value)" aria-label="Cantidad de ${prod.nombre}">
+                <button class="qty-btn" type="button" onclick="modificarCantidad('${codigo}', 1)" aria-label="Aumentar cantidad de ${prod.nombre}">+</button>
+              <button class="qty-editor-confirm" type="button"
+                      onclick="finalizarEdicionItem('${codigo}')" title="Confirmar cantidad" aria-label="Confirmar cantidad de ${prod.nombre}">
+                <i class="bi bi-check-lg" aria-hidden="true"></i>
+              </button>
+            </div>
           </div>
         `;
       }
 
       return `
-        <div class="d-flex align-items-center gap-2">
-          <button class="btn btn-outline-danger btn-sm rounded-circle shadow-sm" 
-                  style="width: 34px; height: 34px; padding: 0; display: flex; align-items: center; justify-content: center;"
-                  onclick="eliminarProducto('${codigo}')">
-            <i class="bi bi-trash3"></i>
-          </button>
-          <button class="btn btn-primary btn-sm rounded-pill px-3 fw-bold shadow-sm d-flex align-items-center" 
-                  style="height: 34px;" onclick="abrirEdicionItem('${codigo}')">
-            <i class="bi bi-bag-check-fill me-2"></i>${cant} agregados
-          </button>
-        </div>
+        <button class="btn btn-primary btn-sm rounded-pill px-3 py-1 fw-bold shadow-sm d-flex align-items-center gap-1"
+                style="height: 34px;" onclick="abrirEdicionItem('${codigo}')"
+                aria-label="Editar cantidad de ${prod.nombre}, ${cant} agregados">
+          <i class="bi bi-bag-check-fill" aria-hidden="true"></i>
+          <span>${cant} agregados</span>
+        </button>
       `;
     }
 
     function iniciarAgregar(codigo) {
-      itemEditando = codigo;
       const prod = catalogo.find(p => p.codigo === codigo);
-      if (prod && !carrito[codigo]) {
+      itemEditando = codigo;
+      if (prod && prod.disponible && !carrito[codigo]) {
         carrito[codigo] = { ...prod, cantidad: 1 };
       }
-      actualizarItemUI(codigo);
+      actualizarItemUI(codigo, true);
       actualizarBarraTotales();
     }
 
     function abrirEdicionItem(codigo) {
       itemEditando = codigo;
-      actualizarItemUI(codigo);
+      actualizarItemUI(codigo, true);
     }
 
     function finalizarEdicionItem(codigo) {
       const inputEl = document.getElementById(`input-qty-${codigo}`);
-      let cant = inputEl ? parseInt(inputEl.value, 10) : (carrito[codigo] ? carrito[codigo].cantidad : 1);
+      const cantidad = inputEl
+        ? Number.parseInt(inputEl.value, 10)
+        : (carrito[codigo] ? carrito[codigo].cantidad : 1);
       const prod = catalogo.find(p => p.codigo === codigo);
-      if (isNaN(cant) || cant <= 0) {
+
+      if (!Number.isFinite(cantidad) || cantidad <= 0) {
         delete carrito[codigo];
-      } else {
-        if (prod) {
-          carrito[codigo] = { ...prod, cantidad: cant };
-          mostrarAvisoToast(`${cant}x ${prod.nombre}`);
-        }
+      } else if (prod) {
+        carrito[codigo] = { ...prod, cantidad };
+        mostrarAvisoToast(`${cantidad}x ${prod.nombre}`);
       }
+
       itemEditando = null;
-      document.getElementById('buscador').value = '';
-      document.getElementById('btnLimpiarBuscador').classList.add('d-none');
-      filtrarCatalogo();
+      if (getById('buscador').value.trim()) {
+        getById('buscador').value = '';
+        getById('btnLimpiarBuscador').classList.add('d-none');
+        filtrarCatalogo();
+        restaurarPosicionAntesDeBuscar();
+      } else {
+        actualizarItemUI(codigo);
+      }
       actualizarBarraTotales();
     }
 
     function modificarCantidad(codigo, delta) {
       const inputEl = document.getElementById(`input-qty-${codigo}`);
-      let cantActual = inputEl ? parseInt(inputEl.value, 10) : (carrito[codigo] ? carrito[codigo].cantidad : 1);
-      if (isNaN(cantActual)) cantActual = 1;
-      let nuevaCant = cantActual + delta;
+      let cantidadActual = inputEl
+        ? Number.parseInt(inputEl.value, 10)
+        : (carrito[codigo] ? carrito[codigo].cantidad : 1);
+      if (!Number.isFinite(cantidadActual)) cantidadActual = 1;
+      const nuevaCant = cantidadActual + delta;
       if (nuevaCant <= 0) {
         eliminarProducto(codigo);
         return;
       }
       const prod = catalogo.find(p => p.codigo === codigo);
-      if (prod) {
-        carrito[codigo] = { ...prod, cantidad: nuevaCant };
-      }
+      if (prod) carrito[codigo] = { ...prod, cantidad: nuevaCant };
       actualizarItemUI(codigo);
       actualizarBarraTotales();
     }
 
     function establecerCantidadManual(codigo, valor) {
-      const cant = parseInt(valor, 10);
-      if (isNaN(cant) || cant <= 0) {
+      const cantidad = Number.parseInt(valor, 10);
+      if (!Number.isFinite(cantidad) || cantidad <= 0) {
         eliminarProducto(codigo);
         return;
       }
       const prod = catalogo.find(p => p.codigo === codigo);
-      if (prod) {
-        carrito[codigo] = { ...prod, cantidad: cant };
-      }
+      if (prod) carrito[codigo] = { ...prod, cantidad };
       actualizarItemUI(codigo);
       actualizarBarraTotales();
     }
@@ -573,11 +1697,11 @@
       actualizarBarraTotales();
     }
 
-    function actualizarItemUI(codigo) {
+    function actualizarItemUI(codigo, animarEditor = false) {
       const cant = carrito[codigo] ? carrito[codigo].cantidad : 0;
       const ctrl = document.getElementById(`ctrl-${codigo}`);
       const card = document.getElementById(`card-${codigo}`);
-      if (ctrl) { ctrl.innerHTML = renderBotonesTarjeta(codigo, cant); }
+      if (ctrl) { ctrl.innerHTML = renderBotonesTarjeta(codigo, cant, animarEditor); }
       if (card) {
         if (cant > 0) { card.classList.add('in-cart'); } 
         else { card.classList.remove('in-cart'); }
@@ -586,14 +1710,22 @@
 
     function actualizarBarraTotales() {
       const items = Object.values(carrito);
-      let total = 0, count = 0;
+      let total = 0;
+      let count = 0;
       items.forEach(i => {
         total += i.precio * i.cantidad;
         count += i.cantidad;
       });
-      document.getElementById('totalBarra').innerText = '$' + total.toFixed(2).replace('.', ',');
-      document.getElementById('itemsBarra').innerText = `${count} ${count === 1 ? 'ítem' : 'ítems'}`;
-      document.getElementById('btnAbrirModal').disabled = items.length === 0;
+      const barraCheckout = getById('barraCheckout');
+      const carritoTieneItems = items.length > 0;
+      barraCheckout.classList.toggle('d-none', !carritoTieneItems);
+      barraCheckout.setAttribute('aria-hidden', String(!carritoTieneItems));
+      document.getElementById('totalBarra').innerText = '$' + total.toFixed(2);
+      document.getElementById('itemsBarra').innerText = `${count} ${count === 1 ? 'producto' : 'productos'}`;
+      document.getElementById('btnAbrirModal').disabled = !carritoTieneItems;
+      if (getById('modalFinalizar').classList.contains('show')) {
+        renderizarResumenPedido();
+      }
     }
 
     function mostrarAvisoToast(mensaje) {
@@ -606,21 +1738,116 @@
     function abrirModalFinalizar() {
       const items = Object.values(carrito);
       if (items.length === 0) return;
-      let total = 0, htmlLista = '';
-      items.forEach(i => {
-        const sub = i.precio * i.cantidad;
-        total += sub;
-        htmlLista += `
-          <div class="d-flex justify-content-between align-items-center py-2 border-bottom border-light">
-            <span class="text-truncate me-2" style="font-size: 0.9rem;"><strong>${i.cantidad}x</strong> ${i.nombre}</span>
-            <span class="fw-bold text-dark">$${sub.toFixed(2).replace('.', ',')}</span>
-          </div>
-        `;
-      });
-      document.getElementById('modalTotal').innerText = '$' + total.toFixed(2).replace('.', ',');
-      document.getElementById('modalListaItems').innerHTML = htmlLista;
+      renderizarResumenPedido();
       revisarTodosLosCampos();
       modalInstance.show();
+    }
+
+    function renderizarResumenPedido() {
+      const contenedor = getById('modalListaItems');
+      const filas = document.createDocumentFragment();
+      const items = Object.values(carrito);
+      let total = 0;
+
+      if (!items.length) {
+        const vacio = document.createElement('p');
+        vacio.className = 'text-center text-muted py-3 mb-0';
+        vacio.textContent = 'No hay productos en el pedido.';
+        contenedor.replaceChildren(vacio);
+        getById('modalTotal').textContent = '$0.00';
+        revisarBotonEnvio();
+        return;
+      }
+
+      items.forEach(item => {
+        const subtotal = item.precio * item.cantidad;
+        total += subtotal;
+
+        const fila = document.createElement('div');
+        fila.className = 'order-summary-row';
+        fila.setAttribute('role', 'listitem');
+
+        const detalles = document.createElement('div');
+        detalles.className = 'order-summary-details';
+
+        const nombre = document.createElement('div');
+        nombre.className = 'order-summary-name';
+        nombre.textContent = item.nombre;
+
+        const metadatos = document.createElement('div');
+        metadatos.className = 'order-summary-meta';
+        metadatos.textContent = `${item.categoria || 'General'}, código ${item.codigo || 'N/A'}, $${Number(item.precio).toFixed(2)} c/u`;
+
+        const precio = document.createElement('span');
+        precio.className = 'order-summary-subtotal';
+        precio.textContent = `$${subtotal.toFixed(2)}`;
+
+        const acciones = document.createElement('div');
+        acciones.className = 'order-summary-actions';
+
+        const cantidadControl = document.createElement('div');
+        cantidadControl.className = 'order-qty-control';
+        cantidadControl.setAttribute('role', 'group');
+        cantidadControl.setAttribute('aria-label', `Cantidad de ${item.nombre}`);
+
+        const btnMenos = document.createElement('button');
+        btnMenos.type = 'button';
+        btnMenos.className = 'order-qty-button';
+        btnMenos.textContent = '−';
+        btnMenos.disabled = item.cantidad <= 1;
+        btnMenos.setAttribute('aria-label', `Reducir cantidad de ${item.nombre}`);
+        btnMenos.addEventListener('click', () => ajustarCantidadEnResumen(item.codigo, -1));
+
+        const cantidad = document.createElement('span');
+        cantidad.className = 'order-qty-value';
+        cantidad.textContent = item.cantidad;
+        cantidad.setAttribute('aria-label', `Cantidad: ${item.cantidad}`);
+
+        const btnMas = document.createElement('button');
+        btnMas.type = 'button';
+        btnMas.className = 'order-qty-button';
+        btnMas.textContent = '+';
+        btnMas.setAttribute('aria-label', `Aumentar cantidad de ${item.nombre}`);
+        btnMas.addEventListener('click', () => ajustarCantidadEnResumen(item.codigo, 1));
+
+        const btnEliminar = document.createElement('button');
+        btnEliminar.type = 'button';
+        btnEliminar.className = 'btn btn-delete-icon btn-outline-danger btn-sm rounded-circle';
+        btnEliminar.setAttribute('aria-label', `Eliminar ${item.nombre} del pedido`);
+        const iconoEliminar = document.createElement('i');
+        iconoEliminar.className = 'bi bi-trash3';
+        iconoEliminar.setAttribute('aria-hidden', 'true');
+        btnEliminar.appendChild(iconoEliminar);
+        btnEliminar.addEventListener('click', () => eliminarDelResumen(item.codigo));
+
+        cantidadControl.append(btnMenos, cantidad, btnMas);
+        acciones.append(cantidadControl, btnEliminar);
+        detalles.append(nombre, metadatos);
+        fila.append(detalles, precio, acciones);
+        filas.appendChild(fila);
+      });
+
+      contenedor.replaceChildren(filas);
+      getById('modalTotal').textContent = `$${total.toFixed(2)}`;
+      revisarBotonEnvio();
+    }
+
+    function ajustarCantidadEnResumen(codigo, cambio) {
+      const item = carrito[codigo];
+      if (!item) return;
+      const cantidadSiguiente = item.cantidad + cambio;
+      if (cantidadSiguiente < 1) return;
+
+      item.cantidad = cantidadSiguiente;
+      actualizarItemUI(codigo);
+      actualizarBarraTotales();
+    }
+
+    function eliminarDelResumen(codigo) {
+      delete carrito[codigo];
+      if (itemEditando === codigo) itemEditando = null;
+      actualizarItemUI(codigo);
+      actualizarBarraTotales();
     }
 
     function validarCampoVendedor() {
@@ -628,6 +1855,7 @@
       const esValido = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{6,40}$/.test(el.value.trim());
       el.classList.toggle('is-valid', esValido && el.value.trim() !== '');
       el.classList.toggle('is-invalid', !esValido || el.value.trim() === '');
+      el.setAttribute('aria-invalid', String(!esValido || el.value.trim() === ''));
       revisarBotonEnvio(); return esValido;
     }
 
@@ -636,6 +1864,7 @@
       const esValido = /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s.,&/\-]{6,60}$/.test(el.value.trim());
       el.classList.toggle('is-valid', esValido && el.value.trim() !== '');
       el.classList.toggle('is-invalid', !esValido || el.value.trim() === '');
+      el.setAttribute('aria-invalid', String(!esValido || el.value.trim() === ''));
       revisarBotonEnvio(); return esValido;
     }
 
@@ -645,11 +1874,13 @@
       el.value = val;
       if (val === '') {
         el.classList.remove('is-invalid', 'is-valid');
+        el.setAttribute('aria-invalid', 'false');
         revisarBotonEnvio(); return true;
       }
       const esValido = /^[VJ]-\d{6,9}$/.test(val);
       el.classList.toggle('is-valid', esValido);
       el.classList.toggle('is-invalid', !esValido);
+      el.setAttribute('aria-invalid', String(!esValido));
       revisarBotonEnvio(); return esValido;
     }
 
@@ -661,12 +1892,18 @@
       const v1 = document.getElementById('vendedorNombre').classList.contains('is-valid');
       const v2 = document.getElementById('clienteNombre').classList.contains('is-valid');
       const v3 = !document.getElementById('clienteRif').classList.contains('is-invalid');
-      document.getElementById('btnEnviar').disabled = !(v1 && v2 && v3);
+      document.getElementById('btnEnviar').disabled = !(v1 && v2 && v3 && Object.keys(carrito).length > 0);
     }
 
+    // Protocolo de transmisión de órdenes a la API de Google Apps Script
     function enviarPedido(e) {
       e.preventDefault();
-      if (!(validarCampoVendedor() && validarCampoCliente() && validarCampoRif())) {
+      const vendedorValido = validarCampoVendedor();
+      const clienteValido = validarCampoCliente();
+      const rifValido = validarCampoRif();
+      if (!(vendedorValido && clienteValido && rifValido)) {
+        const primerCampoInvalido = document.querySelector('#formularioPedido [aria-invalid="true"]');
+        if (primerCampoInvalido) primerCampoInvalido.focus();
         mostrarAlertaPersonalizada('Campos incompletos', 'Por favor verifica los campos obligatorios antes de procesar la orden.', 'advertencia');
         return;
       }
@@ -676,7 +1913,7 @@
       btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Procesando...';
 
       const items = Object.values(carrito);
-      const resumenTexto = items.map(i => `${i.cantidad}x [${i.codigo}] ${i.nombre} ($${(i.precio * i.cantidad).toFixed(2).replace('.', ',')})`).join(" | ");
+      const resumenTexto = items.map(i => `${i.cantidad}x [${i.codigo}] ${i.nombre} ($${(i.precio * i.cantidad).toFixed(2)})`).join("\n");
       const total = items.reduce((acc, i) => acc + (i.precio * i.cantidad), 0);
       const itemsDetalle = items.map(i => ({codigo: i.codigo, nombre: i.nombre, cantidad: i.cantidad, precio: i.precio}));
       const rifVal = document.getElementById('clienteRif').value.trim().toUpperCase();
@@ -687,7 +1924,7 @@
         rif: rifVal !== '' ? rifVal : 'N/A',
         resumenTexto: resumenTexto,
         itemsDetalle: itemsDetalle,
-        totalDolares: total.toFixed(2) 
+        totalDolares: total.toFixed(2)
       };
 
       fetch(URL_API_APPS_SCRIPT, {
@@ -700,39 +1937,27 @@
         if (res.exito) {
           modalInstance.hide();
           mostrarAlertaPersonalizada('¡Orden completada!', 'Tu pedido ha sido registrado con éxito. Se ha enviado el comprobante a LIMZA GROUP.', 'exito');
-          carrito = {}; itemEditando = null;
+          carrito = {};
+          itemEditando = null;
           document.getElementById('formularioPedido').reset();
-          document.querySelectorAll('.is-valid, .is-invalid').forEach(el => el.classList.remove('is-valid', 'is-invalid'));
+          document.querySelectorAll('.is-valid, .is-invalid').forEach(el => {
+            el.classList.remove('is-valid', 'is-invalid');
+            el.setAttribute('aria-invalid', 'false');
+          });
           actualizarBarraTotales(); limpiarBuscadorManualmente();
         } else { 
           mostrarAlertaPersonalizada('Error de sistema', res.mensaje, 'error'); 
         }
         btn.disabled = false;
-        btn.innerHTML = '<i class="bi bi-send-check me-2"></i>Finalizar Pedido';
+        btn.innerHTML = '<i class="bi bi-send-check me-2"></i>Enviar Pedido';
       })
       .catch(err => {
         mostrarAlertaPersonalizada('Error de red', 'No se pudo comunicar con el servidor: ' + err.toString(), 'error');
         btn.disabled = false;
-        btn.innerHTML = '<i class="bi bi-send-check me-2"></i>Finalizar Pedido';
+        btn.innerHTML = '<i class="bi bi-send-check me-2"></i>Enviar Pedido';
       });
     }
 
-    document.addEventListener("DOMContentLoaded", function() {
-      let lastScrollTop = 0;
-      const searchWrapper = document.getElementById('searchWrapper');
-
-      if(searchWrapper) {
-        window.addEventListener('scroll', function() {
-          let currentScroll = window.pageYOffset || document.documentElement.scrollTop;
-          if (currentScroll > lastScrollTop && currentScroll > 10) {
-            searchWrapper.classList.add('hidden');
-          } else {
-            searchWrapper.classList.remove('hidden');
-          }
-          lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
-        }, false);
-      }
-    });
   </script>
 </body>
 </html>
