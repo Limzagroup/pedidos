@@ -1284,7 +1284,6 @@
 
     document.addEventListener('DOMContentLoaded', initApp);
 
-    // Protocolo de conexión externa para traer los productos
     function cargarCatalogoRemoto() {
       const catalogoGuardado = leerCatalogoGuardado();
       if (catalogoGuardado && Date.now() - catalogoGuardado.guardadoEn <= CACHE_CATALOGO_LOCAL_MAX_AGE_MS) {
@@ -1833,10 +1832,19 @@
 
       fetch(URL_API_APPS_SCRIPT, {
         method: "POST",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        mode: "cors",
+        redirect: "follow",
+        headers: { 
+          "Content-Type": "text/plain;charset=utf-8" 
+        },
         body: JSON.stringify(payload)
       })
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) {
+          throw new Error("Respuesta de red HTTP " + res.status);
+        }
+        return res.json();
+      })
       .then(res => {
         if (res.exito) {
           modalInstance.hide();
@@ -1848,7 +1856,8 @@
             el.classList.remove('is-valid', 'is-invalid');
             el.setAttribute('aria-invalid', 'false');
           });
-          actualizarBarraTotales(); limpiarBuscadorManualmente();
+          actualizarBarraTotales(); 
+          limpiarBuscadorManualmente();
         } else { 
           mostrarAlertaPersonalizada('Error de sistema', res.mensaje, 'error'); 
         }
