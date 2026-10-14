@@ -1617,9 +1617,10 @@
         tarjetas.appendChild(col);
       });
       contenedor.appendChild(tarjetas);
-      contenedor.querySelectorAll('.qty-increase-button').forEach(button => {
+      contenedor.querySelectorAll('.qty-increase-button, .qty-decrease-button').forEach(button => {
         const codigo = button.closest('[id^="ctrl-"]').id.slice(5);
-        registrarPulsacionProlongada(button, () => modificarCantidad(codigo, 1));
+        const delta = button.classList.contains('qty-increase-button') ? 1 : -1;
+        registrarPulsacionProlongada(button, () => modificarCantidad(codigo, delta));
       });
     }
 
@@ -1657,7 +1658,7 @@
               <i class="bi bi-trash3" aria-hidden="true"></i>
             </button>
             <div class="qty-editor-pill" role="group" aria-label="Cantidad de ${prod.nombre}">
-                <button class="qty-btn" type="button" onclick="modificarCantidad('${codigo}', -1)" aria-label="Reducir cantidad de ${prod.nombre}">−</button>
+                <button class="qty-btn qty-decrease-button" type="button" aria-label="Reducir cantidad de ${prod.nombre}">−</button>
                 <input type="number" id="input-qty-${codigo}" class="qty-input" value="${displayCant}" min="1" onchange="establecerCantidadManual('${codigo}', this.value)" aria-label="Cantidad de ${prod.nombre}">
                 <button class="qty-btn qty-increase-button" type="button" aria-label="Aumentar cantidad de ${prod.nombre}">+</button>
               <button class="qty-editor-confirm" type="button"
@@ -1762,10 +1763,10 @@
       const card = document.getElementById(`card-${codigo}`);
       if (ctrl) {
         ctrl.innerHTML = renderBotonesTarjeta(codigo, cant);
-        registrarPulsacionProlongada(
-          ctrl.querySelector('.qty-increase-button'),
-          () => modificarCantidad(codigo, 1)
-        );
+        ctrl.querySelectorAll('.qty-increase-button, .qty-decrease-button').forEach(button => {
+          const delta = button.classList.contains('qty-increase-button') ? 1 : -1;
+          registrarPulsacionProlongada(button, () => modificarCantidad(codigo, delta));
+        });
       }
       if (card) {
         if (cant > 0) { card.classList.add('in-cart'); } 
@@ -1857,11 +1858,11 @@
 
         const btnMenos = document.createElement('button');
         btnMenos.type = 'button';
-        btnMenos.className = 'order-qty-button';
+        btnMenos.className = 'order-qty-button order-qty-decrease-button';
         btnMenos.textContent = '−';
+        btnMenos.dataset.codigo = item.codigo;
         btnMenos.disabled = item.cantidad <= 1;
         btnMenos.setAttribute('aria-label', `Reducir cantidad de ${item.nombre}`);
-        btnMenos.addEventListener('click', () => ajustarCantidadEnResumen(item.codigo, -1));
 
         const cantidad = document.createElement('span');
         cantidad.className = 'order-qty-value';
@@ -1872,6 +1873,7 @@
         btnMas.type = 'button';
         btnMas.className = 'order-qty-button order-qty-increase-button';
         btnMas.textContent = '+';
+        btnMas.dataset.codigo = item.codigo;
         btnMas.setAttribute('aria-label', `Aumentar cantidad de ${item.nombre}`);
 
         const btnEliminar = document.createElement('button');
@@ -1893,11 +1895,12 @@
 
       contenedor.replaceChildren(filas);
       getById('modalTotal').textContent = `$${total.toFixed(2)}`;
-      contenedor.querySelectorAll('.order-qty-increase-button').forEach((button, index) => {
-        const item = items[index];
+      contenedor.querySelectorAll('.order-qty-increase-button, .order-qty-decrease-button').forEach(button => {
+        const codigo = button.dataset.codigo;
+        const delta = button.classList.contains('order-qty-increase-button') ? 1 : -1;
         registrarPulsacionProlongada(
           button,
-          () => ajustarCantidadEnResumen(item.codigo, 1)
+          () => ajustarCantidadEnResumen(codigo, delta)
         );
       });
       revisarBotonEnvio();
