@@ -1258,6 +1258,14 @@
             <button type="submit" id="btnEnviar" class="btn btn-primary w-100 py-2 mt-2 fw-bold rounded-3 shadow-sm" disabled>
               <i class="bi bi-send-check me-2"></i>Enviar Pedido
             </button>
+            <div id="estadoEnvioPedido" class="d-none text-center mt-3" role="status" aria-live="polite">
+              <div class="spinner-border spinner-border-sm text-primary mb-2" aria-hidden="true"></div>
+              <div class="fw-semibold">Enviando pedido...</div>
+              <div class="small text-muted">Registrando la orden y preparando el comprobante. Puede tardar unos segundos.</div>
+              <div class="progress mt-2" style="height: 4px;" aria-hidden="true">
+                <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary w-100"></div>
+              </div>
+            </div>
           </form>
 
         </div>
@@ -1982,8 +1990,11 @@
       }
       
       const btn = document.getElementById('btnEnviar');
+      const estadoEnvio = getById('estadoEnvioPedido');
       btn.disabled = true;
-      btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Procesando...';
+      btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>Enviando pedido...';
+      estadoEnvio.classList.remove('d-none');
+      document.getElementById('formularioPedido').setAttribute('aria-busy', 'true');
 
       const items = Object.values(carrito);
       const resumenTexto = items.map(i => `${i.cantidad}x [${i.codigo}] ${i.nombre} ($${(i.precio * i.cantidad).toFixed(2)})`).join("\n");
@@ -2002,6 +2013,8 @@
 
       function restaurarBotonEnvio() {
         btn.innerHTML = '<i class="bi bi-send-check me-2"></i>Enviar Pedido';
+        estadoEnvio.classList.add('d-none');
+        document.getElementById('formularioPedido').setAttribute('aria-busy', 'false');
         revisarBotonEnvio();
       }
 
