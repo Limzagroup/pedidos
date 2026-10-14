@@ -1298,7 +1298,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    const URL_API_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbxaEnZUHjn4SssY_OlxQZHeGRFQ-4qIBsopONSWWVSiCFfchRAFTxz6LJj6PRMkFvA9/exec";
+    const URL_API_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbwVvAAODNFh4408zZRaxd89p-rWIjXvBWc5_wH3_ofX0fz4NJUqpHrvFLaIWoLkkoAv/exec";
     const CACHE_CATALOGO_LOCAL_KEY = 'limza-catalogo-v1';
     const CACHE_CATALOGO_LOCAL_MAX_AGE_MS = 60 * 1000;
 
@@ -1379,7 +1379,6 @@
 
     document.addEventListener('DOMContentLoaded', initApp);
 
-    // Protocolo de conexión externa para traer los productos
     function cargarCatalogoRemoto() {
       const catalogoGuardado = leerCatalogoGuardado();
       if (catalogoGuardado && Date.now() - catalogoGuardado.guardadoEn <= CACHE_CATALOGO_LOCAL_MAX_AGE_MS) {
@@ -1387,14 +1386,25 @@
         renderizarCatalogo(catalogoGuardado.productos);
       }
 
-      fetch(URL_API_APPS_SCRIPT, { cache: 'no-store' })
+      fetch(`${URL_API_APPS_SCRIPT}?action=catalogo`, { cache: 'no-store' })
         .then(res => {
           if (!res.ok) {
             throw new Error(`HTTP ${res.status}`);
           }
-          return res.json();
+          return res.text();
         })
-        .then(datos => {
+        .then(texto => {
+          if (/<(html|!doctype)|<body|<script/i.test(texto)) {
+            throw new Error('La URL del Web App devolvió una página HTML. Verifica la URL, el despliegue y que esté disponible para los usuarios que deben acceder.');
+          }
+
+          let datos;
+          try {
+            datos = JSON.parse(texto);
+          } catch (error) {
+            throw new Error('La respuesta del Web App no es JSON válido. Publica la versión actualizada de Apps Script.');
+          }
+
           const lista = Array.isArray(datos)
             ? datos
             : (Array.isArray(datos?.catalogo) ? datos.catalogo : null);
@@ -1410,7 +1420,7 @@
           const cargando = document.getElementById('cargando');
           const mensaje = catalogoCacheCargado
             ? 'No se pudo actualizar el inventario. Se muestra el catálogo guardado recientemente.'
-            : 'Error de sincronización con el servidor de inventario.';
+            : (err.message || 'Error de sincronización con el servidor de inventario.');
           cargando.innerHTML = `<div class="text-danger fw-bold">${mensaje}</div>`;
           cargando.classList.remove('d-none');
           cargando.setAttribute('aria-busy', 'false');
@@ -1445,6 +1455,14 @@
       } catch (err) {
         console.warn('No se pudo guardar el catálogo localmente:', err);
       }
+    }
+
+    function mostrarErrorCargaCatalogo(mensaje) {
+      const cargando = getById('cargando');
+      cargando.innerHTML = `<div class="text-danger fw-bold">${mensaje}</div>`;
+      cargando.classList.remove('d-none');
+      cargando.setAttribute('aria-busy', 'false');
+      cargando.setAttribute('role', 'alert');
     }
 
     function renderizarCatalogo(datos) {
@@ -1895,7 +1913,6 @@
       document.getElementById('btnEnviar').disabled = !(v1 && v2 && v3 && Object.keys(carrito).length > 0);
     }
 
-    // Protocolo de transmisión de órdenes a la API de Google Apps Script
     function enviarPedido(e) {
       e.preventDefault();
       const vendedorValido = validarCampoVendedor();
@@ -1927,6 +1944,11 @@
         totalDolares: total.toFixed(2)
       };
 
+      function restaurarBotonEnvio() {
+        btn.innerHTML = '<i class="bi bi-send-check me-2"></i>Enviar Pedido';
+        revisarBotonEnvio();
+      }
+
       fetch(URL_API_APPS_SCRIPT, {
         method: "POST",
         headers: {
@@ -1939,25 +1961,25 @@
         const textoRespuesta = await res.text();
         const pareceHtml = /<(html|!doctype)|<body|<script/i.test(textoRespuesta);
         if (pareceHtml) {
-          throw new Error('La URL del Web App de Google no está disponible o no está publicada como “Anyone” en Apps Script. Revisa el deploy y la URL de conexión.');
+          throw new Error('La URL del Web App de Google no está disponible o no está publicada como “Anyone”. Revisa el despliegue y la URL de conexión.');
         }
 
         if (!textoRespuesta) {
           throw new Error('El servidor no devolvió ninguna respuesta. Verifica que el Web App esté activo.');
         }
 
-        let resJson;
+        let respuesta;
         try {
-          resJson = JSON.parse(textoRespuesta);
+          respuesta = JSON.parse(textoRespuesta);
         } catch (error) {
           throw new Error('La respuesta del servidor no es JSON válido. Revisa la configuración del Web App de Apps Script.');
         }
 
         if (!res.ok) {
-          throw new Error(resJson?.mensaje || `El servidor respondió con estado ${res.status}.`);
+          throw new Error(respuesta?.mensaje || `El servidor respondió con estado ${res.status}.`);
         }
 
-        if (resJson.exito) {
+        if (respuesta.exito) {
           modalInstance.hide();
           mostrarAlertaPersonalizada('¡Orden completada!', 'Tu pedido ha sido registrado con éxito. Se ha enviado el comprobante a LIMZA GROUP.', 'exito');
           carrito = {};
@@ -1969,15 +1991,24 @@
           });
           actualizarBarraTotales(); limpiarBuscadorManualmente();
         } else {
-          mostrarAlertaPersonalizada('Error de sistema', resJson?.mensaje || 'No se pudo completar la orden.', 'error');
+          mostrarAlertaPersonalizada('Error de sistema', respuesta?.mensaje || 'No se pudo completar la orden.', 'error');
         }
       })
       .catch(err => {
+        const respuestaBloqueadaPorElNavegador = err instanceof TypeError && err.message === 'Failed to fetch';
+        if (respuestaBloqueadaPorElNavegador) {
+          mostrarAlertaPersonalizada(
+            'No se pudo confirmar el resultado',
+            'Google pudo haber recibido y procesado el pedido, pero el navegador no pudo leer la respuesta. Revisa la hoja de pedidos y el correo antes de volver a enviarlo para evitar duplicados.',
+            'advertencia'
+          );
+          return;
+        }
+
         mostrarAlertaPersonalizada('Error de conexión', err.message || 'No se pudo comunicar con el servidor.', 'error');
       })
       .finally(() => {
-        btn.disabled = false;
-        btn.innerHTML = '<i class="bi bi-send-check me-2"></i>Enviar Pedido';
+        restaurarBotonEnvio();
       });
     }
 
