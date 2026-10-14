@@ -531,11 +531,6 @@
       color: #ffffff;
     }
 
-    .qty-editor-pill.is-expanding {
-      transform-origin: right center;
-      animation: qtyEditorExpand 220ms cubic-bezier(0.2, 0.75, 0.25, 1);
-    }
-
     .qty-editor-confirm {
       width: 32px;
       min-width: 32px;
@@ -568,17 +563,6 @@
       min-height: 28px;
     }
 
-    @keyframes qtyEditorExpand {
-      from {
-        opacity: 0.65;
-        transform: scaleX(0.72);
-      }
-      to {
-        opacity: 1;
-        transform: scaleX(1);
-      }
-    }
-
     .btn:disabled {
       cursor: not-allowed;
       opacity: 0.65;
@@ -599,13 +583,12 @@
     .card-product {
       height: 100%;
       box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
-      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+      transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
     }
 
     .card-product:not(.out-of-stock):hover {
       border-color: #94a3b8;
       box-shadow: 0 8px 22px rgba(15, 23, 42, 0.08);
-      transform: translateY(-2px);
     }
 
     .card-product.out-of-stock {
@@ -1310,12 +1293,14 @@
     let posicionScrollAntesDeBuscar = null;
     let modalInstance = null;
     let modalAlertaInstance = null;
+    const pulsacionesProlongadasActivas = new Map();
 
     const getById = (id) => document.getElementById(id);
 
     function initApp() {
       modalInstance = new bootstrap.Modal(getById('modalFinalizar'));
       modalAlertaInstance = new bootstrap.Modal(getById('modalAlerta'));
+      instalarManejadoresPulsacionProlongada();
 
       const temaGuardado = leerTemaGuardado();
       aplicarTema(temaGuardado);
@@ -1344,6 +1329,58 @@
       }
 
       cargarCatalogoRemoto();
+    }
+
+    function instalarManejadoresPulsacionProlongada() {
+      document.addEventListener('pointerup', finalizarPulsacionProlongada, true);
+      document.addEventListener('pointercancel', cancelarPulsacionProlongada, true);
+    }
+
+    function registrarPulsacionProlongada(boton, incrementar) {
+      if (!boton) return;
+
+      boton.addEventListener('pointerdown', event => {
+        if (event.button !== 0) return;
+        event.preventDefault();
+
+        cancelarTemporizadoresPulsacion(event.pointerId);
+        const pulsacion = { incrementar, temporizador: null, intervalo: null, iniciada: false };
+        pulsacion.temporizador = setTimeout(() => {
+          pulsacion.iniciada = true;
+          pulsacion.incrementar();
+          pulsacion.intervalo = setInterval(pulsacion.incrementar, 150);
+        }, 1000);
+        pulsacionesProlongadasActivas.set(event.pointerId, pulsacion);
+      });
+
+      boton.addEventListener('click', event => {
+        if (event.detail === 0) {
+          incrementar();
+          return;
+        }
+        event.preventDefault();
+        event.stopImmediatePropagation();
+      });
+    }
+
+    function finalizarPulsacionProlongada(event) {
+      const pulsacion = pulsacionesProlongadasActivas.get(event.pointerId);
+      if (!pulsacion) return;
+
+      cancelarTemporizadoresPulsacion(event.pointerId);
+      if (!pulsacion.iniciada) pulsacion.incrementar();
+    }
+
+    function cancelarPulsacionProlongada(event) {
+      cancelarTemporizadoresPulsacion(event.pointerId);
+    }
+
+    function cancelarTemporizadoresPulsacion(pointerId) {
+      const pulsacion = pulsacionesProlongadasActivas.get(pointerId);
+      if (!pulsacion) return;
+      clearTimeout(pulsacion.temporizador);
+      clearInterval(pulsacion.intervalo);
+      pulsacionesProlongadasActivas.delete(pointerId);
     }
 
     function leerTemaGuardado() {
@@ -1580,9 +1617,13 @@
         tarjetas.appendChild(col);
       });
       contenedor.appendChild(tarjetas);
+      contenedor.querySelectorAll('.qty-increase-button').forEach(button => {
+        const codigo = button.closest('[id^="ctrl-"]').id.slice(5);
+        registrarPulsacionProlongada(button, () => modificarCantidad(codigo, 1));
+      });
     }
 
-    function renderBotonesTarjeta(codigo, cant, animarEditor = false) {
+    function renderBotonesTarjeta(codigo, cant) {
       const prod = catalogo.find(p => p.codigo === codigo);
       
       if (prod && !prod.disponible) {
@@ -1615,10 +1656,10 @@
                     title="Eliminar producto" aria-label="Eliminar ${prod.nombre} del pedido">
               <i class="bi bi-trash3" aria-hidden="true"></i>
             </button>
-            <div class="qty-editor-pill${animarEditor ? ' is-expanding' : ''}" role="group" aria-label="Cantidad de ${prod.nombre}">
+            <div class="qty-editor-pill" role="group" aria-label="Cantidad de ${prod.nombre}">
                 <button class="qty-btn" type="button" onclick="modificarCantidad('${codigo}', -1)" aria-label="Reducir cantidad de ${prod.nombre}">−</button>
                 <input type="number" id="input-qty-${codigo}" class="qty-input" value="${displayCant}" min="1" onchange="establecerCantidadManual('${codigo}', this.value)" aria-label="Cantidad de ${prod.nombre}">
-                <button class="qty-btn" type="button" onclick="modificarCantidad('${codigo}', 1)" aria-label="Aumentar cantidad de ${prod.nombre}">+</button>
+                <button class="qty-btn qty-increase-button" type="button" aria-label="Aumentar cantidad de ${prod.nombre}">+</button>
               <button class="qty-editor-confirm" type="button"
                       onclick="finalizarEdicionItem('${codigo}')" title="Confirmar cantidad" aria-label="Confirmar cantidad de ${prod.nombre}">
                 <i class="bi bi-check-lg" aria-hidden="true"></i>
@@ -1644,13 +1685,13 @@
       if (prod && prod.disponible && !carrito[codigo]) {
         carrito[codigo] = { ...prod, cantidad: 1 };
       }
-      actualizarItemUI(codigo, true);
+      actualizarItemUI(codigo);
       actualizarBarraTotales();
     }
 
     function abrirEdicionItem(codigo) {
       itemEditando = codigo;
-      actualizarItemUI(codigo, true);
+      actualizarItemUI(codigo);
     }
 
     function finalizarEdicionItem(codigo) {
@@ -1715,11 +1756,17 @@
       actualizarBarraTotales();
     }
 
-    function actualizarItemUI(codigo, animarEditor = false) {
+    function actualizarItemUI(codigo) {
       const cant = carrito[codigo] ? carrito[codigo].cantidad : 0;
       const ctrl = document.getElementById(`ctrl-${codigo}`);
       const card = document.getElementById(`card-${codigo}`);
-      if (ctrl) { ctrl.innerHTML = renderBotonesTarjeta(codigo, cant, animarEditor); }
+      if (ctrl) {
+        ctrl.innerHTML = renderBotonesTarjeta(codigo, cant);
+        registrarPulsacionProlongada(
+          ctrl.querySelector('.qty-increase-button'),
+          () => modificarCantidad(codigo, 1)
+        );
+      }
       if (card) {
         if (cant > 0) { card.classList.add('in-cart'); } 
         else { card.classList.remove('in-cart'); }
@@ -1823,10 +1870,9 @@
 
         const btnMas = document.createElement('button');
         btnMas.type = 'button';
-        btnMas.className = 'order-qty-button';
+        btnMas.className = 'order-qty-button order-qty-increase-button';
         btnMas.textContent = '+';
         btnMas.setAttribute('aria-label', `Aumentar cantidad de ${item.nombre}`);
-        btnMas.addEventListener('click', () => ajustarCantidadEnResumen(item.codigo, 1));
 
         const btnEliminar = document.createElement('button');
         btnEliminar.type = 'button';
@@ -1847,6 +1893,13 @@
 
       contenedor.replaceChildren(filas);
       getById('modalTotal').textContent = `$${total.toFixed(2)}`;
+      contenedor.querySelectorAll('.order-qty-increase-button').forEach((button, index) => {
+        const item = items[index];
+        registrarPulsacionProlongada(
+          button,
+          () => ajustarCantidadEnResumen(item.codigo, 1)
+        );
+      });
       revisarBotonEnvio();
     }
 
