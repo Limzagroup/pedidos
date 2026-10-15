@@ -255,6 +255,11 @@
     }
 
     .order-summary {
+      display: flex;
+      flex: 1 1 0%;
+      flex-direction: column;
+      min-height: 0;
+      overflow: hidden;
       background: #ffffff;
       border: 1px solid #e2e8f0;
       border-radius: 16px;
@@ -262,7 +267,10 @@
     }
 
     .order-summary-list {
-      max-height: 260px;
+      flex: 1 1 0%;
+      min-height: 0;
+      height: 0;
+      max-height: none;
       overflow-y: auto;
       overscroll-behavior: contain;
       scrollbar-width: none;
@@ -406,17 +414,40 @@
     }
 
     .order-customer-details {
+      flex: 0 0 auto;
       padding-top: 16px;
     }
 
     .order-modal-dialog {
-      max-width: 540px;
+      width: calc(100vw - 1rem);
+      max-width: 900px;
+      height: calc(100vh - 1rem);
+      height: calc(100dvh - 1rem);
+      margin: 0.5rem auto;
+    }
+
+    #modalFinalizar .modal-content {
+      height: 100%;
+    }
+
+    #modalFinalizar .modal-body {
+      display: flex;
+      flex: 1 1 auto;
+      flex-direction: column;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    #modalFinalizar .modal-footer {
+      display: block;
+      flex-shrink: 0;
+      padding: 0.5rem 1rem 1rem;
+      border-top: 1px solid var(--border-color);
     }
 
     @media (max-width: 575.98px) {
       .order-modal-dialog {
-        margin: 0.5rem;
-        min-height: auto;
+        width: calc(100vw - 1rem);
       }
 
       .order-summary {
@@ -439,13 +470,17 @@
         padding: 0.65rem 1rem 0.85rem;
       }
 
+      #modalFinalizar .modal-footer {
+        padding: 0.45rem 1rem calc(0.65rem + env(safe-area-inset-bottom));
+      }
+
       #modalFinalizar .order-summary {
         padding: 6px 10px 8px;
         margin-bottom: 0.6rem !important;
       }
 
       #modalFinalizar .order-summary-list {
-        max-height: 135px;
+        max-height: none;
       }
 
       #modalFinalizar .order-summary-row {
@@ -512,7 +547,7 @@
       }
 
       #modalFinalizar .order-summary-list {
-        max-height: 70px;
+        max-height: none;
       }
 
       #modalFinalizar .order-total {
@@ -1365,19 +1400,13 @@
               <input type="text" id="clienteRif" class="form-control rounded-3 px-3" placeholder="Ej: J-123456789" autocomplete="off" aria-describedby="rifAyuda">
               <div id="rifAyuda" class="val-feedback val-feedback-invalid px-2">Formato inválido. Usa V- o J- seguido de 6 a 9 dígitos.</div>
             </div>
-            <button type="submit" id="btnEnviar" class="btn btn-primary w-100 py-2 mt-2 fw-bold rounded-3 shadow-sm" disabled>
-              <i class="bi bi-send-check me-2"></i>Enviar Pedido
-            </button>
-            <div id="estadoEnvioPedido" class="d-none text-center mt-3" role="status" aria-live="polite">
-              <div class="spinner-border spinner-border-sm text-primary mb-2" aria-hidden="true"></div>
-              <div class="fw-semibold">Enviando pedido...</div>
-              <div class="small text-muted">Registrando la orden y preparando el comprobante. Puede tardar unos segundos.</div>
-              <div class="progress mt-2" style="height: 4px;" aria-hidden="true">
-                <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary w-100"></div>
-              </div>
-            </div>
           </form>
 
+        </div>
+        <div class="modal-footer">
+          <button type="submit" id="btnEnviar" form="formularioPedido" class="btn btn-primary w-100 py-2 fw-bold rounded-3 shadow-sm" disabled>
+            <i class="bi bi-send-check me-2"></i>Enviar Pedido
+          </button>
         </div>
       </div>
     </div>
@@ -2100,10 +2129,8 @@
       }
       
       const btn = document.getElementById('btnEnviar');
-      const estadoEnvio = getById('estadoEnvioPedido');
       btn.disabled = true;
       btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>Enviando pedido...';
-      estadoEnvio.classList.remove('d-none');
       document.getElementById('formularioPedido').setAttribute('aria-busy', 'true');
 
       const items = Object.values(carrito);
@@ -2123,7 +2150,6 @@
 
       function restaurarBotonEnvio() {
         btn.innerHTML = '<i class="bi bi-send-check me-2"></i>Enviar Pedido';
-        estadoEnvio.classList.add('d-none');
         document.getElementById('formularioPedido').setAttribute('aria-busy', 'false');
         revisarBotonEnvio();
       }
