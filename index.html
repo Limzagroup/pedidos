@@ -632,12 +632,6 @@
       appearance: textfield;
       -moz-appearance: textfield;
     }
-    .qty-input::-webkit-inner-spin-button,
-    .qty-input::-webkit-outer-spin-button {
-      margin: 0;
-      -webkit-appearance: none;
-    }
-
     .qty-editor-pill {
       display: inline-flex;
       align-items: center;
@@ -1298,12 +1292,6 @@
       box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.32), 0 4px 12px rgba(249, 115, 22, 0.24);
     }
 
-    body.light-mode .btn-primary {
-      background-color: var(--brand-orange) !important;
-      border-color: var(--brand-orange) !important;
-      color: #ffffff !important;
-    }
-
   </style>
 </head>
 <body>
@@ -1641,14 +1629,6 @@
       } catch (err) {
         console.warn('No se pudo guardar el catálogo localmente:', err);
       }
-    }
-
-    function mostrarErrorCargaCatalogo(mensaje) {
-      const cargando = getById('cargando');
-      cargando.innerHTML = `<div class="text-danger fw-bold">${mensaje}</div>`;
-      cargando.classList.remove('d-none');
-      cargando.setAttribute('aria-busy', 'false');
-      cargando.setAttribute('role', 'alert');
     }
 
     function renderizarCatalogo(datos) {
@@ -2073,42 +2053,49 @@
       actualizarBarraTotales();
     }
 
-    function validarCampoVendedor() {
+    function validarCampoVendedor(actualizarBoton = true) {
       const el = document.getElementById('vendedorNombre');
       const esValido = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{6,40}$/.test(el.value.trim());
       el.classList.toggle('is-valid', esValido && el.value.trim() !== '');
       el.classList.toggle('is-invalid', !esValido || el.value.trim() === '');
       el.setAttribute('aria-invalid', String(!esValido || el.value.trim() === ''));
-      revisarBotonEnvio(); return esValido;
+      if (actualizarBoton) revisarBotonEnvio();
+      return esValido;
     }
 
-    function validarCampoCliente() {
+    function validarCampoCliente(actualizarBoton = true) {
       const el = document.getElementById('clienteNombre');
       const esValido = /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s.,&/\-]{6,60}$/.test(el.value.trim());
       el.classList.toggle('is-valid', esValido && el.value.trim() !== '');
       el.classList.toggle('is-invalid', !esValido || el.value.trim() === '');
       el.setAttribute('aria-invalid', String(!esValido || el.value.trim() === ''));
-      revisarBotonEnvio(); return esValido;
+      if (actualizarBoton) revisarBotonEnvio();
+      return esValido;
     }
 
-    function validarCampoRif() {
+    function validarCampoRif(actualizarBoton = true) {
       const el = document.getElementById('clienteRif');
       let val = el.value.toUpperCase().replace(/\s+/g, '');
       el.value = val;
       if (val === '') {
         el.classList.remove('is-invalid', 'is-valid');
         el.setAttribute('aria-invalid', 'false');
-        revisarBotonEnvio(); return true;
+        if (actualizarBoton) revisarBotonEnvio();
+        return true;
       }
       const esValido = /^[VJ]-\d{6,9}$/.test(val);
       el.classList.toggle('is-valid', esValido);
       el.classList.toggle('is-invalid', !esValido);
       el.setAttribute('aria-invalid', String(!esValido));
-      revisarBotonEnvio(); return esValido;
+      if (actualizarBoton) revisarBotonEnvio();
+      return esValido;
     }
 
     function revisarTodosLosCampos() {
-      validarCampoVendedor(); validarCampoCliente(); validarCampoRif();
+      validarCampoVendedor(false);
+      validarCampoCliente(false);
+      validarCampoRif(false);
+      revisarBotonEnvio();
     }
 
     function revisarBotonEnvio() {
