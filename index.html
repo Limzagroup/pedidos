@@ -187,7 +187,7 @@
       position: sticky;
       top: 85px; 
       z-index: 1030;
-      background-color: var(--bg-color); 
+      background-color: transparent;
       padding-top: 15px;
       padding-bottom: 10px;
       transition: clip-path 0.18s ease-out;
@@ -205,7 +205,7 @@
       border: 1px solid #e2e8f0;
       border-radius: 50px; 
       padding: 4px 18px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
       transition: all 0.3s ease;
     }
     .modern-search-wrapper:focus-within {
@@ -417,9 +417,138 @@
       white-space: nowrap;
     }
 
+    .desktop-order-heading {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .desktop-order-count {
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: #333333;
+      color: #f5f5f5;
+      font-size: 0.75rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .desktop-order-panel {
+      display: none;
+    }
+
+    @media (min-width: 992px) {
+      .catalog-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(300px, 340px);
+        align-items: start;
+        gap: 24px;
+      }
+
+      .catalog-products {
+        min-width: 0;
+      }
+
+      .desktop-order-panel {
+        position: sticky;
+        top: 108px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        height: calc(100dvh - 192px);
+        min-height: 280px;
+        max-height: none;
+        padding: 16px;
+        overflow: hidden;
+        color: var(--text-main);
+        background: var(--surface);
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
+      }
+
+      .desktop-order-panel .order-summary {
+        flex: 1 1 auto;
+        min-height: 0;
+        margin: 0 !important;
+      }
+
+      .desktop-order-panel .order-total {
+        flex-shrink: 0;
+      }
+
+      .desktop-order-panel .order-summary-list {
+        height: 0;
+      }
+
+      .desktop-order-panel .order-summary-row {
+        gap: 4px 8px;
+        padding: 6px 0;
+      }
+
+      .desktop-order-panel .order-summary-name {
+        font-size: 0.92rem;
+        line-height: 1.2;
+      }
+
+      .desktop-order-panel .order-summary-meta {
+        font-size: 0.72rem;
+      }
+
+      .desktop-order-panel .order-qty-control {
+        gap: 6px;
+        min-height: 32px;
+        padding: 2px 5px;
+      }
+
+      .desktop-order-panel .order-qty-button {
+        width: 28px;
+        height: 28px;
+        min-height: 28px;
+      }
+
+      .desktop-order-panel .order-summary-actions {
+        gap: 8px;
+      }
+
+      .bottom-checkout-bar {
+        display: none !important;
+      }
+    }
+
     .order-customer-details {
       flex: 0 0 auto;
-      padding-top: 16px;
+      padding-top: 10px;
+    }
+
+    .order-customer-details .order-field {
+      position: relative;
+      margin-bottom: 0.85rem !important;
+    }
+
+    .order-customer-details .order-field-label {
+      position: absolute;
+      top: -0.48rem;
+      left: 12px;
+      z-index: 1;
+      margin: 0;
+      padding: 0 6px;
+      background: var(--surface);
+      font-size: 1rem;
+      line-height: 1.1;
+    }
+
+    .order-customer-details .order-field .form-control {
+      min-height: 46px;
+      padding: 0.65rem 0.85rem;
+      font-size: 1.05rem;
+    }
+
+    .order-field-optional {
+      margin-left: 4px;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      font-weight: 400;
     }
 
     .order-modal-dialog {
@@ -832,9 +961,12 @@
       position: relative;
     }
 
-    .theme-toggle {
+    .navbar-actions {
       position: absolute;
-      left: 12px;
+      right: 12px;
+    }
+
+    .menu-toggle {
       width: 42px;
       min-width: 42px;
       height: 42px;
@@ -854,8 +986,16 @@
       transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
     }
 
+    .menu-toggle-icon {
+      width: 15px;
+      height: 1.5px;
+      border-radius: 2px;
+      background: currentColor;
+      box-shadow: 0 -5px currentColor, 0 5px currentColor;
+    }
+
     @media (hover: hover) and (pointer: fine) {
-      .theme-toggle:hover {
+      .menu-toggle:hover {
         border-color: var(--brand-orange);
         background: #333333;
         color: var(--brand-orange);
@@ -863,21 +1003,55 @@
       }
     }
 
-    .theme-toggle:active {
+    .menu-toggle:active,
+    .menu-toggle.show {
       border-color: var(--brand-orange);
       background: #333333;
       color: var(--brand-orange);
       box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2), 0 4px 12px rgba(249, 115, 22, 0.28);
+    }
+
+    .menu-toggle:active {
       transform: scale(0.96);
     }
 
-    .theme-toggle:focus:not(:focus-visible) {
+    .menu-toggle:focus:not(:focus-visible):not(.show) {
       outline: none;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
     }
 
-    .theme-toggle:focus-visible {
+    .menu-toggle:focus-visible {
       box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.32), 0 4px 12px rgba(249, 115, 22, 0.24);
+    }
+
+    .navbar-menu {
+      --bs-dropdown-bg: #181818;
+      --bs-dropdown-color: #f5f5f5;
+      --bs-dropdown-border-color: #3a3a3a;
+      --bs-dropdown-link-color: #f5f5f5;
+      --bs-dropdown-link-hover-bg: #292929;
+      --bs-dropdown-link-hover-color: #ffffff;
+      --bs-dropdown-link-active-bg: #292929;
+      --bs-dropdown-link-active-color: #ffffff;
+      min-width: 220px;
+      padding: 8px;
+      border-radius: 14px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+    }
+
+    .navbar-menu .dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 44px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+
+    .navbar-menu .dropdown-item i {
+      width: 16px;
+      text-align: center;
     }
 
     :root {
@@ -906,13 +1080,13 @@
     }
 
     .search-container {
-      background: #121212;
+      background: transparent;
     }
 
     .modern-search-wrapper {
       background: #242424;
       border-color: #3a3a3a;
-      box-shadow: none;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
     }
 
     .modern-search-wrapper:focus-within {
@@ -1090,7 +1264,7 @@
     }
 
     body.light-mode .search-container {
-      background: #f0f0f0;
+      background: transparent;
     }
 
     body.light-mode .modern-search-wrapper {
@@ -1154,6 +1328,11 @@
       background: #eeeeee !important;
       color: #404040 !important;
       border: 0;
+    }
+
+    body.light-mode .desktop-order-count {
+      background: #eeeeee;
+      color: #404040;
     }
 
     body.light-mode .order-summary {
@@ -1259,15 +1438,27 @@
       border-color: #e5e5e5 !important;
     }
 
-    body.light-mode .theme-toggle {
+    body.light-mode .menu-toggle {
       border-color: #4a4a4a;
       background: #ffffff;
       color: #333333;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.24);
     }
 
+    body.light-mode .navbar-menu {
+      --bs-dropdown-bg: #ffffff;
+      --bs-dropdown-color: #191919;
+      --bs-dropdown-border-color: #e5e5e5;
+      --bs-dropdown-link-color: #191919;
+      --bs-dropdown-link-hover-bg: #f3f3f3;
+      --bs-dropdown-link-hover-color: #191919;
+      --bs-dropdown-link-active-bg: #f3f3f3;
+      --bs-dropdown-link-active-color: #191919;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
+    }
+
     @media (hover: hover) and (pointer: fine) {
-      body.light-mode .theme-toggle:hover {
+      body.light-mode .menu-toggle:hover {
         border-color: var(--brand-orange);
         background: #fff3e8;
         color: var(--brand-orange-hover);
@@ -1275,26 +1466,117 @@
       }
     }
 
-    body.light-mode .theme-toggle:active {
+    body.light-mode .menu-toggle:active,
+    body.light-mode .menu-toggle.show {
       border-color: var(--brand-orange);
       background: #fff3e8;
       color: var(--brand-orange-hover);
       box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2), 0 4px 12px rgba(249, 115, 22, 0.28);
+    }
+
+    body.light-mode .menu-toggle:active {
       transform: scale(0.96);
     }
 
-    body.light-mode .theme-toggle:focus:not(:focus-visible) {
+    body.light-mode .menu-toggle:focus:not(:focus-visible):not(.show) {
       outline: none;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.24);
     }
 
-    body.light-mode .theme-toggle:focus-visible {
+    body.light-mode .menu-toggle:focus-visible {
       box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.32), 0 4px 12px rgba(249, 115, 22, 0.24);
+    }
+
+    .festive-decorations {
+      position: fixed;
+      inset: 0;
+      z-index: 1025;
+      overflow: hidden;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .festive-theme {
+      display: none;
+    }
+
+    body.festivity-halloween .festive-halloween,
+    body.festivity-navidad .festive-navidad {
+      display: block;
+    }
+
+    .festive-item {
+      position: absolute;
+      font-size: clamp(1.25rem, 2.5vw, 2rem);
+      line-height: 1;
+      opacity: 0.55;
+    }
+
+    .festive-item-top-left {
+      top: 105px;
+      left: 14px;
+    }
+
+    .festive-item-top-right {
+      top: 105px;
+      right: 14px;
+    }
+
+    .festive-item-bottom-left {
+      bottom: 24px;
+      left: 16px;
+    }
+
+    .festive-item-bottom-right {
+      right: 16px;
+      bottom: 24px;
+    }
+
+    @media (max-width: 575.98px) {
+      .festive-item {
+        font-size: 1.2rem;
+        opacity: 0.42;
+      }
+
+      .festive-item-top-left {
+        top: 96px;
+        left: 6px;
+      }
+
+      .festive-item-top-right {
+        top: 96px;
+        right: 6px;
+      }
+
+      .festive-item-bottom-left {
+        bottom: 92px;
+        left: 8px;
+      }
+
+      .festive-item-bottom-right {
+        right: 8px;
+        bottom: 92px;
+      }
     }
 
   </style>
 </head>
 <body>
+
+  <div class="festive-decorations" aria-hidden="true">
+    <div class="festive-theme festive-halloween">
+      <span class="festive-item festive-item-top-left">🕸️</span>
+      <span class="festive-item festive-item-top-right">🕷️</span>
+      <span class="festive-item festive-item-bottom-left">🎃</span>
+      <span class="festive-item festive-item-bottom-right">👻</span>
+    </div>
+    <div class="festive-theme festive-navidad">
+      <span class="festive-item festive-item-top-left">❄️</span>
+      <span class="festive-item festive-item-top-right">✨</span>
+      <span class="festive-item festive-item-bottom-left">🎄</span>
+      <span class="festive-item festive-item-bottom-right">🎁</span>
+    </div>
+  </div>
 
   <a class="skip-link" href="#contenidoPrincipal">Saltar al contenido</a>
 
@@ -1309,9 +1591,17 @@
     <div class="container py-2 d-flex justify-content-center align-items-center">
       <!-- LOGOTIPO CORPORATIVO -->
       <img src="https://limzagroup.github.io/pedidos/LIMZAGROUP_LOGO.webp" alt="LIMZA GROUP" width="220" height="55" fetchpriority="high" style="max-height: 55px; width: auto; object-fit: contain;">
-      <button id="btnCambiarTema" class="theme-toggle" type="button" aria-label="Cambiar a modo claro" title="Cambiar a modo claro">
-        <i class="bi bi-sun" aria-hidden="true"></i>
-      </button>
+      <div class="dropdown navbar-actions">
+        <button id="btnMenu" class="menu-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Abrir menú" title="Abrir menú">
+          <span class="menu-toggle-icon" aria-hidden="true"></span>
+        </button>
+        <div class="dropdown-menu dropdown-menu-end navbar-menu" aria-labelledby="btnMenu">
+          <button id="btnCambiarTema" class="dropdown-item" type="button" aria-label="Cambiar a modo claro">
+            <i id="iconoTema" class="bi bi-sun" aria-hidden="true"></i>
+            <span id="etiquetaTema">Modo claro</span>
+          </button>
+        </div>
+      </div>
     </div>
   </nav>
 
@@ -1327,13 +1617,34 @@
     </div>
   </div>
 
-  <div class="container py-2">
-    <div id="cargando" class="text-center py-5" role="status" aria-live="polite" aria-busy="true">
-      <div class="spinner-border text-primary" aria-hidden="true"></div>
-      <p class="mt-2 text-muted fw-semibold small">Sincronizando inventario...</p>
-    </div>
+  <div class="container py-2 catalog-layout">
+    <section class="catalog-products" aria-label="Productos disponibles">
+      <div id="cargando" class="text-center py-5" role="status" aria-live="polite" aria-busy="true">
+        <div class="spinner-border text-primary" aria-hidden="true"></div>
+        <p class="mt-2 text-muted fw-semibold small">Sincronizando inventario...</p>
+      </div>
 
-    <div id="contenedorProductos" class="row g-2 g-md-3" role="region" aria-label="Catálogo de productos" aria-live="polite" aria-relevant="additions text"></div>
+      <div id="contenedorProductos" class="row g-2 g-md-3" role="region" aria-label="Catálogo de productos" aria-live="polite" aria-relevant="additions text"></div>
+    </section>
+
+    <aside class="desktop-order-panel" aria-labelledby="tituloPedidoLateral">
+      <div class="desktop-order-heading">
+        <h2 id="tituloPedidoLateral" class="fs-5 fw-bold mb-0"><i class="bi bi-box-seam me-2 text-primary" aria-hidden="true"></i>Productos agregados</h2>
+        <span id="desktopItemsCount" class="desktop-order-count" aria-label="0 productos" aria-live="polite">0</span>
+      </div>
+      <section class="order-summary" aria-label="Resumen del pedido">
+        <div id="desktopListaItems" class="order-summary-list" role="list" aria-label="Productos incluidos en el pedido">
+          <p class="text-center text-muted py-3 mb-0">No hay productos en el pedido.</p>
+        </div>
+        <div class="order-total" aria-live="polite">
+          <span class="order-total-label">Total estimado</span>
+          <span class="order-total-value" id="desktopTotal">$0.00</span>
+        </div>
+      </section>
+      <button class="btn btn-primary w-100 py-2 fw-bold rounded-3 shadow-sm" id="btnAbrirPedidoDesktop" type="button" disabled>
+        Completar pedido
+      </button>
+    </aside>
   </div>
   </main>
 
@@ -1372,21 +1683,18 @@
           </section>
 
           <form id="formularioPedido" class="order-customer-details" novalidate>
-            <div class="mb-2">
-              <label for="vendedorNombre" class="form-label small fw-semibold">Nombre del vendedor</label>
+            <div class="order-field mb-2">
+              <label for="vendedorNombre" class="form-label order-field-label fw-semibold">Vendedor</label>
               <input type="text" id="vendedorNombre" class="form-control rounded-3 px-3" placeholder="Ej: María González" autocomplete="name" aria-describedby="vendedorAyuda" aria-required="true" required>
               <div id="vendedorAyuda" class="val-feedback val-feedback-invalid px-2"></div>
             </div>
-            <div class="mb-2">
-              <label for="clienteNombre" class="form-label small fw-semibold">Nombre del cliente</label>
+            <div class="order-field mb-2">
+              <label for="clienteNombre" class="form-label order-field-label fw-semibold">Cliente</label>
               <input type="text" id="clienteNombre" class="form-control rounded-3 px-3" placeholder="Persona o Razón Social" autocomplete="organization" aria-describedby="clienteAyuda" aria-required="true" required>
               <div id="clienteAyuda" class="val-feedback val-feedback-invalid px-2"></div>
             </div>
-            <div class="mb-3">
-              <div class="d-flex justify-content-between px-1">
-                <label for="clienteRif" class="form-label small fw-semibold">RIF del cliente</label>
-                <span class="text-muted small" style="font-size: 0.72rem;">(Opcional)</span>
-              </div>
+            <div class="order-field mb-3">
+              <label for="clienteRif" class="form-label order-field-label fw-semibold">RIF del cliente <span class="order-field-optional">(Opcional)</span></label>
               <input type="text" id="clienteRif" class="form-control rounded-3 px-3" placeholder="Ej: J-123456789" autocomplete="off" aria-describedby="rifAyuda">
               <div id="rifAyuda" class="val-feedback val-feedback-invalid px-2">Formato inválido. Usa V- o J- seguido de 6 a 9 dígitos.</div>
             </div>
@@ -1418,9 +1726,11 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script>
+    // AQUI ACTIVAS LAS FESTIVIDADES. Ejemplos: 'halloween', 'navidad'. Vacio para desactivar.
+    const FESTIVIDAD_ACTIVA = 'halloween';
     const URL_API_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbwVvAAODNFh4408zZRaxd89p-rWIjXvBWc5_wH3_ofX0fz4NJUqpHrvFLaIWoLkkoAv/exec";
     const CACHE_CATALOGO_LOCAL_KEY = 'limza-catalogo-v1';
-    const CACHE_CATALOGO_LOCAL_MAX_AGE_MS = 60 * 1000;
+    const TIMEOUT_CATALOGO_MS = 10000;
 
     let catalogo = [];
     let catalogoCacheCargado = false;
@@ -1435,6 +1745,7 @@
     const getById = (id) => document.getElementById(id);
 
     function initApp() {
+      aplicarFestividad();
       modalInstance = new bootstrap.Modal(getById('modalFinalizar'));
       modalAlertaInstance = new bootstrap.Modal(getById('modalAlerta'));
       instalarManejadoresPulsacionProlongada();
@@ -1445,6 +1756,7 @@
       getById('buscador').addEventListener('input', manejarEntradaBuscador);
       getById('btnLimpiarBuscador').addEventListener('click', limpiarBuscadorManualmente);
       getById('btnAbrirModal').addEventListener('click', abrirModalFinalizar);
+      getById('btnAbrirPedidoDesktop').addEventListener('click', abrirModalFinalizar);
       getById('vendedorNombre').addEventListener('input', validarCampoVendedor);
       getById('clienteNombre').addEventListener('input', validarCampoCliente);
       getById('clienteRif').addEventListener('input', validarCampoRif);
@@ -1466,6 +1778,16 @@
       }
 
       cargarCatalogoRemoto();
+    }
+
+    function aplicarFestividad() {
+      const festividad = FESTIVIDAD_ACTIVA.trim().toLowerCase();
+      document.body.classList.toggle('festivity-halloween', festividad === 'halloween');
+      document.body.classList.toggle('festivity-navidad', festividad === 'navidad');
+
+      if (festividad && festividad !== 'halloween' && festividad !== 'navidad') {
+        console.warn('Festividad no reconocida. Usa "halloween", "navidad" o deja el valor vacio.');
+      }
     }
 
     function instalarManejadoresPulsacionProlongada() {
@@ -1536,8 +1858,8 @@
       const botonTema = getById('btnCambiarTema');
       const temaDestino = esClaro ? 'oscuro' : 'claro';
       botonTema.setAttribute('aria-label', `Cambiar a modo ${temaDestino}`);
-      botonTema.title = `Cambiar a modo ${temaDestino}`;
-      botonTema.innerHTML = `<i class="bi bi-${esClaro ? 'moon' : 'sun'}" aria-hidden="true"></i>`;
+      getById('etiquetaTema').textContent = `Modo ${temaDestino}`;
+      getById('iconoTema').className = `bi bi-${esClaro ? 'moon' : 'sun'}`;
     }
 
     function alternarTema(event) {
@@ -1555,12 +1877,14 @@
 
     function cargarCatalogoRemoto() {
       const catalogoGuardado = leerCatalogoGuardado();
-      if (catalogoGuardado && Date.now() - catalogoGuardado.guardadoEn <= CACHE_CATALOGO_LOCAL_MAX_AGE_MS) {
+      if (catalogoGuardado) {
         catalogoCacheCargado = true;
         renderizarCatalogo(catalogoGuardado.productos);
       }
 
-      fetch(`${URL_API_APPS_SCRIPT}?action=catalogo`, { cache: 'no-store' })
+      const controlador = new AbortController();
+      const temporizador = setTimeout(() => controlador.abort(), TIMEOUT_CATALOGO_MS);
+      fetch(`${URL_API_APPS_SCRIPT}?action=catalogo`, { cache: 'no-store', signal: controlador.signal })
         .then(res => {
           if (!res.ok) {
             throw new Error(`HTTP ${res.status}`);
@@ -1592,14 +1916,21 @@
         })
         .catch(err => {
           const cargando = document.getElementById('cargando');
+          if (!catalogoRenderizado && catalogoGuardado) {
+            catalogoCacheCargado = true;
+            renderizarCatalogo(catalogoGuardado.productos);
+          }
           const mensaje = catalogoCacheCargado
-            ? 'No se pudo actualizar el inventario. Se muestra el catálogo guardado recientemente.'
+            ? 'No se pudo actualizar el inventario. Se muestra el catálogo guardado en este dispositivo.'
             : (err.message || 'Error de sincronización con el servidor de inventario.');
           cargando.innerHTML = `<div class="text-danger fw-bold">${mensaje}</div>`;
           cargando.classList.remove('d-none');
           cargando.setAttribute('aria-busy', 'false');
           cargando.setAttribute('role', 'alert');
           console.error("Fallo de red:", err);
+        })
+        .finally(() => {
+          clearTimeout(temporizador);
         });
     }
 
@@ -1916,11 +2247,13 @@
       barraCheckout.classList.toggle('d-none', !carritoTieneItems);
       barraCheckout.setAttribute('aria-hidden', String(!carritoTieneItems));
       document.getElementById('totalBarra').innerText = '$' + total.toFixed(2);
-      document.getElementById('itemsBarra').innerText = `${count} ${count === 1 ? 'producto' : 'productos'}`;
+      const textoCantidad = `${count} ${count === 1 ? 'producto' : 'productos'}`;
+      document.getElementById('itemsBarra').innerText = textoCantidad;
+      getById('desktopItemsCount').textContent = count;
+      getById('desktopItemsCount').setAttribute('aria-label', textoCantidad);
       document.getElementById('btnAbrirModal').disabled = !carritoTieneItems;
-      if (getById('modalFinalizar').classList.contains('show')) {
-        renderizarResumenPedido();
-      }
+      getById('btnAbrirPedidoDesktop').disabled = !carritoTieneItems;
+      renderizarResumenPedido();
     }
 
     function mostrarAvisoToast(mensaje) {
@@ -1939,7 +2272,7 @@
     }
 
     function renderizarResumenPedido() {
-      const contenedor = getById('modalListaItems');
+      const contenedores = [getById('modalListaItems'), getById('desktopListaItems')];
       const filas = document.createDocumentFragment();
       const items = Object.values(carrito);
       let total = 0;
@@ -1948,8 +2281,9 @@
         const vacio = document.createElement('p');
         vacio.className = 'text-center text-muted py-3 mb-0';
         vacio.textContent = 'No hay productos en el pedido.';
-        contenedor.replaceChildren(vacio);
+        contenedores.forEach(contenedor => contenedor.replaceChildren(vacio.cloneNode(true)));
         getById('modalTotal').textContent = '$0.00';
+        getById('desktopTotal').textContent = '$0.00';
         revisarBotonEnvio();
         return;
       }
@@ -2008,12 +2342,12 @@
         const btnEliminar = document.createElement('button');
         btnEliminar.type = 'button';
         btnEliminar.className = 'btn btn-delete-icon btn-outline-danger btn-sm rounded-circle';
+        btnEliminar.dataset.codigo = item.codigo;
         btnEliminar.setAttribute('aria-label', `Eliminar ${item.nombre} del pedido`);
         const iconoEliminar = document.createElement('i');
         iconoEliminar.className = 'bi bi-trash3';
         iconoEliminar.setAttribute('aria-hidden', 'true');
         btnEliminar.appendChild(iconoEliminar);
-        btnEliminar.addEventListener('click', () => eliminarDelResumen(item.codigo));
 
         cantidadControl.append(btnMenos, cantidad, btnMas);
         acciones.append(cantidadControl, btnEliminar);
@@ -2022,16 +2356,23 @@
         filas.appendChild(fila);
       });
 
-      contenedor.replaceChildren(filas);
-      getById('modalTotal').textContent = `$${total.toFixed(2)}`;
-      contenedor.querySelectorAll('.order-qty-increase-button, .order-qty-decrease-button').forEach(button => {
-        const codigo = button.dataset.codigo;
-        const delta = button.classList.contains('order-qty-increase-button') ? 1 : -1;
-        registrarPulsacionProlongada(
-          button,
-          () => ajustarCantidadEnResumen(codigo, delta)
-        );
+      const filasDesktop = filas.cloneNode(true);
+      contenedores.forEach((contenedor, indice) => {
+        contenedor.replaceChildren(indice === 0 ? filas : filasDesktop);
+        contenedor.querySelectorAll('.order-qty-increase-button, .order-qty-decrease-button').forEach(button => {
+          const codigo = button.dataset.codigo;
+          const delta = button.classList.contains('order-qty-increase-button') ? 1 : -1;
+          registrarPulsacionProlongada(
+            button,
+            () => ajustarCantidadEnResumen(codigo, delta)
+          );
+        });
+        contenedor.querySelectorAll('.btn-delete-icon').forEach(button => {
+          button.addEventListener('click', () => eliminarDelResumen(button.dataset.codigo));
+        });
       });
+      getById('modalTotal').textContent = `$${total.toFixed(2)}`;
+      getById('desktopTotal').textContent = `$${total.toFixed(2)}`;
       revisarBotonEnvio();
     }
 
