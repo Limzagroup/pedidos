@@ -983,7 +983,7 @@
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
       touch-action: manipulation;
       -webkit-tap-highlight-color: transparent;
-      transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+      transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
     }
 
     .menu-toggle-icon {
@@ -1009,10 +1009,6 @@
       background: #333333;
       color: var(--brand-orange);
       box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2), 0 4px 12px rgba(249, 115, 22, 0.28);
-    }
-
-    .menu-toggle:active {
-      transform: scale(0.96);
     }
 
     .menu-toggle:focus:not(:focus-visible):not(.show) {
@@ -1474,10 +1470,6 @@
       box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2), 0 4px 12px rgba(249, 115, 22, 0.28);
     }
 
-    body.light-mode .menu-toggle:active {
-      transform: scale(0.96);
-    }
-
     body.light-mode .menu-toggle:focus:not(:focus-visible):not(.show) {
       outline: none;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.24);
@@ -1552,6 +1544,18 @@
         repeating-conic-gradient(from 0deg at 100% 0, transparent 0deg 14deg, #d58aee 14.5deg 15.5deg, transparent 16deg 45deg);
     }
 
+    body.festivity-halloween #contenedorProductos > :nth-child(3n + 2) .card-product::before {
+      background:
+        radial-gradient(circle at 100% 0, transparent 0 9px, #d58aee 10px 11px, transparent 12px 20px, #d58aee 21px 22px, transparent 23px),
+        repeating-conic-gradient(from 18deg at 100% 0, transparent 0deg 19deg, #d58aee 19.5deg 21deg, transparent 21.5deg 60deg);
+    }
+
+    body.festivity-halloween #contenedorProductos > :nth-child(3n) .card-product::before {
+      background:
+        radial-gradient(ellipse at 100% 0, transparent 0 15px, #d58aee 16px 17px, transparent 18px 31px, #d58aee 32px 33px, transparent 34px),
+        repeating-conic-gradient(from -10deg at 100% 0, transparent 0deg 11deg, #d58aee 11.5deg 13deg, transparent 13.5deg 36deg);
+    }
+
     body.festivity-navidad .card-product::before {
       background:
         radial-gradient(circle at 14px 16px, #d8f3ff 0 2px, transparent 2.8px),
@@ -1560,6 +1564,42 @@
         radial-gradient(circle at 65px 52px, #d8f3ff 0 1.5px, transparent 2.4px),
         radial-gradient(circle at 13px 67px, #d8f3ff 0 1.5px, transparent 2.4px),
         radial-gradient(circle at 60px 27px, #d8f3ff 0 1px, transparent 2px);
+    }
+
+    body.festivity-halloween .card-product::after,
+    body.festivity-navidad .card-product::after {
+      position: absolute;
+      right: 10px;
+      bottom: 4px;
+      z-index: 0;
+      font-size: 1.65rem;
+      line-height: 1;
+      opacity: 0.14;
+      pointer-events: none;
+    }
+
+    body.festivity-halloween .card-product::after {
+      content: "🎃";
+    }
+
+    body.festivity-halloween #contenedorProductos > :nth-child(3n + 2) .card-product::after {
+      content: "💀";
+    }
+
+    body.festivity-halloween #contenedorProductos > :nth-child(3n) .card-product::after {
+      content: "🦴";
+    }
+
+    body.festivity-navidad .card-product::after {
+      content: "🎁";
+    }
+
+    body.festivity-navidad #contenedorProductos > :nth-child(3n + 2) .card-product::after {
+      content: "🎄";
+    }
+
+    body.festivity-navidad #contenedorProductos > :nth-child(3n) .card-product::after {
+      content: "⭐";
     }
 
     body.festivity-halloween .card-product > *,
@@ -1630,15 +1670,59 @@
 
     body.festivity-halloween #desktopListaItems,
     body.festivity-halloween #modalListaItems {
+      padding-right: 8px;
       background-image:
-        radial-gradient(circle at 100% 0, rgba(213, 138, 238, 0.12), transparent 90px);
+        radial-gradient(circle at 0 100%, rgba(213, 138, 238, 0.1), transparent 72px);
     }
 
     body.festivity-navidad #desktopListaItems,
     body.festivity-navidad #modalListaItems {
+      padding-right: 8px;
       background-image:
-        radial-gradient(circle at 100% 0, rgba(216, 243, 255, 0.14), transparent 90px),
+        radial-gradient(circle at 0 100%, rgba(216, 243, 255, 0.1), transparent 72px),
         radial-gradient(circle at 14px 18px, rgba(216, 243, 255, 0.25) 0 1px, transparent 1.8px);
+    }
+
+    body.festivity-halloween .order-customer-details .order-field,
+    body.festivity-navidad .order-customer-details .order-field {
+      position: relative;
+    }
+
+    body.festivity-halloween .order-customer-details .order-field::after,
+    body.festivity-navidad .order-customer-details .order-field::after {
+      position: absolute;
+      top: -8px;
+      right: 10px;
+      z-index: 2;
+      padding: 0 4px;
+      background: var(--surface);
+      font-size: 1rem;
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    body.festivity-halloween .order-customer-details .order-field::after {
+      content: "🎃";
+    }
+
+    body.festivity-halloween .order-customer-details .order-field:nth-child(2)::after {
+      content: "💀";
+    }
+
+    body.festivity-halloween .order-customer-details .order-field:nth-child(3)::after {
+      content: "🦴";
+    }
+
+    body.festivity-navidad .order-customer-details .order-field::after {
+      content: "🎄";
+    }
+
+    body.festivity-navidad .order-customer-details .order-field:nth-child(2)::after {
+      content: "🎁";
+    }
+
+    body.festivity-navidad .order-customer-details .order-field:nth-child(3)::after {
+      content: "❄️";
     }
 
     body.festivity-halloween .order-summary,
