@@ -1487,96 +1487,173 @@
       box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.32), 0 4px 12px rgba(249, 115, 22, 0.24);
     }
 
-    .festive-decorations {
-      position: fixed;
-      inset: 0;
-      z-index: 1025;
-      overflow: hidden;
-      pointer-events: none;
-      user-select: none;
+    body.festivity-halloween .navbar,
+    body.festivity-navidad .navbar {
+      position: relative;
     }
 
-    .festive-theme {
-      display: none;
-    }
-
-    body.festivity-halloween .festive-halloween,
-    body.festivity-navidad .festive-navidad {
-      display: block;
-    }
-
-    .festive-item {
+    body.festivity-halloween .navbar::after,
+    body.festivity-navidad .navbar::after {
       position: absolute;
-      font-size: clamp(1.25rem, 2.5vw, 2rem);
-      line-height: 1;
-      opacity: 0.55;
+      right: 0;
+      bottom: -3px;
+      left: 0;
+      height: 10px;
+      z-index: 1;
+      pointer-events: none;
+      content: "";
     }
 
-    .festive-item-top-left {
-      top: 105px;
-      left: 14px;
+    body.festivity-halloween .navbar::after {
+      background:
+        radial-gradient(circle, #ff9b32 0 3px, transparent 3.5px) 12px 0 / 46px 10px repeat-x,
+        linear-gradient(90deg, #542568, #f97316 50%, #542568);
     }
 
-    .festive-item-top-right {
-      top: 105px;
-      right: 14px;
+    body.festivity-navidad .navbar::after {
+      background:
+        radial-gradient(circle, #f4d35e 0 3px, transparent 3.5px) 12px 0 / 46px 10px repeat-x,
+        linear-gradient(90deg, #146b45, #f4d35e 50%, #b62832);
     }
 
-    .festive-item-bottom-left {
-      bottom: 24px;
-      left: 16px;
+    body.festivity-halloween .card-product,
+    body.festivity-navidad .card-product {
+      position: relative;
+      overflow: hidden;
     }
 
-    .festive-item-bottom-right {
-      right: 16px;
-      bottom: 24px;
+    body.festivity-halloween .card-product {
+      border-color: rgba(249, 115, 22, 0.48);
+      background-image: linear-gradient(135deg, rgba(92, 39, 106, 0.1), transparent 58%);
     }
 
-    @media (max-width: 575.98px) {
-      .festive-item {
-        font-size: 1.2rem;
-        opacity: 0.42;
-      }
+    body.festivity-navidad .card-product {
+      border-color: rgba(34, 160, 95, 0.48);
+      background-image: linear-gradient(135deg, rgba(34, 160, 95, 0.1), transparent 58%);
+    }
 
-      .festive-item-top-left {
-        top: 96px;
-        left: 6px;
-      }
+    body.festivity-halloween .card-product::before,
+    body.festivity-navidad .card-product::before {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 76px;
+      height: 76px;
+      z-index: 0;
+      pointer-events: none;
+      content: "";
+      opacity: 0.52;
+      mask-image: linear-gradient(135deg, transparent 4%, #000 88%);
+    }
 
-      .festive-item-top-right {
-        top: 96px;
-        right: 6px;
-      }
+    body.festivity-halloween .card-product::before {
+      background:
+        radial-gradient(circle at 100% 0, transparent 0 12px, #d58aee 13px 14px, transparent 15px 25px, #d58aee 26px 27px, transparent 28px 38px, #d58aee 39px 40px, transparent 41px),
+        repeating-conic-gradient(from 0deg at 100% 0, transparent 0deg 14deg, #d58aee 14.5deg 15.5deg, transparent 16deg 45deg);
+    }
 
-      .festive-item-bottom-left {
-        bottom: 92px;
-        left: 8px;
-      }
+    body.festivity-navidad .card-product::before {
+      background:
+        radial-gradient(circle at 14px 16px, #d8f3ff 0 2px, transparent 2.8px),
+        radial-gradient(circle at 48px 11px, #d8f3ff 0 1.5px, transparent 2.4px),
+        radial-gradient(circle at 34px 39px, #d8f3ff 0 2px, transparent 2.8px),
+        radial-gradient(circle at 65px 52px, #d8f3ff 0 1.5px, transparent 2.4px),
+        radial-gradient(circle at 13px 67px, #d8f3ff 0 1.5px, transparent 2.4px),
+        radial-gradient(circle at 60px 27px, #d8f3ff 0 1px, transparent 2px);
+    }
 
-      .festive-item-bottom-right {
-        right: 8px;
-        bottom: 92px;
-      }
+    body.festivity-halloween .card-product > *,
+    body.festivity-navidad .card-product > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    body.festivity-halloween .navbar-menu,
+    body.festivity-navidad .navbar-menu {
+      position: relative;
+      overflow: hidden;
+      padding-top: 15px;
+    }
+
+    body.festivity-halloween .navbar-menu {
+      border-top: 3px solid #f97316;
+      background-image:
+        radial-gradient(circle at 100% 0, rgba(249, 115, 22, 0.18), transparent 92px),
+        linear-gradient(120deg, rgba(92, 39, 106, 0.12), transparent 62%);
+    }
+
+    body.festivity-navidad .navbar-menu {
+      border-top: 3px solid #22a05f;
+      background-image:
+        radial-gradient(circle at 100% 0, rgba(244, 211, 94, 0.2), transparent 92px),
+        linear-gradient(120deg, rgba(34, 160, 95, 0.12), transparent 62%);
+    }
+
+    body.festivity-halloween .navbar-menu::after,
+    body.festivity-navidad .navbar-menu::after {
+      position: absolute;
+      top: 0;
+      right: 12px;
+      left: 12px;
+      height: 8px;
+      pointer-events: none;
+      content: "";
+      background: repeating-linear-gradient(135deg, transparent 0 8px, currentColor 8px 10px, transparent 10px 18px);
+      opacity: 0.45;
+    }
+
+    body.festivity-halloween .navbar-menu::after {
+      color: #d58aee;
+    }
+
+    body.festivity-navidad .navbar-menu::after {
+      color: #f4d35e;
+    }
+
+    body.festivity-halloween .desktop-order-panel,
+    body.festivity-navidad .desktop-order-panel {
+      position: sticky;
+      overflow: hidden;
+    }
+
+    body.festivity-halloween .desktop-order-panel {
+      border-color: rgba(249, 115, 22, 0.52);
+      box-shadow: 0 8px 28px rgba(92, 39, 106, 0.16), inset 0 3px #f97316;
+      background-image: linear-gradient(155deg, rgba(92, 39, 106, 0.14), transparent 42%);
+    }
+
+    body.festivity-navidad .desktop-order-panel {
+      border-color: rgba(34, 160, 95, 0.52);
+      box-shadow: 0 8px 28px rgba(20, 107, 69, 0.16), inset 0 3px #22a05f;
+      background-image: linear-gradient(155deg, rgba(34, 160, 95, 0.14), transparent 42%);
+    }
+
+    body.festivity-halloween #desktopListaItems,
+    body.festivity-halloween #modalListaItems {
+      background-image:
+        radial-gradient(circle at 100% 0, rgba(213, 138, 238, 0.12), transparent 90px);
+    }
+
+    body.festivity-navidad #desktopListaItems,
+    body.festivity-navidad #modalListaItems {
+      background-image:
+        radial-gradient(circle at 100% 0, rgba(216, 243, 255, 0.14), transparent 90px),
+        radial-gradient(circle at 14px 18px, rgba(216, 243, 255, 0.25) 0 1px, transparent 1.8px);
+    }
+
+    body.festivity-halloween .order-summary,
+    body.festivity-halloween #modalFinalizar .order-summary {
+      border-color: rgba(249, 115, 22, 0.42);
+    }
+
+    body.festivity-navidad .order-summary,
+    body.festivity-navidad #modalFinalizar .order-summary {
+      border-color: rgba(34, 160, 95, 0.42);
     }
 
   </style>
 </head>
 <body>
-
-  <div class="festive-decorations" aria-hidden="true">
-    <div class="festive-theme festive-halloween">
-      <span class="festive-item festive-item-top-left">🕸️</span>
-      <span class="festive-item festive-item-top-right">🕷️</span>
-      <span class="festive-item festive-item-bottom-left">🎃</span>
-      <span class="festive-item festive-item-bottom-right">👻</span>
-    </div>
-    <div class="festive-theme festive-navidad">
-      <span class="festive-item festive-item-top-left">❄️</span>
-      <span class="festive-item festive-item-top-right">✨</span>
-      <span class="festive-item festive-item-bottom-left">🎄</span>
-      <span class="festive-item festive-item-bottom-right">🎁</span>
-    </div>
-  </div>
 
   <a class="skip-link" href="#contenidoPrincipal">Saltar al contenido</a>
 
@@ -1727,7 +1804,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     // AQUI ACTIVAS LAS FESTIVIDADES. Ejemplos: 'halloween', 'navidad'. Vacio para desactivar.
-    const FESTIVIDAD_ACTIVA = 'halloween';
+    const FESTIVIDAD_ACTIVA = '';
     const URL_API_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbwVvAAODNFh4408zZRaxd89p-rWIjXvBWc5_wH3_ofX0fz4NJUqpHrvFLaIWoLkkoAv/exec";
     const CACHE_CATALOGO_LOCAL_KEY = 'limza-catalogo-v1';
     const TIMEOUT_CATALOGO_MS = 10000;
