@@ -963,7 +963,12 @@
 
     .navbar-actions {
       position: absolute;
+      top: 0;
+      bottom: 0;
       right: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
     }
 
     .menu-toggle {
@@ -1479,18 +1484,13 @@
       box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.32), 0 4px 12px rgba(249, 115, 22, 0.24);
     }
 
-    body.festivity-halloween .navbar,
-    body.festivity-navidad .navbar {
-      position: relative;
-    }
-
     body.festivity-halloween .navbar::after,
     body.festivity-navidad .navbar::after {
       position: absolute;
       right: 0;
       bottom: -3px;
       left: 0;
-      height: 10px;
+      height: 12px;
       z-index: 1;
       pointer-events: none;
       content: "";
@@ -1498,30 +1498,35 @@
 
     body.festivity-halloween .navbar::after {
       background:
-        radial-gradient(circle, #ff9b32 0 3px, transparent 3.5px) 12px 0 / 46px 10px repeat-x,
-        linear-gradient(90deg, #542568, #f97316 50%, #542568);
+        radial-gradient(ellipse at 50% 0, transparent 0 8px, rgba(255, 173, 76, 0.72) 8.5px 9.5px, transparent 10px) 0 0 / 34px 12px repeat-x,
+        linear-gradient(90deg, #542568 0%, #f97316 48%, #ffb454 52%, #542568 100%);
     }
 
     body.festivity-navidad .navbar::after {
       background:
-        radial-gradient(circle, #f4d35e 0 3px, transparent 3.5px) 12px 0 / 46px 10px repeat-x,
-        linear-gradient(90deg, #146b45, #f4d35e 50%, #b62832);
+        radial-gradient(ellipse at 50% 0, transparent 0 8px, rgba(255, 230, 143, 0.76) 8.5px 9.5px, transparent 10px) 0 0 / 34px 12px repeat-x,
+        linear-gradient(90deg, #146b45 0%, #f4d35e 48%, #fff0ad 52%, #b62832 100%);
     }
 
     body.festivity-halloween .card-product,
     body.festivity-navidad .card-product {
       position: relative;
       overflow: hidden;
+      isolation: isolate;
     }
 
     body.festivity-halloween .card-product {
-      border-color: rgba(249, 115, 22, 0.48);
-      background-image: linear-gradient(135deg, rgba(92, 39, 106, 0.1), transparent 58%);
+      border-color: rgba(176, 104, 199, 0.46);
+      background-image:
+        linear-gradient(135deg, rgba(92, 39, 106, 0.1), transparent 58%),
+        radial-gradient(ellipse at 100% 0, rgba(249, 115, 22, 0.1), transparent 42%);
     }
 
     body.festivity-navidad .card-product {
-      border-color: rgba(34, 160, 95, 0.48);
-      background-image: linear-gradient(135deg, rgba(34, 160, 95, 0.1), transparent 58%);
+      border-color: rgba(34, 128, 80, 0.42);
+      background-image:
+        linear-gradient(135deg, rgba(34, 160, 95, 0.1), transparent 58%),
+        radial-gradient(ellipse at 100% 0, rgba(244, 211, 94, 0.12), transparent 42%);
     }
 
     body.festivity-halloween .card-product::before,
@@ -1529,77 +1534,30 @@
       position: absolute;
       top: 0;
       right: 0;
-      width: 76px;
-      height: 76px;
+      width: 96px;
+      height: 96px;
       z-index: 0;
       pointer-events: none;
       content: "";
-      opacity: 0.52;
-      mask-image: linear-gradient(135deg, transparent 4%, #000 88%);
+      opacity: 0.42;
+      mask-image: linear-gradient(135deg, transparent 5%, #000 92%);
     }
 
     body.festivity-halloween .card-product::before {
       background:
-        radial-gradient(circle at 100% 0, transparent 0 12px, #d58aee 13px 14px, transparent 15px 25px, #d58aee 26px 27px, transparent 28px 38px, #d58aee 39px 40px, transparent 41px),
-        repeating-conic-gradient(from 0deg at 100% 0, transparent 0deg 14deg, #d58aee 14.5deg 15.5deg, transparent 16deg 45deg);
-    }
-
-    body.festivity-halloween #contenedorProductos > :nth-child(3n + 2) .card-product::before {
-      background:
-        radial-gradient(circle at 100% 0, transparent 0 9px, #d58aee 10px 11px, transparent 12px 20px, #d58aee 21px 22px, transparent 23px),
-        repeating-conic-gradient(from 18deg at 100% 0, transparent 0deg 19deg, #d58aee 19.5deg 21deg, transparent 21.5deg 60deg);
-    }
-
-    body.festivity-halloween #contenedorProductos > :nth-child(3n) .card-product::before {
-      background:
-        radial-gradient(ellipse at 100% 0, transparent 0 15px, #d58aee 16px 17px, transparent 18px 31px, #d58aee 32px 33px, transparent 34px),
-        repeating-conic-gradient(from -10deg at 100% 0, transparent 0deg 11deg, #d58aee 11.5deg 13deg, transparent 13.5deg 36deg);
+        radial-gradient(circle at 100% 0, transparent 0 14px, #d58aee 14.5px 15.5px, transparent 16px 30px, #d58aee 30.5px 31.5px, transparent 32px 46px, #d58aee 46.5px 47.5px, transparent 48px),
+        repeating-conic-gradient(from 0deg at 100% 0, transparent 0deg 14deg, #d58aee 14.5deg 15.5deg, transparent 16deg 45deg),
+        radial-gradient(circle at 100% 0, rgba(249, 115, 22, 0.25), transparent 68%);
     }
 
     body.festivity-navidad .card-product::before {
       background:
-        radial-gradient(circle at 14px 16px, #d8f3ff 0 2px, transparent 2.8px),
-        radial-gradient(circle at 48px 11px, #d8f3ff 0 1.5px, transparent 2.4px),
-        radial-gradient(circle at 34px 39px, #d8f3ff 0 2px, transparent 2.8px),
-        radial-gradient(circle at 65px 52px, #d8f3ff 0 1.5px, transparent 2.4px),
-        radial-gradient(circle at 13px 67px, #d8f3ff 0 1.5px, transparent 2.4px),
-        radial-gradient(circle at 60px 27px, #d8f3ff 0 1px, transparent 2px);
-    }
-
-    body.festivity-halloween .card-product::after,
-    body.festivity-navidad .card-product::after {
-      position: absolute;
-      right: 10px;
-      bottom: 4px;
-      z-index: 0;
-      font-size: 1.65rem;
-      line-height: 1;
-      opacity: 0.14;
-      pointer-events: none;
-    }
-
-    body.festivity-halloween .card-product::after {
-      content: "🎃";
-    }
-
-    body.festivity-halloween #contenedorProductos > :nth-child(3n + 2) .card-product::after {
-      content: "💀";
-    }
-
-    body.festivity-halloween #contenedorProductos > :nth-child(3n) .card-product::after {
-      content: "🦴";
-    }
-
-    body.festivity-navidad .card-product::after {
-      content: "🎁";
-    }
-
-    body.festivity-navidad #contenedorProductos > :nth-child(3n + 2) .card-product::after {
-      content: "🎄";
-    }
-
-    body.festivity-navidad #contenedorProductos > :nth-child(3n) .card-product::after {
-      content: "⭐";
+        radial-gradient(circle at 19px 20px, rgba(216, 243, 255, 0.9) 0 1.5px, transparent 2.3px),
+        radial-gradient(circle at 53px 14px, rgba(216, 243, 255, 0.85) 0 1px, transparent 1.8px),
+        radial-gradient(circle at 38px 46px, rgba(216, 243, 255, 0.9) 0 1.5px, transparent 2.3px),
+        radial-gradient(circle at 77px 39px, rgba(216, 243, 255, 0.8) 0 1px, transparent 1.8px),
+        radial-gradient(circle at 67px 74px, rgba(216, 243, 255, 0.9) 0 1.5px, transparent 2.3px),
+        radial-gradient(ellipse at 100% 0, rgba(34, 160, 95, 0.2), transparent 72%);
     }
 
     body.festivity-halloween .card-product > *,
@@ -1610,129 +1568,157 @@
 
     body.festivity-halloween .navbar-menu,
     body.festivity-navidad .navbar-menu {
-      position: relative;
       overflow: hidden;
-      padding-top: 15px;
+      padding-top: 17px;
+      border-radius: 14px;
+      background-repeat: no-repeat;
+      background-position: top left;
     }
 
     body.festivity-halloween .navbar-menu {
+      border: 1px solid rgba(213, 138, 238, 0.42);
       border-top: 3px solid #f97316;
       background-image:
-        radial-gradient(circle at 100% 0, rgba(249, 115, 22, 0.18), transparent 92px),
-        linear-gradient(120deg, rgba(92, 39, 106, 0.12), transparent 62%);
+        radial-gradient(circle at 100% 0, rgba(249, 115, 22, 0.16), transparent 100px),
+        linear-gradient(135deg, rgba(92, 39, 106, 0.2), transparent 70%);
     }
 
     body.festivity-navidad .navbar-menu {
+      border: 1px solid rgba(244, 211, 94, 0.42);
       border-top: 3px solid #22a05f;
       background-image:
-        radial-gradient(circle at 100% 0, rgba(244, 211, 94, 0.2), transparent 92px),
-        linear-gradient(120deg, rgba(34, 160, 95, 0.12), transparent 62%);
+        radial-gradient(circle at 100% 0, rgba(244, 211, 94, 0.18), transparent 100px),
+        linear-gradient(135deg, rgba(34, 160, 95, 0.18), transparent 70%);
     }
 
     body.festivity-halloween .navbar-menu::after,
     body.festivity-navidad .navbar-menu::after {
       position: absolute;
-      top: 0;
-      right: 12px;
-      left: 12px;
-      height: 8px;
+      top: 3px;
+      right: 9px;
+      width: 38px;
+      height: 38px;
       pointer-events: none;
       content: "";
-      background: repeating-linear-gradient(135deg, transparent 0 8px, currentColor 8px 10px, transparent 10px 18px);
-      opacity: 0.45;
+      opacity: 0.5;
+      mask-image: linear-gradient(135deg, #000, transparent 78%);
     }
 
     body.festivity-halloween .navbar-menu::after {
-      color: #d58aee;
+      background:
+        radial-gradient(circle at 100% 0, transparent 0 7px, #d58aee 7.5px 8.5px, transparent 9px 17px, #d58aee 17.5px 18.5px, transparent 19px),
+        repeating-conic-gradient(from 0deg at 100% 0, transparent 0deg 16deg, #d58aee 16.5deg 17.5deg, transparent 18deg 45deg);
     }
 
     body.festivity-navidad .navbar-menu::after {
-      color: #f4d35e;
+      background:
+        radial-gradient(circle at 9px 9px, #f4d35e 0 1.5px, transparent 2px),
+        radial-gradient(circle at 27px 18px, #d8f3ff 0 1.5px, transparent 2px),
+        radial-gradient(circle at 15px 31px, #f4d35e 0 1px, transparent 1.8px),
+        linear-gradient(135deg, transparent 46%, rgba(244, 211, 94, 0.6) 48% 51%, transparent 53%);
     }
 
     body.festivity-halloween .desktop-order-panel,
     body.festivity-navidad .desktop-order-panel {
-      position: sticky;
       overflow: hidden;
+      isolation: isolate;
     }
 
     body.festivity-halloween .desktop-order-panel {
-      border-color: rgba(249, 115, 22, 0.52);
+      border-color: rgba(176, 104, 199, 0.44);
       box-shadow: 0 8px 28px rgba(92, 39, 106, 0.16), inset 0 3px #f97316;
-      background-image: linear-gradient(155deg, rgba(92, 39, 106, 0.14), transparent 42%);
+      background-image:
+        radial-gradient(ellipse at 100% 0, rgba(249, 115, 22, 0.1), transparent 180px),
+        linear-gradient(155deg, rgba(92, 39, 106, 0.13), transparent 48%);
     }
 
     body.festivity-navidad .desktop-order-panel {
-      border-color: rgba(34, 160, 95, 0.52);
+      border-color: rgba(34, 128, 80, 0.44);
       box-shadow: 0 8px 28px rgba(20, 107, 69, 0.16), inset 0 3px #22a05f;
-      background-image: linear-gradient(155deg, rgba(34, 160, 95, 0.14), transparent 42%);
+      background-image:
+        radial-gradient(ellipse at 100% 0, rgba(244, 211, 94, 0.11), transparent 180px),
+        linear-gradient(155deg, rgba(34, 160, 95, 0.13), transparent 48%);
+    }
+
+    body.festivity-halloween .desktop-order-heading,
+    body.festivity-navidad .desktop-order-heading {
+      position: relative;
+      z-index: 1;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    body.festivity-halloween .desktop-order-count {
+      background: #542568;
+      color: #fff3dc;
+    }
+
+    body.festivity-navidad .desktop-order-count {
+      background: #146b45;
+      color: #fff0ad;
     }
 
     body.festivity-halloween #desktopListaItems,
     body.festivity-halloween #modalListaItems {
       padding-right: 8px;
       background-image:
-        radial-gradient(circle at 0 100%, rgba(213, 138, 238, 0.1), transparent 72px);
+        radial-gradient(circle at 0 100%, rgba(213, 138, 238, 0.11), transparent 90px),
+        repeating-linear-gradient(135deg, transparent 0 22px, rgba(213, 138, 238, 0.025) 22px 23px, transparent 23px 44px);
     }
 
     body.festivity-navidad #desktopListaItems,
     body.festivity-navidad #modalListaItems {
       padding-right: 8px;
       background-image:
-        radial-gradient(circle at 0 100%, rgba(216, 243, 255, 0.1), transparent 72px),
-        radial-gradient(circle at 14px 18px, rgba(216, 243, 255, 0.25) 0 1px, transparent 1.8px);
+        radial-gradient(circle at 0 100%, rgba(216, 243, 255, 0.12), transparent 90px),
+        radial-gradient(circle at 14px 18px, rgba(216, 243, 255, 0.28) 0 1px, transparent 1.8px),
+        radial-gradient(circle at 38px 51px, rgba(216, 243, 255, 0.22) 0 1px, transparent 1.8px);
     }
 
     body.festivity-halloween .order-customer-details .order-field,
     body.festivity-navidad .order-customer-details .order-field {
       position: relative;
+      isolation: isolate;
     }
 
     body.festivity-halloween .order-customer-details .order-field::after,
     body.festivity-navidad .order-customer-details .order-field::after {
       position: absolute;
-      top: -8px;
-      right: 10px;
-      z-index: 2;
-      padding: 0 4px;
-      background: var(--surface);
-      font-size: 1rem;
-      line-height: 1;
+      top: 1px;
+      right: 1px;
+      width: 30px;
+      height: 29px;
+      z-index: 1;
       pointer-events: none;
+      content: "";
+      opacity: 0.66;
+      mask-image: linear-gradient(135deg, transparent 8%, #000 100%);
     }
 
     body.festivity-halloween .order-customer-details .order-field::after {
-      content: "🎃";
-    }
-
-    body.festivity-halloween .order-customer-details .order-field:nth-child(2)::after {
-      content: "💀";
-    }
-
-    body.festivity-halloween .order-customer-details .order-field:nth-child(3)::after {
-      content: "🦴";
+      background:
+        radial-gradient(circle at 100% 0, transparent 0 7px, #d58aee 7.5px 8.5px, transparent 9px 17px, #d58aee 17.5px 18.5px, transparent 19px),
+        repeating-conic-gradient(from 0deg at 100% 0, transparent 0deg 16deg, #d58aee 16.5deg 17.5deg, transparent 18deg 45deg);
     }
 
     body.festivity-navidad .order-customer-details .order-field::after {
-      content: "🎄";
-    }
-
-    body.festivity-navidad .order-customer-details .order-field:nth-child(2)::after {
-      content: "🎁";
-    }
-
-    body.festivity-navidad .order-customer-details .order-field:nth-child(3)::after {
-      content: "❄️";
+      background:
+        radial-gradient(circle at 8px 8px, #22a05f 0 1px, transparent 1.7px),
+        radial-gradient(circle at 22px 14px, #f4d35e 0 1px, transparent 1.7px),
+        radial-gradient(circle at 13px 25px, #d8f3ff 0 1px, transparent 1.7px),
+        linear-gradient(135deg, transparent 46%, rgba(244, 211, 94, 0.65) 48% 51%, transparent 53%);
     }
 
     body.festivity-halloween .order-summary,
     body.festivity-halloween #modalFinalizar .order-summary {
       border-color: rgba(249, 115, 22, 0.42);
+      box-shadow: inset 0 2px rgba(213, 138, 238, 0.36);
     }
 
     body.festivity-navidad .order-summary,
     body.festivity-navidad #modalFinalizar .order-summary {
       border-color: rgba(34, 160, 95, 0.42);
+      box-shadow: inset 0 2px rgba(244, 211, 94, 0.52);
     }
 
   </style>
