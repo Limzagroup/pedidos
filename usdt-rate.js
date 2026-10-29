@@ -12,9 +12,13 @@
       color: #f5f5f5;
       font-size: 0.75rem;
       font-weight: 600;
-      line-height: 1.2;
-      text-align: right;
+      line-height: 1.05;
+      text-align: center;
       white-space: nowrap;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
     }
     body.light-mode .usdt-rate {
       color: #191919;
@@ -34,13 +38,16 @@
   elemento.setAttribute("aria-live", "polite");
   elemento.setAttribute("aria-label", "Promedio de compra y venta de USDT/VES en Binance P2P");
   elemento.title = "Promedio de compra y venta de USDT/VES en Binance P2P, expresado en bolívares.";
-  elemento.textContent = "USDT:Bs. consultando...";
+  const etiqueta = document.createElement("span");
+  etiqueta.textContent = "USDT";
+  const valor = document.createElement("span");
+  valor.textContent = "Bs. consultando...";
+  elemento.append(etiqueta, valor);
   contenedor.insertBefore(elemento, menu);
 
   const callbackName = `__limzaPromedioUsdt_${Date.now()}_${Math.random().toString(36).slice(2)}`;
   const script = document.createElement("script");
   let completado = false;
-  let tasaActual = null;
   const timeout = window.setTimeout(
     () => finalizar(new Error("Se agotó el tiempo de consulta del promedio USDT.")),
     10000
@@ -66,7 +73,7 @@
     ) {
       if (error) console.error("No se pudo cargar el promedio USDT:", error);
       else console.error("El servidor devolvió un promedio USDT inválido.", datos);
-      elemento.textContent = "USDT:Bs. no disponible";
+      valor.textContent = "Bs. no disponible";
       elemento.title = datos && datos.mensaje
         ? String(datos.mensaje)
         : "No se pudo consultar el promedio USDT/VES en Binance P2P.";
@@ -77,22 +84,12 @@
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
     }).format(Number(tasa));
-    tasaActual = Number(datos.tasa);
-    actualizarEtiqueta();
+    valor.textContent = `Bs. ${formatear(datos.tasa)}`;
     elemento.title =
       `Promedio Binance P2P USDT/VES en bolívares · Compra: Bs. ${formatear(datos.promedioCompra)} · ` +
       `Venta: Bs. ${formatear(datos.promedioVenta)}`;
   }
 
-  function actualizarEtiqueta() {
-    if (tasaActual === null) return;
-    elemento.textContent = `USDT:Bs. ${new Intl.NumberFormat("es-VE", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    }).format(tasaActual)}`;
-  }
-
-  window.addEventListener("resize", actualizarEtiqueta);
   window[callbackName] = (datos) => finalizar(null, datos);
   script.onerror = () => finalizar(new Error("No se pudo cargar la respuesta de Apps Script para el promedio USDT."));
   script.src = `${URL_API_APPS_SCRIPT}?action=promedioUSDT&callback=${encodeURIComponent(callbackName)}`;
