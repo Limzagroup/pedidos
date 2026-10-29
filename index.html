@@ -519,9 +519,9 @@
       font-size: 0.875rem;
     }
     .order-field-optional {
-      margin-left: 4px;
+      margin-left: 2px;
       color: var(--text-muted);
-      font-size: 0.8rem;
+      font-size: 0.65rem;
       font-weight: 400;
     }
     .order-rif-comment-row,
@@ -985,6 +985,7 @@
       display: flex;
       align-items: center;
       justify-content: flex-end;
+      gap: 10px;
     }
     .menu-toggle {
       width: 42px;
@@ -1499,26 +1500,26 @@
           <form id="formularioPedido" class="order-customer-details" novalidate>
             <div class="order-field mb-2">
               <label for="clienteNombre" class="form-label order-field-label fw-semibold">Cliente</label>
-              <input type="text" id="clienteNombre" class="form-control rounded-3 px-3" placeholder="Persona o Razón Social" autocomplete="organization" aria-describedby="clienteAyuda" aria-required="true" required>
+              <input type="text" id="clienteNombre" class="form-control rounded-3 px-3" maxlength="60" placeholder="Persona o Razón Social" autocomplete="organization" aria-describedby="clienteAyuda" aria-required="true" required>
               <div id="clienteAyuda" class="val-feedback val-feedback-invalid px-2"></div>
             </div>
             <div class="order-zone-vendedor-row mb-2">
               <div class="order-field order-zone-field">
                 <label for="zonaPedido" class="form-label order-field-label fw-semibold">Zona <span class="order-field-optional">(Opcional)</span></label>
-                <input type="text" id="zonaPedido" class="form-control rounded-3 px-3" placeholder="Ej: Altamira" autocomplete="off" aria-describedby="zonaAyuda">
+                <input type="text" id="zonaPedido" class="form-control rounded-3 px-3" maxlength="40" placeholder="Ej: Altamira" autocomplete="off" aria-describedby="zonaAyuda">
                 <div id="zonaAyuda" class="val-feedback val-feedback-invalid px-2"></div>
               </div>
               <div class="order-field order-vendedor-field">
                 <label for="vendedorNombre" class="form-label order-field-label fw-semibold">Vendedor</label>
-                <input type="text" id="vendedorNombre" class="form-control rounded-3 px-3" placeholder="Ej: María González" autocomplete="name" aria-describedby="vendedorAyuda" aria-required="true" required>
+                <input type="text" id="vendedorNombre" class="form-control rounded-3 px-3" maxlength="40" placeholder="Ej: María González" autocomplete="name" aria-describedby="vendedorAyuda" aria-required="true" required>
                 <div id="vendedorAyuda" class="val-feedback val-feedback-invalid px-2"></div>
               </div>
             </div>
             <div class="order-rif-comment-row mb-2">
               <div class="order-field order-rif-field">
                 <label for="clienteRif" class="form-label order-field-label fw-semibold">RIF cliente</label>
-                <input type="text" id="clienteRif" class="form-control rounded-3 px-3" placeholder="J-123456789" autocomplete="off" aria-describedby="rifAyuda">
-                <div id="rifAyuda" class="val-feedback val-feedback-invalid px-2">Formato inválido. Usa V- o J- seguido de 6 a 9 dígitos.</div>
+                <input type="text" id="clienteRif" class="form-control rounded-3 px-3" maxlength="11" placeholder="J-123456789" autocomplete="off" aria-describedby="rifAyuda">
+                <div id="rifAyuda" class="val-feedback val-feedback-invalid px-2">Formato inválido. Usa V-, E-, J-, G-, P- o C- seguido de 6 a 9 dígitos.</div>
               </div>
               <div class="order-field order-comment-field">
                 <label for="comentarioPedido" class="form-label order-field-label fw-semibold">Comentarios <span class="order-field-optional">(Opcional)</span></label>
@@ -1574,10 +1575,17 @@
       getById('btnLimpiarBuscador').addEventListener('click', limpiarBuscadorManualmente);
       getById('btnAbrirModal').addEventListener('click', abrirModalFinalizar);
       getById('btnAbrirPedidoDesktop').addEventListener('click', abrirModalFinalizar);
-      getById('vendedorNombre').addEventListener('input', validarCampoVendedor);
-      getById('clienteNombre').addEventListener('input', validarCampoCliente);
+      getById('vendedorNombre').addEventListener('input', () => {
+        limpiarCaracteresEspeciales(getById('vendedorNombre'));
+        validarCampoVendedor();
+      });
+      getById('clienteNombre').addEventListener('input', () => {
+        limpiarCaracteresEspeciales(getById('clienteNombre'));
+        validarCampoCliente();
+      });
+      getById('comentarioPedido').addEventListener('input', () => limpiarCaracteresEspeciales(getById('comentarioPedido')));
       getById('zonaPedido').addEventListener('input', validarCampoZona);
-      getById('clienteRif').addEventListener('input', validarCampoRif);
+      getById('clienteRif').addEventListener('input', () => validarCampoRif());
       getById('formularioPedido').addEventListener('submit', enviarPedido);
       let lastScrollTop = 0;
       const searchWrapper = getById('searchWrapper');
@@ -2132,9 +2140,22 @@
       actualizarItemUI(codigo);
       actualizarBarraTotales();
     }
+    function limpiarCaracteresEspeciales(el) {
+      const valor = el.value.normalize('NFC');
+      const posicion = el.selectionStart;
+      const valorAntesDelCursor = posicion === null ? valor : valor.slice(0, posicion);
+      const valorLimpio = valor.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s]/g, '');
+      if (valorLimpio !== el.value) {
+        el.value = valorLimpio;
+        if (posicion !== null) {
+          const posicionLimpia = valorAntesDelCursor.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s]/g, '').length;
+          el.setSelectionRange(posicionLimpia, posicionLimpia);
+        }
+      }
+    }
     function validarCampoVendedor(actualizarBoton = true) {
       const el = document.getElementById('vendedorNombre');
-      const esValido = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{6,40}$/.test(el.value.trim());
+      const esValido = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s]{6,40}$/.test(el.value.trim());
       el.classList.toggle('is-valid', esValido && el.value.trim() !== '');
       el.classList.toggle('is-invalid', !esValido || el.value.trim() === '');
       el.setAttribute('aria-invalid', String(!esValido || el.value.trim() === ''));
@@ -2143,7 +2164,7 @@
     }
     function validarCampoCliente(actualizarBoton = true) {
       const el = document.getElementById('clienteNombre');
-      const esValido = /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s.,&/\-]{6,60}$/.test(el.value.trim());
+      const esValido = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s]{6,60}$/.test(el.value.trim());
       el.classList.toggle('is-valid', esValido && el.value.trim() !== '');
       el.classList.toggle('is-invalid', !esValido || el.value.trim() === '');
       el.setAttribute('aria-invalid', String(!esValido || el.value.trim() === ''));
@@ -2158,7 +2179,7 @@
         if (actualizarBoton) revisarBotonEnvio();
         return true;
       }
-      const esValido = /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s.,&\/\-]{2,40}$/.test(el.value.trim());
+      const esValido = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s]{2,40}$/.test(el.value.trim());
       el.classList.toggle('is-valid', esValido && el.value.trim() !== '');
       el.classList.toggle('is-invalid', !esValido || el.value.trim() === '');
       el.setAttribute('aria-invalid', String(!esValido || el.value.trim() === ''));
@@ -2167,15 +2188,34 @@
     }
     function validarCampoRif(actualizarBoton = true) {
       const el = document.getElementById('clienteRif');
-      let val = el.value.toUpperCase().replace(/\s+/g, '');
-      el.value = val;
+      const valorOriginal = el.value.toUpperCase();
+      const posicion = el.selectionStart;
+      const valorAntesDelCursor = posicion === null ? valorOriginal : valorOriginal.slice(0, posicion);
+      const normalizarRif = (valor) => {
+        const caracteresPermitidos = valor.toUpperCase().replace(/[^VEJGPC0-9-]/g, '');
+        const prefijo = /^[VEJGPC]/.test(caracteresPermitidos) ? caracteresPermitidos[0] : '';
+        if (!prefijo) return '';
+        const tieneGuionDespuesDelPrefijo = caracteresPermitidos.charAt(1) === '-';
+        const digitos = caracteresPermitidos
+          .slice(tieneGuionDespuesDelPrefijo ? 2 : 1)
+          .replace(/\D/g, '')
+          .slice(0, 9);
+        return prefijo + (tieneGuionDespuesDelPrefijo ? '-' : '') + digitos;
+      };
+      const val = normalizarRif(valorOriginal);
+      if (el.value !== val) {
+        el.value = val;
+        if (posicion !== null) {
+          el.setSelectionRange(normalizarRif(valorAntesDelCursor).length, normalizarRif(valorAntesDelCursor).length);
+        }
+      }
       if (val === '') {
         el.classList.remove('is-invalid', 'is-valid');
         el.setAttribute('aria-invalid', 'false');
         if (actualizarBoton) revisarBotonEnvio();
         return true;
       }
-      const esValido = /^[VJ]-\d{6,9}$/.test(val);
+      const esValido = /^[VEJGPC]-\d{6,9}$/.test(val);
       el.classList.toggle('is-valid', esValido);
       el.classList.toggle('is-invalid', !esValido);
       el.setAttribute('aria-invalid', String(!esValido));
@@ -2220,7 +2260,7 @@
       const payload = {
         vendedor: document.getElementById('vendedorNombre').value.trim(),
         cliente: document.getElementById('clienteNombre').value.trim(),
-        zona: document.getElementById('zonaPedido').value.trim() || 'N/A',
+        zona: document.getElementById('zonaPedido').value.trim(),
         rif: rifVal !== '' ? rifVal : 'N/A',
         comentario: document.getElementById('comentarioPedido').value.trim(),
         resumenTexto: resumenTexto,
@@ -2290,5 +2330,8 @@
       });
     }
   </script>
+  <!-- INICIO MODULO PROMEDIO USDT: para retirarlo, elimina esta etiqueta script y el endpoint marcado en code.js. -->
+  <script src="usdt-rate.js"></script>
+  <!-- FIN MODULO PROMEDIO USDT -->
 </body>
 </html>
