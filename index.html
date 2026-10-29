@@ -1086,10 +1086,12 @@
     .modern-search-wrapper {
       background: #242424;
       border-color: #3a3a3a;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.28);
     }
     .modern-search-wrapper:focus-within {
       background: #2a2a2a;
       border-color: var(--brand-orange);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.28);
     }
     .modern-search-input {
       color: #ffffff;
@@ -1224,12 +1226,12 @@
     body.light-mode .modern-search-wrapper {
       background: #ffffff;
       border-color: transparent;
-      box-shadow: none;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     }
     body.light-mode .modern-search-wrapper:focus-within {
       background: #ffffff;
       border-color: var(--brand-orange);
-      box-shadow: none;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     }
     body.light-mode .modern-search-input {
       color: #191919;
@@ -1407,7 +1409,7 @@
     </div>
   </div>
   <nav class="navbar navbar-dark sticky-top" aria-label="Navegación principal" style="background-color: var(--navbar-bg); z-index: 1050; border-bottom: 3px solid var(--brand-orange);">
-    <div class="container py-2 d-flex justify-content-center align-items-center">
+    <div class="container py-2 d-flex justify-content-between align-items-center">
       <!-- LOGOTIPO CORPORATIVO -->
       <img src="https://limzagroup.github.io/pedidos/LIMZAGROUP_LOGO.webp" alt="LIMZA GROUP" width="220" height="55" fetchpriority="high" style="max-height: 55px; width: auto; object-fit: contain;">
       <div class="dropdown navbar-actions">
@@ -1424,18 +1426,18 @@
     </div>
   </nav>
   <main id="contenidoPrincipal" tabindex="-1">
-  <div id="searchWrapper" class="container search-container">
-    <div class="modern-search-wrapper">
-      <label class="visually-hidden" for="buscador">Buscar productos por código, nombre o categoría</label>
-      <i class="bi bi-search modern-search-icon" aria-hidden="true"></i>
-      <input type="search" id="buscador" class="modern-search-input" placeholder="Buscar código, producto o marca..." autocomplete="off">
-      <button class="modern-search-clear d-none" id="btnLimpiarBuscador" type="button" aria-label="Limpiar búsqueda">
-        <i class="bi bi-x-circle-fill" aria-hidden="true"></i>
-      </button>
-    </div>
-  </div>
   <div class="container py-2 catalog-layout">
     <section class="catalog-products" aria-label="Productos disponibles">
+      <div id="searchWrapper" class="search-container">
+        <div class="modern-search-wrapper">
+          <label class="visually-hidden" for="buscador">Buscar productos por código, nombre o categoría</label>
+          <i class="bi bi-search modern-search-icon" aria-hidden="true"></i>
+          <input type="search" id="buscador" class="modern-search-input" placeholder="Buscar código, producto o marca..." autocomplete="off">
+          <button class="modern-search-clear d-none" id="btnLimpiarBuscador" type="button" aria-label="Limpiar búsqueda">
+            <i class="bi bi-x-circle-fill" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
       <div id="cargando" class="text-center py-5" role="status" aria-live="polite" aria-busy="true">
         <div class="spinner-border text-primary" aria-hidden="true"></div>
         <p class="mt-2 text-muted fw-semibold small">Sincronizando inventario...</p>
