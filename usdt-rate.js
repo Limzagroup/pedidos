@@ -67,7 +67,9 @@
       if (error) console.error("No se pudo cargar el promedio USDT:", error);
       else console.error("El servidor devolvió un promedio USDT inválido.", datos);
       elemento.textContent = "USDT:Bs. no disponible";
-      elemento.title = "No se pudo consultar el promedio USDT/VES en Binance P2P.";
+      elemento.title = datos && datos.mensaje
+        ? String(datos.mensaje)
+        : "No se pudo consultar el promedio USDT/VES en Binance P2P.";
       return;
     }
 
