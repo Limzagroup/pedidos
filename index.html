@@ -1506,12 +1506,12 @@
             <div class="order-zone-vendedor-row mb-2">
               <div class="order-field order-zone-field">
                 <label for="zonaPedido" class="form-label order-field-label fw-semibold">Zona <span class="order-field-optional">(Opcional)</span></label>
-                <input type="text" id="zonaPedido" class="form-control rounded-3 px-3" maxlength="40" placeholder="Ej: Altamira" autocomplete="off" aria-describedby="zonaAyuda">
+                <input type="text" id="zonaPedido" class="form-control rounded-3 px-3" maxlength="40" placeholder="Altamira" autocomplete="off" aria-describedby="zonaAyuda">
                 <div id="zonaAyuda" class="val-feedback val-feedback-invalid px-2"></div>
               </div>
               <div class="order-field order-vendedor-field">
                 <label for="vendedorNombre" class="form-label order-field-label fw-semibold">Vendedor</label>
-                <input type="text" id="vendedorNombre" class="form-control rounded-3 px-3" maxlength="40" placeholder="Ej: María González" autocomplete="name" aria-describedby="vendedorAyuda" aria-required="true" required>
+                <input type="text" id="vendedorNombre" class="form-control rounded-3 px-3" maxlength="40" placeholder="Nombre y apellido" autocomplete="name" aria-describedby="vendedorAyuda" aria-required="true" required>
                 <div id="vendedorAyuda" class="val-feedback val-feedback-invalid px-2"></div>
               </div>
             </div>
@@ -2300,7 +2300,7 @@
         }
         if (respuesta.exito) {
           modalInstance.hide();
-          mostrarAlertaPersonalizada('¡Orden completada!', 'Tu pedido ha sido registrado con éxito. Se ha enviado el comprobante a LIMZA GROUP.', 'exito');
+          mostrarAlertaPersonalizada('¡Orden completada!', 'Tu pedido ha sido registrado con éxito. Se envío el comprobante a LIMZA GROUP.', 'exito');
           carrito = {};
           itemEditando = null;
           document.getElementById('formularioPedido').reset();
@@ -2330,8 +2330,7 @@
       });
     }
   </script>
-  <!-- INICIO MODULO PROMEDIO USDT: para retirarlo, elimina esta etiqueta script y el endpoint marcado en code.js. -->
+  <!-- Tasa USDT manual leída de G1 en la hoja del catálogo. -->
   <script src="usdt-rate.js"></script>
-  <!-- FIN MODULO PROMEDIO USDT -->
 </body>
 </html>
