@@ -921,6 +921,17 @@
         });
         return;
       }
+      const textoCodigo = `COD: ${producto.codigo || 'N/A'}`;
+      let tamanoCodigo = 9;
+      while (fuentes.codigo.widthOfTextAtSize(textoCodigo, tamanoCodigo) > 66 && tamanoCodigo > 6) {
+        tamanoCodigo -= 0.5;
+      }
+      const anchoCodigo = fuentes.codigo.widthOfTextAtSize(textoCodigo, tamanoCodigo);
+      const izquierdaCodigo = x + 160.08 - anchoCodigo;
+      const precio = `PV: $${Number(producto.precio || 0).toFixed(2).replace('.', ',')}`;
+      const tamanoPrecio = Math.min(15, 54 / fuentes.precio.widthOfTextAtSize(precio, 1));
+      const anchoPrecio = fuentes.precio.widthOfTextAtSize(precio, tamanoPrecio);
+      const izquierdaPrecio = x + 133.025 - anchoPrecio / 2;
       if (imagen) {
         const cajaImagen = { x: x + 10, y: yInferiorTarjeta + 32, width: anchoTarjeta - 20, height: 136 };
         const escalaImagen = Math.min(cajaImagen.width / imagen.width, cajaImagen.height / imagen.height);
@@ -934,7 +945,19 @@
         });
       }
       if (logoMarca) {
-        const cajaLogo = { x: x + 6.055, y: yInferiorTarjeta + 4.3524, width: 86, height: 20 };
+        const xLogo = x + 6.055;
+        const separacionSegura = 8;
+        const anchoMaximoLogo = Math.max(0, Math.min(
+          anchoTarjeta - 12.11,
+          izquierdaPrecio - xLogo - separacionSegura,
+          izquierdaCodigo - xLogo - separacionSegura
+        ));
+        const cajaLogo = {
+          x: xLogo,
+          y: yInferiorTarjeta + 4.3524,
+          width: anchoMaximoLogo,
+          height: 20
+        };
         const escalaLogo = Math.min(cajaLogo.width / logoMarca.width, cajaLogo.height / logoMarca.height);
         pagina.drawImage(logoMarca, {
           x: cajaLogo.x,
@@ -962,23 +985,15 @@
           color: colorTexto
         });
       });
-      const textoCodigo = `COD: ${producto.codigo || 'N/A'}`;
-      let tamanoCodigo = 9;
-      while (fuentes.codigo.widthOfTextAtSize(textoCodigo, tamanoCodigo) > 66 && tamanoCodigo > 6) {
-        tamanoCodigo -= 0.5;
-      }
       pagina.drawText(textoCodigo, {
-        x: x + 160.08 - fuentes.codigo.widthOfTextAtSize(textoCodigo, tamanoCodigo),
+        x: izquierdaCodigo,
         y: yInferiorTarjeta + 21.3556,
         size: tamanoCodigo,
         font: fuentes.codigo,
         color: colorTexto
       });
-      const precio = `PV: $${Number(producto.precio || 0).toFixed(2).replace('.', ',')}`;
-      const tamanoPrecio = Math.min(15, 54 / fuentes.precio.widthOfTextAtSize(precio, 1));
-      const anchoPrecio = fuentes.precio.widthOfTextAtSize(precio, tamanoPrecio);
       pagina.drawText(precio, {
-        x: x + 133.025 - anchoPrecio / 2,
+        x: izquierdaPrecio,
         y: yInferiorTarjeta + 4.3524,
         size: tamanoPrecio,
         font: fuentes.precio,
