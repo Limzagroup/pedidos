@@ -1552,7 +1552,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     const URL_API_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbwVvAAODNFh4408zZRaxd89p-rWIjXvBWc5_wH3_ofX0fz4NJUqpHrvFLaIWoLkkoAv/exec";
-    const CACHE_CATALOGO_LOCAL_KEY = 'limza-catalogo-v1';
+    const CACHE_CATALOGO_LOCAL_KEY = 'limza-catalogo-v2';
     const TIMEOUT_CATALOGO_MS = 10000;
     let catalogo = [];
     let catalogoCacheCargado = false;
@@ -1564,6 +1564,7 @@
     let modalAlertaInstance = null;
     const pulsacionesProlongadasActivas = new Map();
     const getById = (id) => document.getElementById(id);
+    const claveProducto = (producto) => String(producto.id || producto.codigo);
     function initApp() {
       modalInstance = new bootstrap.Modal(getById('modalFinalizar'));
       modalAlertaInstance = new bootstrap.Modal(getById('modalAlerta'));
@@ -1828,7 +1829,8 @@
         return;
       }
       filtrados.forEach(prod => {
-        const itemEnCarrito = carrito[prod.codigo];
+        const id = claveProducto(prod);
+        const itemEnCarrito = carrito[id];
         const cant = itemEnCarrito ? itemEnCarrito.cantidad : 0;
         let clasesExtras = '';
         if (cant > 0) clasesExtras += 'in-cart ';
@@ -1836,7 +1838,7 @@
         const col = document.createElement('div');
         col.className = 'col-12 col-md-6';
         col.innerHTML = `
-          <div class="card card-product p-3 mb-1 ${clasesExtras}" id="card-${prod.codigo}">
+          <div class="card card-product p-3 mb-1 ${clasesExtras}" id="card-${id}">
             <div class="d-flex justify-content-between align-items-start mb-2">
               <span class="badge badge-cat" aria-label="Marca: ${prod.categoria}">${prod.categoria}</span>
               <div class="d-flex align-items-center gap-2">
@@ -1846,12 +1848,18 @@
             <div class="fw-bold fs-6 mb-3 text-dark lh-sm">${prod.nombre}</div>
             <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
               <span class="price-tag">$${prod.precio.toFixed(2)} <span class="visually-hidden">por unidad</span></span>
-              <div id="ctrl-${prod.codigo}">
-                ${renderBotonesTarjeta(prod.codigo, cant)}
+              <div id="ctrl-${id}">
+                ${renderBotonesTarjeta(id, cant)}
               </div>
             </div>
           </div>
         `;
+        if (prod.empaque) {
+          const presentacion = document.createElement('div');
+          presentacion.className = 'text-muted small mb-3';
+          presentacion.textContent = `Presentación: ${prod.empaque}`;
+          col.querySelector('.card-product .fw-bold.fs-6').after(presentacion);
+        }
         tarjetas.appendChild(col);
       });
       contenedor.appendChild(tarjetas);
@@ -1862,7 +1870,7 @@
       });
     }
     function renderBotonesTarjeta(codigo, cant) {
-      const prod = catalogo.find(p => p.codigo === codigo);
+      const prod = catalogo.find(p => claveProducto(p) === codigo);
       if (prod && !prod.disponible) {
         return `
           <button class="btn btn-light btn-sm rounded-pill px-3 py-1 fw-bold text-muted border shadow-none d-flex align-items-center gap-1"
@@ -1912,7 +1920,7 @@
       `;
     }
     function iniciarAgregar(codigo) {
-      const prod = catalogo.find(p => p.codigo === codigo);
+      const prod = catalogo.find(p => claveProducto(p) === codigo);
       itemEditando = codigo;
       if (prod && prod.disponible && !carrito[codigo]) {
         carrito[codigo] = { ...prod, cantidad: 1 };
@@ -1929,7 +1937,7 @@
       const cantidad = inputEl
         ? Number.parseInt(inputEl.value, 10)
         : (carrito[codigo] ? carrito[codigo].cantidad : 1);
-      const prod = catalogo.find(p => p.codigo === codigo);
+      const prod = catalogo.find(p => claveProducto(p) === codigo);
       if (!Number.isFinite(cantidad) || cantidad <= 0) {
         delete carrito[codigo];
       } else if (prod) {
@@ -1958,7 +1966,7 @@
         eliminarProducto(codigo);
         return;
       }
-      const prod = catalogo.find(p => p.codigo === codigo);
+      const prod = catalogo.find(p => claveProducto(p) === codigo);
       if (prod) carrito[codigo] = { ...prod, cantidad: nuevaCant };
       actualizarItemUI(codigo);
       actualizarBarraTotales();
@@ -1969,7 +1977,7 @@
         eliminarProducto(codigo);
         return;
       }
-      const prod = catalogo.find(p => p.codigo === codigo);
+      const prod = catalogo.find(p => claveProducto(p) === codigo);
       if (prod) carrito[codigo] = { ...prod, cantidad };
       actualizarItemUI(codigo);
       actualizarBarraTotales();
@@ -2058,7 +2066,8 @@
         nombre.textContent = item.nombre;
         const metadatos = document.createElement('div');
         metadatos.className = 'order-summary-meta';
-        metadatos.textContent = `${item.categoria || 'General'}, código ${item.codigo || 'N/A'}, $${Number(item.precio).toFixed(2)} c/u`;
+        const presentacion = item.empaque ? `, presentación ${item.empaque}` : '';
+        metadatos.textContent = `${item.categoria || 'General'}, código ${item.codigo || 'N/A'}${presentacion}, $${Number(item.precio).toFixed(2)} c/u`;
         const precio = document.createElement('span');
         precio.className = 'order-summary-subtotal';
         precio.textContent = `$${subtotal.toFixed(2)}`;
@@ -2075,7 +2084,7 @@
         iconoMenos.className = 'bi bi-dash';
         iconoMenos.setAttribute('aria-hidden', 'true');
         btnMenos.appendChild(iconoMenos);
-        btnMenos.dataset.codigo = item.codigo;
+        btnMenos.dataset.codigo = claveProducto(item);
         btnMenos.disabled = item.cantidad <= 1;
         btnMenos.setAttribute('aria-label', `Reducir cantidad de ${item.nombre}`);
         const cantidad = document.createElement('span');
@@ -2089,12 +2098,12 @@
         iconoMas.className = 'bi bi-plus-lg';
         iconoMas.setAttribute('aria-hidden', 'true');
         btnMas.appendChild(iconoMas);
-        btnMas.dataset.codigo = item.codigo;
+        btnMas.dataset.codigo = claveProducto(item);
         btnMas.setAttribute('aria-label', `Aumentar cantidad de ${item.nombre}`);
         const btnEliminar = document.createElement('button');
         btnEliminar.type = 'button';
         btnEliminar.className = 'btn btn-delete-icon btn-outline-danger btn-sm rounded-circle';
-        btnEliminar.dataset.codigo = item.codigo;
+        btnEliminar.dataset.codigo = claveProducto(item);
         btnEliminar.setAttribute('aria-label', `Eliminar ${item.nombre} del pedido`);
         const iconoEliminar = document.createElement('i');
         iconoEliminar.className = 'bi bi-trash3';
@@ -2253,9 +2262,9 @@
       btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>Enviando pedido...';
       document.getElementById('formularioPedido').setAttribute('aria-busy', 'true');
       const items = Object.values(carrito);
-      const resumenTexto = items.map(i => `${i.cantidad}x [${i.codigo}] ${i.nombre} ($${(i.precio * i.cantidad).toFixed(2)})`).join("\n");
+      const resumenTexto = items.map(i => `${i.cantidad}x [${i.categoria || 'General'} - ${i.codigo}] ${i.nombre}${i.empaque ? ` - Presentación: ${i.empaque}` : ''} ($${(i.precio * i.cantidad).toFixed(2)})`).join("\n");
       const total = items.reduce((acc, i) => acc + (i.precio * i.cantidad), 0);
-      const itemsDetalle = items.map(i => ({codigo: i.codigo, nombre: i.nombre, cantidad: i.cantidad, precio: i.precio}));
+      const itemsDetalle = items.map(i => ({codigo: i.codigo, nombre: i.nombre, categoria: i.categoria, empaque: i.empaque, cantidad: i.cantidad, precio: i.precio}));
       const rifVal = document.getElementById('clienteRif').value.trim().toUpperCase();
       const payload = {
         vendedor: document.getElementById('vendedorNombre').value.trim(),
