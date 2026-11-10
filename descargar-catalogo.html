@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Descargar catálogo | LIMZA GROUP</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Descarga el catálogo completo de LIMZA GROUP o selecciona las marcas que necesitas.">
+  <link rel="icon" type="image/x-icon" href="https://limzagroup.github.io/pedidos/favicon.ico">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="preconnect" href="https://script.google.com" crossorigin>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <style>
+    :root {
+      color-scheme: dark;
+      --navbar-bg: #000000;
+      --bg-color: #121212;
+      --surface: #181818;
+      --text-main: #f5f5f5;
+      --text-muted: #b3b3b3;
+      --border-color: #333333;
+      --brand-orange: #f97316;
+      --brand-orange-hover: #ea580c;
+    }
+    body {
+      min-height: 100vh;
+      padding-bottom: 24px;
+      background: var(--bg-color);
+      color: var(--text-main);
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+    body.light-mode {
+      color-scheme: light;
+      --bg-color: #f5f5f5;
+      --surface: #ffffff;
+      --text-main: #191919;
+      --text-muted: #6b6b6b;
+      --border-color: #e5e5e5;
+      background: linear-gradient(180deg, #f0f0f0 0, #f7f7f7 280px, #f5f5f5 100%);
+    }
+    .text-primary { color: var(--brand-orange) !important; }
+    .btn-primary {
+      background: var(--brand-orange);
+      border-color: var(--brand-orange);
+    }
+    .btn-primary:hover,
+    .btn-primary:focus {
+      background: var(--brand-orange-hover);
+      border-color: var(--brand-orange-hover);
+    }
+    .navbar {
+      z-index: 1050;
+      border-bottom: 3px solid var(--brand-orange);
+      background: var(--navbar-bg);
+      box-shadow: 0 4px 18px rgba(15, 23, 42, 0.16);
+    }
+    .navbar .container { position: relative; }
+    .navbar-actions {
+      position: absolute;
+      top: 0;
+      right: 12px;
+      bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+    .menu-toggle {
+      display: inline-flex;
+      width: 42px;
+      min-width: 42px;
+      height: 42px;
+      min-height: 42px;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      border: 1px solid #3a3a3a;
+      border-radius: 12px;
+      background: #242424;
+      color: #f5f5f5;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    }
+    .menu-toggle-icon {
+      width: 15px;
+      height: 1.5px;
+      border-radius: 2px;
+      background: currentColor;
+      box-shadow: 0 -5px currentColor, 0 5px currentColor;
+    }
+    .menu-toggle:hover,
+    .menu-toggle:active,
+    .menu-toggle.show {
+      border-color: var(--brand-orange);
+      background: #333333;
+      color: var(--brand-orange);
+    }
+    body.light-mode .menu-toggle {
+      border-color: #4a4a4a;
+      background: #ffffff;
+      color: #333333;
+    }
+    .navbar-menu {
+      --bs-dropdown-bg: #181818;
+      --bs-dropdown-color: #f5f5f5;
+      --bs-dropdown-border-color: #3a3a3a;
+      --bs-dropdown-link-color: #f5f5f5;
+      --bs-dropdown-link-hover-bg: #292929;
+      --bs-dropdown-link-hover-color: #ffffff;
+      min-width: 220px;
+      padding: 8px;
+      border-radius: 14px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+    }
+    body.light-mode .navbar-menu {
+      --bs-dropdown-bg: #ffffff;
+      --bs-dropdown-color: #191919;
+      --bs-dropdown-border-color: #e5e5e5;
+      --bs-dropdown-link-color: #191919;
+      --bs-dropdown-link-hover-bg: #f3f3f3;
+      --bs-dropdown-link-hover-color: #191919;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
+    }
+    .navbar-menu .dropdown-item {
+      display: flex;
+      min-height: 44px;
+      align-items: center;
+      gap: 12px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+    }
+    .navbar-menu .dropdown-item i {
+      width: 16px;
+      text-align: center;
+    }
+    :focus-visible {
+      outline: 3px solid var(--brand-orange);
+      outline-offset: 3px;
+    }
+    .download-panel {
+      max-width: 900px;
+      margin: 32px auto;
+      padding: clamp(20px, 4vw, 36px);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      background: var(--surface);
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.12);
+    }
+    .download-description,
+    .catalog-status { color: var(--text-muted); }
+    :root {
+      --catalog-spacing: 8px;
+    }
+    .brand-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 126px), 1fr));
+      gap: var(--catalog-spacing);
+      padding: 0;
+    }
+    .brand-option {
+      display: flex;
+      min-height: 40px;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px;
+      border: 1px solid var(--border-color);
+      border-radius: 11px;
+      background: var(--bg-color);
+      cursor: pointer;
+      transition: border-color 160ms ease, background-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+    }
+    .brand-option:hover {
+      border-color: color-mix(in srgb, var(--brand-orange) 60%, var(--border-color));
+      transform: translateY(-1px);
+    }
+    .brand-option input {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--brand-orange);
+      flex: 0 0 auto;
+    }
+    #seleccionarTodas {
+      display: grid;
+      width: 22px;
+      height: 22px;
+      flex: 0 0 22px;
+      place-content: center;
+      margin: 0;
+      appearance: none;
+      border: 1.5px solid #858585;
+      border-radius: 6px;
+      background: var(--surface);
+      cursor: pointer;
+      transition: border-color 150ms ease, background-color 150ms ease, box-shadow 150ms ease;
+    }
+    #seleccionarTodas::after {
+      width: 6px;
+      height: 11px;
+      transform: translateY(-1px) rotate(45deg);
+      border: solid #fff;
+      border-width: 0 2px 2px 0;
+      content: "";
+      opacity: 0;
+    }
+    #seleccionarTodas:checked,
+    #seleccionarTodas:indeterminate {
+      border-color: var(--brand-orange);
+      background: var(--brand-orange);
+    }
+    #seleccionarTodas:checked::after {
+      opacity: 1;
+    }
+    #seleccionarTodas:indeterminate::after {
+      width: 10px;
+      height: 0;
+      transform: none;
+      border-width: 0 0 2px;
+      opacity: 1;
+    }
+    #seleccionarTodas:focus-visible {
+      outline: 3px solid color-mix(in srgb, var(--brand-orange) 40%, transparent);
+      outline-offset: 3px;
+    }
+    .brand-option span {
+      overflow-wrap: anywhere;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    .brand-option:has(input:checked) {
+      border-color: var(--brand-orange);
+      background: color-mix(in srgb, var(--brand-orange) 9%, var(--surface));
+      box-shadow: inset 3px 0 var(--brand-orange);
+    }
+    .select-all-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: var(--catalog-spacing);
+      padding: 10px 12px;
+      border: 1px solid color-mix(in srgb, var(--brand-orange) 40%, var(--border-color));
+      border-radius: 12px;
+      background: color-mix(in srgb, var(--brand-orange) 7%, var(--surface));
+    }
+    .select-all-option {
+      display: flex;
+      min-width: 0;
+      align-items: center;
+      gap: 10px;
+      margin: 0;
+      cursor: pointer;
+      font-weight: 650;
+    }
+    .select-all-option span { white-space: nowrap; }
+    #resumenSeleccion {
+      flex: 0 0 auto;
+      padding: 5px 9px;
+      border-radius: 999px;
+      background: var(--surface);
+      color: var(--text-muted) !important;
+      font-size: 0.78rem;
+      line-height: 1.25;
+      text-align: center;
+    }
+    .brand-fieldset {
+      margin-bottom: 16px !important;
+    }
+    .brand-fieldset legend {
+      margin-bottom: 16px;
+    }
+    .progress-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    #estadoGeneracion {
+      min-width: 0;
+      color: var(--text-main);
+      font-size: 0.9rem;
+      font-weight: 600;
+      line-height: 1.35;
+    }
+    #progresoPorcentaje {
+      flex: 0 0 auto;
+      color: var(--brand-orange);
+      font-size: 0.85rem;
+      font-variant-numeric: tabular-nums;
+      font-weight: 700;
+    }
+    #progresoGeneracion {
+      display: block;
+      width: 100%;
+      height: 8px;
+      appearance: none;
+      overflow: hidden;
+      border: 0;
+      border-radius: 999px;
+      background: var(--border-color);
+    }
+    #progresoGeneracion::-webkit-progress-bar {
+      border-radius: 999px;
+      background: var(--border-color);
+    }
+    #progresoGeneracion::-webkit-progress-value {
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--brand-orange-hover), var(--brand-orange));
+      transition: width 180ms ease;
+    }
+    #progresoGeneracion::-moz-progress-bar {
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--brand-orange-hover), var(--brand-orange));
+    }
+    #progresoEstado.is-floating {
+      position: fixed;
+      z-index: 1040;
+      bottom: max(12px, env(safe-area-inset-bottom));
+      left: 50%;
+      width: min(760px, calc(100vw - 24px));
+      margin: 0 !important;
+      padding: 14px 16px;
+      transform: translateX(-50%);
+      border: 1px solid color-mix(in srgb, var(--brand-orange) 48%, var(--border-color));
+      border-radius: 14px;
+      background: var(--surface);
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.32);
+    }
+    @media (min-width: 992px) {
+      main > .container { max-width: 1120px; }
+    }
+    @media (max-width: 575.98px) {
+      .brand-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .select-all-row { align-items: flex-start; flex-direction: column; gap: var(--catalog-spacing); }
+      #resumenSeleccion { margin-left: 26px; padding: 0; background: transparent; text-align: left; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="visually-hidden-focusable position-fixed top-0 start-0 m-2 p-2 bg-light text-dark rounded" href="#contenidoPrincipal">Saltar al contenido</a>
+  <nav class="navbar navbar-dark sticky-top" aria-label="Navegación principal">
+    <div class="container py-2 d-flex justify-content-between align-items-center">
+      <a href="./" aria-label="Ir a pedidos">
+        <img src="https://limzagroup.github.io/pedidos/LIMZAGROUP_LOGO.webp" alt="LIMZA GROUP" width="220" height="55" fetchpriority="high" style="max-height: 55px; width: auto; object-fit: contain;">
+      </a>
+      <div class="dropdown navbar-actions">
+        <button id="btnMenu" class="menu-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Abrir menú" title="Abrir menú">
+          <span class="menu-toggle-icon" aria-hidden="true"></span>
+        </button>
+        <div class="dropdown-menu dropdown-menu-end navbar-menu" aria-labelledby="btnMenu">
+          <a class="dropdown-item" href="./">
+            <i class="bi bi-receipt" aria-hidden="true"></i><span>Pedidos</span>
+          </a>
+          <a class="dropdown-item" href="catalogo.html">
+            <i class="bi bi-grid-3x3-gap" aria-hidden="true"></i><span>Catálogo digital</span>
+          </a>
+          <a class="dropdown-item" href="descargar-catalogo.html" aria-current="page">
+            <i class="bi bi-file-earmark-arrow-down" aria-hidden="true"></i><span>Descargar catálogo</span>
+          </a>
+          <button id="btnCambiarTema" class="dropdown-item" type="button" aria-label="Cambiar a modo claro">
+            <i id="iconoTema" class="bi bi-sun" aria-hidden="true"></i><span id="etiquetaTema">Modo claro</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <main id="contenidoPrincipal" class="container py-2" tabindex="-1">
+    <section class="download-panel" aria-labelledby="tituloDescarga">
+      <h1 id="tituloDescarga" class="h3 fw-bold mb-2">Descargar catálogo</h1>
+      <div id="cargando" class="catalog-status py-3" role="status" aria-live="polite">
+        <span class="spinner-border spinner-border-sm text-primary me-2" aria-hidden="true"></span>
+        Cargando marcas y productos...
+      </div>
+      <div id="mensaje" class="alert alert-danger d-none" role="alert"></div>
+      <div id="controlesDescarga" class="d-none">
+        <div class="select-all-row">
+          <label class="select-all-option" for="seleccionarTodas">
+            <input id="seleccionarTodas" type="checkbox" checked>
+            <span>Todas las marcas</span>
+          </label>
+          <span id="resumenSeleccion" aria-live="polite"></span>
+        </div>
+        <fieldset class="brand-fieldset mb-4">
+          <legend class="h6 fw-bold">O selecciona las marcas</legend>
+          <div id="listaMarcas" class="brand-list" aria-label="Marcas del catálogo"></div>
+        </fieldset>
+        <button id="btnDescargar" class="btn btn-primary btn-lg w-100 fw-bold" type="button">
+          <i class="bi bi-file-earmark-pdf me-2" aria-hidden="true"></i>Descargar PDF
+        </button>
+        <div id="progresoEstado" class="mt-3 d-none">
+          <div class="progress-header">
+            <div id="estadoGeneracion" role="status" aria-live="polite"></div>
+            <span id="progresoPorcentaje">0%</span>
+          </div>
+          <progress id="progresoGeneracion" max="100" value="0" aria-label="Progreso de generación del PDF"></progress>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+  <script>
+    const URL_API_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbwVvAAODNFh4408zZRaxd89p-rWIjXvBWc5_wH3_ofX0fz4NJUqpHrvFLaIWoLkkoAv/exec';
+    const URL_CATALOGO_DIGITAL = 'https://script.google.com/macros/s/AKfycbz6CAkq2nh-FnyUE6jE4dTmwPbIkFog10jEr4xuJp11-XbqB_mceR5AAiIhuuoIiw8kCg/exec?action=catalogo';
+    const CACHE_CATALOGO_DESCARGA = 'limza-catalogo-descarga-v1';
+    const PRODUCTOS_POR_PAGINA = 15;
+    const getById = id => document.getElementById(id);
+    let productos = [];
+    let generacionPdfActiva = null;
+    let ocultarProgresoTimer = null;
+
+    document.addEventListener('DOMContentLoaded', iniciar);
+
+    function iniciar() {
+      getById('btnCambiarTema').addEventListener('click', alternarTema);
+      getById('seleccionarTodas').addEventListener('change', cambiarSeleccionCompleta);
+      getById('listaMarcas').addEventListener('change', actualizarSeleccion);
+      getById('btnDescargar').addEventListener('click', descargarCatalogo);
+      aplicarTema(leerTemaGuardado());
+      cargarCatalogo();
+    }
+
+    function leerTemaGuardado() {
+      try {
+        return localStorage.getItem('limza-tema') === 'claro' ? 'claro' : 'oscuro';
+      } catch (error) {
+        console.warn('No se pudo recuperar la preferencia de tema:', error);
+        return 'oscuro';
+      }
+    }
+
+    function aplicarTema(tema) {
+      const esClaro = tema === 'claro';
+      document.body.classList.toggle('light-mode', esClaro);
+      const destino = esClaro ? 'oscuro' : 'claro';
+      getById('btnCambiarTema').setAttribute('aria-label', `Cambiar a modo ${destino}`);
+      getById('etiquetaTema').textContent = `Modo ${destino}`;
+      getById('iconoTema').className = `bi bi-${esClaro ? 'moon' : 'sun'}`;
+    }
+
+    function alternarTema(event) {
+      const tema = document.body.classList.contains('light-mode') ? 'oscuro' : 'claro';
+      aplicarTema(tema);
+      try {
+        localStorage.setItem('limza-tema', tema);
+      } catch (error) {
+        console.warn('No se pudo guardar la preferencia de tema:', error);
+      }
+      if (event.detail > 0) event.currentTarget.blur();
+    }
+
+    async function cargarCatalogo() {
+      const cache = leerCache();
+      if (cache) {
+        productos = cache;
+        mostrarControles();
+      }
+
+      const controlador = new AbortController();
+      const temporizador = window.setTimeout(() => controlador.abort(), 15000);
+      try {
+        const [respuestaCatalogo, respuestaPedidos, respuestaLogos] = await Promise.all([
+          fetch(URL_CATALOGO_DIGITAL, { cache: 'no-store', signal: controlador.signal }),
+          fetch(`${URL_API_APPS_SCRIPT}?action=catalogo`, { cache: 'no-store', signal: controlador.signal }),
+          fetch(`${URL_CATALOGO_DIGITAL.split('?')[0]}?action=logos`, { cache: 'no-store', signal: controlador.signal })
+        ]);
+        if (!respuestaCatalogo.ok) throw new Error(`Catálogo digital: HTTP ${respuestaCatalogo.status}`);
+        if (!respuestaPedidos.ok) throw new Error(`Catálogo de pedidos: HTTP ${respuestaPedidos.status}`);
+        if (!respuestaLogos.ok) throw new Error(`Logos de marcas: HTTP ${respuestaLogos.status}`);
+        const [catalogoDigital, catalogoPedidos, logosMarcas] = await Promise.all([
+          respuestaCatalogo.json(),
+          respuestaPedidos.json(),
+          respuestaLogos.json()
+        ]);
+        if (!Array.isArray(catalogoDigital)) {
+          throw new Error(catalogoDigital && catalogoDigital.mensaje
+            ? String(catalogoDigital.mensaje)
+            : 'El catálogo digital devolvió un formato inválido.');
+        }
+        if (!Array.isArray(catalogoPedidos)) {
+          throw new Error(catalogoPedidos && catalogoPedidos.mensaje
+            ? String(catalogoPedidos.mensaje)
+            : 'El catálogo de pedidos devolvió un formato inválido.');
+        }
+        if (!logosMarcas || Array.isArray(logosMarcas) || typeof logosMarcas !== 'object' || logosMarcas.exito === false) {
+          throw new Error('El servicio de logos devolvió un formato inválido.');
+        }
+        const buscarLogoMarca = crearBuscadorLogoMarca(logosMarcas);
+        const productosPublicados = catalogoDigital.filter(esProductoValido).map(producto => ({
+          ...producto,
+          logoMarca: producto.logoMarca || buscarLogoMarca(producto.categoria)
+        }));
+        const productosCebra = catalogoPedidos.filter(producto =>
+          esProductoValido(producto) &&
+          String(producto.categoria || '').trim().toUpperCase() === 'CEBRA' &&
+          producto.disponible !== false
+        ).map(producto => ({
+          ...producto,
+          logoMarca: producto.logoMarca || buscarLogoMarca(producto.categoria)
+        }));
+        if (!productosPublicados.length) throw new Error('El catálogo digital no contiene productos válidos.');
+        if (!productosCebra.length) throw new Error('No se encontraron productos CEBRA disponibles para incluir.');
+        if (!productosCebra.some(producto => extraerIdImagenDrive(producto.logoMarca))) {
+          throw new Error('No se encontró el logo de CEBRA en el directorio de logos de marcas.');
+        }
+        const porCodigo = new Map(
+          productosPublicados.map(producto => [normalizarCodigo(producto.codigo), producto])
+        );
+        productosCebra.forEach(producto => {
+          const codigo = normalizarCodigo(producto.codigo);
+          if (!porCodigo.has(codigo)) porCodigo.set(codigo, producto);
+        });
+        const lista = [...porCodigo.values()];
+        productos = lista;
+        guardarCache(lista);
+        construirListaMarcas();
+        mostrarControles();
+      } catch (error) {
+        console.error('Error al cargar catálogo para descargar:', error);
+        if (!cache) {
+          getById('mensaje').textContent = 'No se pudo cargar el catálogo completo, incluido CEBRA. Intenta actualizar la página.';
+          getById('mensaje').classList.remove('d-none');
+        } else {
+          getById('mensaje').textContent = 'No se pudo actualizar el catálogo; se utiliza la última versión guardada en este dispositivo.';
+          getById('mensaje').className = 'alert alert-warning';
+        }
+      } finally {
+        clearTimeout(temporizador);
+        getById('cargando').classList.add('d-none');
+      }
+    }
+
+    function leerCache() {
+      try {
+        const datos = JSON.parse(localStorage.getItem(CACHE_CATALOGO_DESCARGA) || 'null');
+        return Array.isArray(datos) && datos.length ? datos : null;
+      } catch (error) {
+        console.warn('No se pudo leer el catálogo guardado:', error);
+        return null;
+      }
+    }
+
+    function guardarCache(lista) {
+      try {
+        localStorage.setItem(CACHE_CATALOGO_DESCARGA, JSON.stringify(lista));
+      } catch (error) {
+        console.warn('No se pudo guardar el catálogo:', error);
+      }
+    }
+
+    function esProductoValido(producto) {
+      return producto &&
+        typeof producto.nombre === 'string' &&
+        Number.isFinite(Number(producto.precio));
+    }
+
+    function normalizarCodigo(codigo) {
+      return String(codigo || '').trim().toLocaleUpperCase();
+    }
+
+    function normalizarNombreMarca(marca) {
+      return String(marca || '').normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .trim()
+        .toLocaleLowerCase('es');
+    }
+
+    function crearBuscadorLogoMarca(logosMarcas) {
+      const logosNormalizados = new Map(
+        Object.entries(logosMarcas).map(([marca, logo]) => [normalizarNombreMarca(marca), logo])
+      );
+      return marca => logosNormalizados.get(normalizarNombreMarca(marca)) || '';
+    }
+
+    function construirListaMarcas() {
+      const marcas = [...new Set(productos.map(producto =>
+        String(producto.categoria || 'General').trim() || 'General'
+      ))].sort((a, b) => a.localeCompare(b, 'es'));
+      const lista = getById('listaMarcas');
+      lista.replaceChildren();
+      marcas.forEach((marca, indice) => {
+        const etiqueta = document.createElement('label');
+        etiqueta.className = 'brand-option';
+        const casilla = document.createElement('input');
+        casilla.type = 'checkbox';
+        casilla.value = marca;
+        casilla.checked = true;
+        casilla.id = `marca-${indice}`;
+        const texto = document.createElement('span');
+        texto.textContent = marca;
+        etiqueta.append(casilla, texto);
+        lista.appendChild(etiqueta);
+      });
+      actualizarResumen();
+    }
+
+    function mostrarControles() {
+      getById('controlesDescarga').classList.remove('d-none');
+      if (!getById('listaMarcas').childElementCount) construirListaMarcas();
+      actualizarResumen();
+    }
+
+    function cambiarSeleccionCompleta() {
+      const todas = getById('seleccionarTodas').checked;
+      getById('listaMarcas').querySelectorAll('input[type="checkbox"]').forEach(casilla => {
+        casilla.checked = todas;
+      });
+      actualizarResumen();
+    }
+
+    function actualizarSeleccion() {
+      const casillas = [...getById('listaMarcas').querySelectorAll('input[type="checkbox"]')];
+      const seleccionadas = casillas.filter(casilla => casilla.checked).length;
+      const seleccionarTodas = getById('seleccionarTodas');
+      seleccionarTodas.checked = casillas.length > 0 && seleccionadas === casillas.length;
+      seleccionarTodas.indeterminate = seleccionadas > 0 && seleccionadas < casillas.length;
+      actualizarResumen();
+    }
+
+    function actualizarResumen() {
+      const marcasSeleccionadas = obtenerMarcasSeleccionadas();
+      const cantidad = obtenerProductosSeleccionados().length;
+      getById('resumenSeleccion').textContent =
+        `${cantidad} ${cantidad === 1 ? 'producto' : 'productos'} de ${marcasSeleccionadas.length} ${marcasSeleccionadas.length === 1 ? 'marca seleccionada' : 'marcas seleccionadas'}`;
+      getById('btnDescargar').disabled = cantidad === 0;
+    }
+
+    function obtenerMarcasSeleccionadas() {
+      return [...getById('listaMarcas').querySelectorAll('input[type="checkbox"]:checked')]
+        .map(casilla => casilla.value);
+    }
+
+    function obtenerProductosSeleccionados() {
+      const marcas = new Set(obtenerMarcasSeleccionadas());
+      return productos.filter(producto =>
+        marcas.has(String(producto.categoria || 'General').trim() || 'General')
+      );
+    }
+
+    function descargarCatalogo() {
+      const seleccion = obtenerProductosSeleccionados();
+      if (!seleccion.length) return;
+      generarCatalogoPdf(seleccion);
+    }
+
+    async function generarCatalogoPdf(lista) {
+      if (!window.PDFLib || !window.PDFLib.PDFDocument) {
+        mostrarEstadoGeneracion('No se pudo cargar el generador de PDF. Recarga la página e inténtalo de nuevo.', true);
+        return;
+      }
+      if (generacionPdfActiva) return;
+      const generacion = { controller: new AbortController() };
+      generacionPdfActiva = generacion;
+      const botonDescargar = getById('btnDescargar');
+      botonDescargar.disabled = true;
+      const progresoEstado = getById('progresoEstado');
+      if (ocultarProgresoTimer) window.clearTimeout(ocultarProgresoTimer);
+      progresoEstado.classList.remove('d-none');
+      progresoEstado.classList.add('is-floating');
+      mostrarEstadoGeneracion('', false);
+      actualizarProgresoPdf(0, 'Iniciando generación...');
+
+      try {
+        const { PDFDocument, StandardFonts, rgb } = window.PDFLib;
+        const bytesPlantilla = await cargarPlantillaCatalogoPdf(generacion.controller.signal);
+        actualizarProgresoPdf(2, 'Preparando el catálogo...');
+        comprobarGeneracionPdf(generacion);
+        const documento = await PDFDocument.create();
+        const [fondoPlantilla] = await documento.embedPdf(bytesPlantilla, [0]);
+        const { width: anchoPagina, height: altoPagina } = fondoPlantilla;
+        const fuentes = {
+          titulo: await documento.embedFont(StandardFonts.HelveticaBold),
+          codigo: await documento.embedFont(StandardFonts.HelveticaBoldOblique),
+          precio: await documento.embedFont(StandardFonts.HelveticaBold)
+        };
+        const colorTexto = rgb(60 / 255, 60 / 255, 59 / 255);
+        const colorBlanco = rgb(1, 1, 1);
+        const colorFondoTarjetaVacia = rgb(248 / 255, 248 / 255, 248 / 255);
+        const imagenesIncrustadas = new Map();
+        const imagenesPreparadas = new Map();
+        const paginasProductos = Array.from(
+          { length: Math.ceil(lista.length / PRODUCTOS_POR_PAGINA) },
+          (_, indice) => lista.slice(indice * PRODUCTOS_POR_PAGINA, (indice + 1) * PRODUCTOS_POR_PAGINA)
+        );
+        for (let indicePagina = 0; indicePagina < paginasProductos.length; indicePagina += 1) {
+          comprobarGeneracionPdf(generacion);
+          const productosPagina = paginasProductos[indicePagina];
+          actualizarProgresoPdf(
+            5 + indicePagina / paginasProductos.length * 88,
+            `Preparando imágenes de la página ${indicePagina + 1} de ${paginasProductos.length}...`
+          );
+          const imagenes = await cargarImagenesPdf(
+            productosPagina,
+            generacion.controller.signal,
+            imagenesPreparadas
+          );
+          const pagina = documento.addPage([anchoPagina, altoPagina]);
+          pagina.drawPage(fondoPlantilla, { x: 0, y: 0, width: anchoPagina, height: altoPagina });
+          for (let posicionPagina = 0; posicionPagina < PRODUCTOS_POR_PAGINA; posicionPagina += 1) {
+            const producto = productosPagina[posicionPagina] || null;
+            const idImagen = producto ? extraerIdImagenDrive(producto.imagen) : '';
+            const idLogoMarca = producto ? extraerIdImagenDrive(producto.logoMarca) : '';
+            const imagen = await incrustarImagenPdf(documento, imagenesIncrustadas, idImagen, imagenes);
+            const logoMarca = await incrustarImagenPdf(documento, imagenesIncrustadas, idLogoMarca, imagenes);
+            dibujarProductoPlantillaPdf(
+              pagina,
+              producto,
+              imagen,
+              logoMarca,
+              posicionPagina,
+              altoPagina,
+              fuentes,
+              colorTexto,
+              colorBlanco,
+              colorFondoTarjetaVacia
+            );
+          }
+          dibujarNumeroPaginaPlantillaPdf(
+            pagina,
+            indicePagina + 2,
+            altoPagina,
+            fuentes.titulo,
+            colorTexto
+          );
+        }
+
+        actualizarProgresoPdf(96, 'Guardando PDF...');
+        const archivo = await documento.save();
+        comprobarGeneracionPdf(generacion);
+        actualizarProgresoPdf(99, 'Preparando descarga...');
+        descargarArchivoPdf(archivo, crearNombreCatalogoPdf());
+        actualizarProgresoPdf(100, 'PDF listo para descargar.');
+      } catch (error) {
+        if (generacion.controller.signal.aborted) return;
+        console.error('No se pudo generar el PDF del catálogo:', error);
+        mostrarEstadoGeneracion(
+          error && error.message
+            ? `No se pudo generar el PDF: ${error.message}`
+            : 'No se pudo generar el PDF. Intenta nuevamente.',
+          true
+        );
+      } finally {
+        if (generacionPdfActiva === generacion) {
+          generacionPdfActiva = null;
+          botonDescargar.disabled = false;
+          actualizarResumen();
+          ocultarProgresoTimer = window.setTimeout(() => {
+            progresoEstado.classList.remove('is-floating');
+          }, 5000);
+        }
+      }
+    }
+
+    function crearNombreCatalogoPdf() {
+      if (getById('seleccionarTodas').checked) return 'catalogo-limza-completo.pdf';
+      const marcas = obtenerMarcasSeleccionadas()
+        .map(nombre => nombre.toLocaleLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''))
+        .map(nombre => nombre.replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''))
+        .filter(Boolean);
+      return `catalogo-limza-${marcas.join('-') || 'seleccion'}.pdf`;
+    }
+
+    function descargarArchivoPdf(bytes, nombreArchivo) {
+      const url = URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }));
+      const enlace = document.createElement('a');
+      enlace.href = url;
+      enlace.download = nombreArchivo;
+      enlace.click();
+      window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    async function cargarPlantillaCatalogoPdf(signal) {
+      const respuesta = await fetch('./Plantilla_Catalogo.pdf', { cache: 'force-cache', signal });
+      if (!respuesta.ok) throw new Error('No se pudo cargar Plantilla_Catalogo.pdf.');
+      return new Uint8Array(await respuesta.arrayBuffer());
+    }
+
+    async function cargarImagenesPdf(lista, signal, cache) {
+      const ids = [...new Set(lista.flatMap(producto => [
+        extraerIdImagenDrive(producto.imagen),
+        extraerIdImagenDrive(producto.logoMarca)
+      ]).filter(Boolean))].filter(id => !cache.has(id));
+      const datosPorId = {};
+      const lotes = [];
+      for (let inicio = 0; inicio < ids.length; inicio += 4) {
+        lotes.push(ids.slice(inicio, inicio + 4));
+      }
+      for (let inicio = 0; inicio < lotes.length; inicio += 3) {
+        const resultados = await Promise.all(lotes.slice(inicio, inicio + 3).map(async lote => {
+          let ultimoError;
+          for (let intento = 0; intento < 3; intento += 1) {
+            comprobarSignalPdf(signal);
+            try {
+              const url = `${URL_CATALOGO_DIGITAL.split('?')[0]}?action=imagenesPdf&ids=${encodeURIComponent(lote.join(','))}`;
+              const respuesta = await fetch(url, { cache: 'no-store', signal });
+              if (!respuesta.ok) throw new Error(`El servicio de imágenes respondió HTTP ${respuesta.status}.`);
+              const resultado = await respuesta.json();
+              if (!resultado || resultado.exito !== true || !resultado.imagenes) {
+                throw new Error('El servicio no pudo preparar las imágenes para el PDF.');
+              }
+              return resultado.imagenes;
+            } catch (error) {
+              ultimoError = error;
+              if (signal.aborted || (error.message && error.message.includes('HTTP 4'))) throw error;
+              if (intento < 2) await new Promise(resolve => window.setTimeout(resolve, 400 * (intento + 1)));
+            }
+          }
+          throw ultimoError || new Error('No se pudieron cargar las imágenes para el PDF.');
+        }));
+        resultados.forEach(resultado => Object.assign(datosPorId, resultado));
+      }
+
+      comprobarSignalPdf(signal);
+      const imagenesConvertidas = await Promise.all(
+        Object.entries(datosPorId).map(async ([id, dataUrl]) => [
+          id,
+          await convertirImagenParaPdf(dataUrl, signal)
+        ])
+      );
+      comprobarSignalPdf(signal);
+      imagenesConvertidas.forEach(([id, imagen]) => cache.set(id, imagen));
+      return Object.fromEntries(
+        [...new Set(lista.flatMap(producto => [
+          extraerIdImagenDrive(producto.imagen),
+          extraerIdImagenDrive(producto.logoMarca)
+        ]).filter(id => id && cache.has(id)))].map(id => [id, cache.get(id)])
+      );
+    }
+
+    function comprobarSignalPdf(signal) {
+      if (signal.aborted) throw new DOMException('Generación del PDF cancelada.', 'AbortError');
+    }
+
+    function comprobarGeneracionPdf(generacion) {
+      comprobarSignalPdf(generacion.controller.signal);
+    }
+
+    async function incrustarImagenPdf(documento, cache, id, imagenes) {
+      if (!id || !imagenes[id]) return null;
+      if (cache.has(id)) return cache.get(id);
+      const imagen = await documento.embedJpg(imagenes[id]);
+      cache.set(id, imagen);
+      return imagen;
+    }
+
+    function extraerIdImagenDrive(url) {
+      const coincidencia = String(url || '').match(/[?&]id=([A-Za-z0-9_-]+)/);
+      return coincidencia ? coincidencia[1] : '';
+    }
+
+    function convertirImagenParaPdf(dataUrl, signal) {
+      return new Promise((resolve, reject) => {
+        const imagen = new Image();
+        const limpiar = () => signal.removeEventListener('abort', cancelar);
+        const cancelar = () => {
+          imagen.onload = null;
+          imagen.onerror = null;
+          limpiar();
+          reject(new DOMException('Generación del PDF cancelada.', 'AbortError'));
+        };
+        if (signal.aborted) {
+          cancelar();
+          return;
+        }
+        imagen.onload = () => {
+          limpiar();
+          const maximo = 480;
+          const escala = Math.min(1, maximo / Math.max(imagen.naturalWidth, imagen.naturalHeight));
+          const canvas = document.createElement('canvas');
+          canvas.width = Math.max(1, Math.round(imagen.naturalWidth * escala));
+          canvas.height = Math.max(1, Math.round(imagen.naturalHeight * escala));
+          const contexto = canvas.getContext('2d');
+          if (!contexto) {
+            reject(new Error('El navegador no pudo preparar las imágenes para el PDF.'));
+            return;
+          }
+          contexto.fillStyle = '#ffffff';
+          contexto.fillRect(0, 0, canvas.width, canvas.height);
+          contexto.drawImage(imagen, 0, 0, canvas.width, canvas.height);
+          resolve(canvas.toDataURL('image/jpeg', 0.82));
+        };
+        imagen.onerror = () => {
+          limpiar();
+          reject(new Error('No se pudo procesar una imagen del catálogo.'));
+        };
+        signal.addEventListener('abort', cancelar, { once: true });
+        imagen.src = dataUrl;
+      });
+    }
+
+    function dibujarProductoPlantillaPdf(
+      pagina,
+      producto,
+      imagen,
+      logoMarca,
+      posicionPagina,
+      altoPagina,
+      fuentes,
+      colorTexto,
+      colorBlanco,
+      colorFondoTarjetaVacia
+    ) {
+      const anchoTarjeta = 166.08075;
+      const altoTarjeta = 202.87477;
+      const iniciosX = [50.8413, 233.66194, 416.4851];
+      const iniciosYDesdeArriba = [162.22082, 381.83548, 601.45014, 821.0648, 1040.67946];
+      const fila = Math.floor(posicionPagina / 3);
+      const columna = posicionPagina % 3;
+      const x = iniciosX[columna];
+      const yDesdeArriba = iniciosYDesdeArriba[fila];
+      const yInferiorTarjeta = altoPagina - yDesdeArriba - altoTarjeta;
+      if (!producto) {
+        pagina.drawRectangle({
+          x: x - 1,
+          y: yInferiorTarjeta - 1,
+          width: anchoTarjeta + 2,
+          height: altoTarjeta + 2,
+          color: colorFondoTarjetaVacia
+        });
+        return;
+      }
+      if (imagen) {
+        const cajaImagen = { x: x + 10, y: yInferiorTarjeta + 32, width: anchoTarjeta - 20, height: 136 };
+        const escalaImagen = Math.min(cajaImagen.width / imagen.width, cajaImagen.height / imagen.height);
+        const anchoImagen = imagen.width * escalaImagen;
+        const altoImagen = imagen.height * escalaImagen;
+        pagina.drawImage(imagen, {
+          x: cajaImagen.x + (cajaImagen.width - anchoImagen) / 2,
+          y: cajaImagen.y + (cajaImagen.height - altoImagen) / 2,
+          width: anchoImagen,
+          height: altoImagen
+        });
+      }
+      if (logoMarca) {
+        const cajaLogo = { x: x + 6.055, y: yInferiorTarjeta + 4.3524, width: 86, height: 20 };
+        const escalaLogo = Math.min(cajaLogo.width / logoMarca.width, cajaLogo.height / logoMarca.height);
+        pagina.drawImage(logoMarca, {
+          x: cajaLogo.x,
+          y: cajaLogo.y,
+          width: logoMarca.width * escalaLogo,
+          height: logoMarca.height * escalaLogo
+        });
+      }
+      const tamanoTitulo = 9;
+      const lineasTitulo = envolverTextoCatalogoPdf(
+        obtenerDescripcionProductoPdf(producto),
+        fuentes.titulo,
+        tamanoTitulo,
+        anchoTarjeta - 20,
+        2
+      );
+      const baseTitulo = altoPagina - yDesdeArriba - 16.647;
+      lineasTitulo.forEach((linea, indice) => {
+        const anchoLinea = fuentes.titulo.widthOfTextAtSize(linea, tamanoTitulo);
+        pagina.drawText(linea, {
+          x: x + (anchoTarjeta - anchoLinea) / 2,
+          y: baseTitulo - indice * 11,
+          size: tamanoTitulo,
+          font: fuentes.titulo,
+          color: colorTexto
+        });
+      });
+      const textoCodigo = `COD: ${producto.codigo || 'N/A'}`;
+      let tamanoCodigo = 9;
+      while (fuentes.codigo.widthOfTextAtSize(textoCodigo, tamanoCodigo) > 66 && tamanoCodigo > 6) {
+        tamanoCodigo -= 0.5;
+      }
+      pagina.drawText(textoCodigo, {
+        x: x + 160.08 - fuentes.codigo.widthOfTextAtSize(textoCodigo, tamanoCodigo),
+        y: yInferiorTarjeta + 21.3556,
+        size: tamanoCodigo,
+        font: fuentes.codigo,
+        color: colorTexto
+      });
+      const precio = `PV: $${Number(producto.precio || 0).toFixed(2).replace('.', ',')}`;
+      const tamanoPrecio = Math.min(15, 54 / fuentes.precio.widthOfTextAtSize(precio, 1));
+      const anchoPrecio = fuentes.precio.widthOfTextAtSize(precio, tamanoPrecio);
+      pagina.drawText(precio, {
+        x: x + 133.025 - anchoPrecio / 2,
+        y: yInferiorTarjeta + 4.3524,
+        size: tamanoPrecio,
+        font: fuentes.precio,
+        color: colorBlanco
+      });
+    }
+
+    function envolverTextoCatalogoPdf(texto, fuente, tamano, anchoMaximo, maxLineas) {
+      const palabras = texto.trim().split(/\s+/).filter(Boolean);
+      const lineas = [];
+      let linea = '';
+      for (const palabra of palabras) {
+        let fragmentos = [palabra];
+        while (fragmentos.some(fragmento => fuente.widthOfTextAtSize(fragmento, tamano) > anchoMaximo)) {
+          fragmentos = fragmentos.flatMap(fragmento => {
+            if (fuente.widthOfTextAtSize(fragmento, tamano) <= anchoMaximo) return [fragmento];
+            let indice = fragmento.length;
+            while (indice > 1 && fuente.widthOfTextAtSize(fragmento.slice(0, indice), tamano) > anchoMaximo) {
+              indice -= 1;
+            }
+            return [fragmento.slice(0, indice), fragmento.slice(indice)].filter(Boolean);
+          });
+        }
+        for (const fragmento of fragmentos) {
+          const candidata = linea ? `${linea} ${fragmento}` : fragmento;
+          if (fuente.widthOfTextAtSize(candidata, tamano) <= anchoMaximo) {
+            linea = candidata;
+          } else {
+            lineas.push(linea);
+            if (lineas.length === maxLineas) return lineas;
+            linea = fragmento;
+          }
+        }
+      }
+      if (linea && lineas.length < maxLineas) lineas.push(linea);
+      return lineas;
+    }
+
+    function obtenerDescripcionProductoPdf(producto) {
+      const nombre = String(producto.nombre || '').trim().toLocaleUpperCase('es');
+      const empaque = String(producto.empaque || '').trim();
+      if (!empaque) return nombre;
+      const normalizar = texto => texto.normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLocaleUpperCase('es');
+      const palabrasDescripcion = normalizar(nombre).split(/[^A-Z0-9]+/).filter(Boolean);
+      const palabrasEmpaque = normalizar(empaque).split(/[^A-Z0-9]+/).filter(Boolean);
+      const empaqueIncluido = palabrasEmpaque.length <= palabrasDescripcion.length
+        && palabrasDescripcion.some((_, indice) =>
+          palabrasEmpaque.every((palabra, offset) => palabrasDescripcion[indice + offset] === palabra)
+        );
+      return empaqueIncluido
+        ? nombre
+        : `${nombre} (${empaque.toLocaleUpperCase('es')})`;
+    }
+
+    function dibujarNumeroPaginaPlantillaPdf(pagina, numeroPagina, altoPagina, fuente, colorTexto) {
+      const texto = String(numeroPagina).padStart(2, '0');
+      const tamano = 14;
+      const ancho = fuente.widthOfTextAtSize(texto, tamano);
+      pagina.drawText(texto, {
+        x: 316.707 - ancho / 2,
+        y: altoPagina - 1297.5,
+        size: tamano,
+        font: fuente,
+        color: colorTexto
+      });
+    }
+
+    function actualizarProgresoPdf(porcentaje, mensaje) {
+      const valor = Math.max(0, Math.min(100, Math.round(porcentaje)));
+      const progreso = getById('progresoGeneracion');
+      progreso.value = valor;
+      progreso.setAttribute('aria-valuetext', `${valor}%`);
+      getById('progresoPorcentaje').textContent = `${valor}%`;
+      mostrarEstadoGeneracion(mensaje, false);
+    }
+
+    function mostrarEstadoGeneracion(mensaje, esError, esExito = false) {
+      const estado = getById('estadoGeneracion');
+      estado.textContent = mensaje;
+      estado.classList.toggle('text-danger', esError);
+      estado.classList.toggle('text-success', esExito);
+    }
+
+  </script>
+  <script src="usdt-rate.js"></script>
+</body>
+</html>

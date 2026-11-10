@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Catálogo Digital | LIMZA GROUP</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Explora el catálogo digital de productos de LIMZA GROUP.">
+  <link rel="icon" type="image/x-icon" href="https://limzagroup.github.io/pedidos/favicon.ico">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="preconnect" href="https://script.google.com" crossorigin>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <style>
+    :root {
+      color-scheme: dark;
+      --navbar-bg: #000000;
+      --bg-color: #121212;
+      --surface: #181818;
+      --text-main: #f5f5f5;
+      --text-muted: #b3b3b3;
+      --border-color: #333333;
+      --brand-orange: #f97316;
+      --brand-orange-hover: #ea580c;
+      --brand-orange-light: #2b1d13;
+    }
+    body {
+      min-height: 100vh;
+      padding-bottom: 24px;
+      background: var(--bg-color);
+      color: var(--text-main);
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+    body.light-mode {
+      color-scheme: light;
+      --bg-color: #f5f5f5;
+      --surface: #ffffff;
+      --text-main: #191919;
+      --text-muted: #6b6b6b;
+      --border-color: #e5e5e5;
+      --brand-orange-light: #fff3e8;
+      background: linear-gradient(180deg, #f0f0f0 0, #f7f7f7 280px, #f5f5f5 100%);
+    }
+    .text-primary { color: var(--brand-orange) !important; }
+    .navbar {
+      z-index: 1050;
+      border-bottom: 3px solid var(--brand-orange);
+      background: var(--navbar-bg);
+      box-shadow: 0 4px 18px rgba(15, 23, 42, 0.16);
+    }
+    .navbar .container { position: relative; }
+    .navbar-actions {
+      position: absolute;
+      top: 0;
+      right: 12px;
+      bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+    .menu-toggle {
+      display: inline-flex;
+      width: 42px;
+      min-width: 42px;
+      height: 42px;
+      min-height: 42px;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      border: 1px solid #3a3a3a;
+      border-radius: 12px;
+      background: #242424;
+      color: #f5f5f5;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    }
+    .menu-toggle-icon {
+      width: 15px;
+      height: 1.5px;
+      border-radius: 2px;
+      background: currentColor;
+      box-shadow: 0 -5px currentColor, 0 5px currentColor;
+    }
+    .menu-toggle:hover,
+    .menu-toggle:active,
+    .menu-toggle.show {
+      border-color: var(--brand-orange);
+      background: #333333;
+      color: var(--brand-orange);
+    }
+    body.light-mode .menu-toggle {
+      border-color: #4a4a4a;
+      background: #ffffff;
+      color: #333333;
+    }
+    .navbar-menu {
+      --bs-dropdown-bg: #181818;
+      --bs-dropdown-color: #f5f5f5;
+      --bs-dropdown-border-color: #3a3a3a;
+      --bs-dropdown-link-color: #f5f5f5;
+      --bs-dropdown-link-hover-bg: #292929;
+      --bs-dropdown-link-hover-color: #ffffff;
+      min-width: 220px;
+      padding: 8px;
+      border-radius: 14px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+    }
+    body.light-mode .navbar-menu {
+      --bs-dropdown-bg: #ffffff;
+      --bs-dropdown-color: #191919;
+      --bs-dropdown-border-color: #e5e5e5;
+      --bs-dropdown-link-color: #191919;
+      --bs-dropdown-link-hover-bg: #f3f3f3;
+      --bs-dropdown-link-hover-color: #191919;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
+    }
+    .navbar-menu .dropdown-item {
+      display: flex;
+      min-height: 44px;
+      align-items: center;
+      gap: 12px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+    }
+    .navbar-menu .dropdown-item i {
+      width: 16px;
+      text-align: center;
+    }
+    :focus-visible {
+      outline: 3px solid var(--brand-orange);
+      outline-offset: 3px;
+    }
+    .search-container {
+      position: sticky;
+      top: 85px;
+      z-index: 1030;
+      padding: 15px 0 10px;
+      background: transparent;
+      transition: clip-path 0.18s ease-out;
+      clip-path: inset(0 0 0 0);
+    }
+    .search-container.hidden {
+      clip-path: inset(0 0 100% 0);
+      pointer-events: none;
+    }
+    .modern-search-wrapper {
+      display: flex;
+      align-items: center;
+      padding: 4px 18px;
+      border: 1px solid #3a3a3a;
+      border-radius: 50px;
+      background: #242424;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.28);
+      transition: all 0.3s ease;
+    }
+    .modern-search-wrapper:focus-within {
+      border-color: var(--brand-orange);
+      background: #2a2a2a;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.28);
+    }
+    .modern-search-input {
+      flex-grow: 1;
+      padding: 10px 12px;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: #ffffff;
+      font-size: 0.95rem;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+    .modern-search-input::-webkit-search-cancel-button,
+    .modern-search-input::-webkit-search-decoration,
+    .modern-search-input::-webkit-search-results-button,
+    .modern-search-input::-webkit-search-results-decoration {
+      display: none;
+      -webkit-appearance: none;
+    }
+    .modern-search-input::placeholder,
+    .modern-search-icon {
+      color: #b3b3b3;
+    }
+    .modern-search-icon { font-size: 1.1rem; }
+    .modern-search-clear {
+      display: flex;
+      min-width: 44px;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: #cbd5e1;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .modern-search-clear:hover { color: #ef4444; }
+    body.light-mode .modern-search-wrapper {
+      border-color: transparent;
+      background: #ffffff;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    body.light-mode .modern-search-wrapper:focus-within {
+      border-color: var(--brand-orange);
+      background: #ffffff;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    body.light-mode .modern-search-input {
+      color: #191919;
+    }
+    body.light-mode .modern-search-input::placeholder,
+    body.light-mode .modern-search-icon {
+      color: #777777;
+    }
+    .catalog-grid { --bs-gutter-y: 1rem; }
+    .card-product {
+      height: 100%;
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      background: var(--surface);
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+    }
+    .card-product:hover {
+      border-color: #64748b;
+      box-shadow: 0 8px 22px rgba(15, 23, 42, 0.16);
+      transform: translateY(-2px);
+    }
+    body.light-mode .card-product {
+      border-color: transparent;
+      border-radius: 18px;
+      background: #ffffff;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+    }
+    body.light-mode .card-product:hover {
+      border-color: #e5e5e5;
+      background: #fafafa;
+      box-shadow: 0 8px 22px rgba(15, 23, 42, 0.1);
+    }
+    .product-photo {
+      width: 100%;
+      height: 180px;
+      margin-bottom: 12px;
+      border-radius: 12px;
+      background: #ffffff;
+      object-fit: contain;
+    }
+    .product-photo-fallback {
+      display: flex;
+      width: 100%;
+      height: 180px;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+      border-radius: 12px;
+      background: var(--bg-color);
+      color: var(--text-muted);
+      font-size: 2rem;
+    }
+    .product-code {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    .product-name {
+      min-height: 3rem;
+      overflow-wrap: anywhere;
+      color: var(--text-main);
+      font-size: 1rem;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+    .product-card-footer .badge-cat {
+      overflow-wrap: anywhere;
+      color: var(--brand-orange);
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+    .product-price {
+      color: var(--text-main);
+      font-size: 1.5rem;
+      font-weight: 700;
+      line-height: 1;
+      white-space: nowrap;
+    }
+    .catalog-status {
+      color: var(--text-muted);
+    }
+    .catalog-error { color: #dc3545; }
+    @media (min-width: 992px) {
+      main .container { max-width: 1120px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="visually-hidden-focusable position-fixed top-0 start-0 m-2 p-2 bg-light text-dark rounded" href="#contenidoPrincipal">Saltar al contenido</a>
+  <nav class="navbar navbar-dark sticky-top" aria-label="Navegación principal">
+    <div class="container py-2 d-flex justify-content-between align-items-center">
+      <a href="./" aria-label="Ir a pedidos">
+        <img src="https://limzagroup.github.io/pedidos/LIMZAGROUP_LOGO.webp" alt="LIMZA GROUP" width="220" height="55" fetchpriority="high" style="max-height: 55px; width: auto; object-fit: contain;">
+      </a>
+      <div class="dropdown navbar-actions">
+        <button id="btnMenu" class="menu-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Abrir menú" title="Abrir menú">
+          <span class="menu-toggle-icon" aria-hidden="true"></span>
+        </button>
+        <div class="dropdown-menu dropdown-menu-end navbar-menu" aria-labelledby="btnMenu">
+          <a class="dropdown-item" href="./">
+            <i class="bi bi-receipt" aria-hidden="true"></i>
+            <span>Pedidos</span>
+          </a>
+          <a class="dropdown-item" href="catalogo.html" aria-current="page">
+            <i class="bi bi-grid-3x3-gap" aria-hidden="true"></i>
+            <span>Catálogo digital</span>
+          </a>
+          <a class="dropdown-item" href="descargar-catalogo.html">
+            <i class="bi bi-file-earmark-arrow-down" aria-hidden="true"></i>
+            <span>Descargar catálogo</span>
+          </a>
+          <button id="btnCambiarTema" class="dropdown-item" type="button" aria-label="Cambiar a modo claro">
+            <i id="iconoTema" class="bi bi-sun" aria-hidden="true"></i>
+            <span id="etiquetaTema">Modo claro</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <main id="contenidoPrincipal" tabindex="-1">
+    <div class="container py-2">
+      <section aria-label="Catálogo digital de productos">
+        <div id="searchWrapper" class="search-container">
+          <div class="modern-search-wrapper">
+            <label class="visually-hidden" for="buscador">Buscar productos por código, nombre o categoría</label>
+            <i class="bi bi-search modern-search-icon" aria-hidden="true"></i>
+            <input type="search" id="buscador" class="modern-search-input" placeholder="Buscar código, producto o marca..." autocomplete="off">
+            <button class="modern-search-clear d-none" id="btnLimpiarBuscador" type="button" aria-label="Limpiar búsqueda">
+              <i class="bi bi-x-circle-fill" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+        <div id="cargando" class="catalog-status text-center py-5" role="status" aria-live="polite">
+          <div class="spinner-border text-primary" aria-hidden="true"></div>
+          <p class="mt-2 fw-semibold small">Sincronizando catálogo digital...</p>
+        </div>
+        <div id="mensajeCatalogo" class="catalog-status text-center py-4 d-none" role="status" aria-live="polite"></div>
+        <div id="contenedorProductos" class="row g-2 g-md-3 catalog-grid" role="region" aria-label="Catálogo de productos" aria-live="polite" aria-relevant="additions text"></div>
+      </section>
+    </div>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const URL_API_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbwVvAAODNFh4408zZRaxd89p-rWIjXvBWc5_wH3_ofX0fz4NJUqpHrvFLaIWoLkkoAv/exec';
+    const URL_CATALOGO_DIGITAL = 'https://script.google.com/macros/s/AKfycbz6CAkq2nh-FnyUE6jE4dTmwPbIkFog10jEr4xuJp11-XbqB_mceR5AAiIhuuoIiw8kCg/exec?action=catalogo';
+    const CACHE_CATALOGO_DIGITAL = 'limza-catalogo-digital-v1';
+    const getById = id => document.getElementById(id);
+    let productos = [];
+
+    document.addEventListener('DOMContentLoaded', iniciarCatalogo);
+
+    function iniciarCatalogo() {
+      getById('btnCambiarTema').addEventListener('click', alternarTema);
+      getById('buscador').addEventListener('input', filtrarCatalogo);
+      getById('btnLimpiarBuscador').addEventListener('click', limpiarBusqueda);
+      let ultimoDesplazamiento = window.pageYOffset || document.documentElement.scrollTop;
+      window.addEventListener('scroll', () => {
+        const desplazamiento = window.pageYOffset || document.documentElement.scrollTop;
+        getById('searchWrapper').classList.toggle(
+          'hidden',
+          desplazamiento > ultimoDesplazamiento && desplazamiento > 10
+        );
+        ultimoDesplazamiento = Math.max(0, desplazamiento);
+      }, { passive: true });
+      aplicarTema(leerTemaGuardado());
+      cargarCatalogo();
+    }
+
+    function leerTemaGuardado() {
+      try {
+        return localStorage.getItem('limza-tema') === 'claro' ? 'claro' : 'oscuro';
+      } catch (error) {
+        console.warn('No se pudo recuperar la preferencia de tema:', error);
+        return 'oscuro';
+      }
+    }
+
+    function aplicarTema(tema) {
+      const esClaro = tema === 'claro';
+      document.body.classList.toggle('light-mode', esClaro);
+      const boton = getById('btnCambiarTema');
+      const temaDestino = esClaro ? 'oscuro' : 'claro';
+      boton.setAttribute('aria-label', `Cambiar a modo ${temaDestino}`);
+      getById('etiquetaTema').textContent = `Modo ${temaDestino}`;
+      getById('iconoTema').className = `bi bi-${esClaro ? 'moon' : 'sun'}`;
+    }
+
+    function alternarTema(event) {
+      const tema = document.body.classList.contains('light-mode') ? 'oscuro' : 'claro';
+      aplicarTema(tema);
+      try {
+        localStorage.setItem('limza-tema', tema);
+      } catch (error) {
+        console.warn('No se pudo guardar la preferencia de tema:', error);
+      }
+      if (event.detail > 0) event.currentTarget.blur();
+    }
+
+    function cargarCatalogo() {
+      const cache = leerCache();
+      if (cache) {
+        productos = cache;
+        renderizarCatalogo();
+      }
+
+      const controlador = new AbortController();
+      const temporizador = setTimeout(() => controlador.abort(), 15000);
+      fetch(URL_CATALOGO_DIGITAL, { cache: 'no-store', signal: controlador.signal })
+        .then(respuesta => {
+          if (!respuesta.ok) throw new Error(`HTTP ${respuesta.status}`);
+          return respuesta.json();
+        })
+        .then(datos => {
+          if (!Array.isArray(datos)) {
+            throw new Error(datos?.mensaje || 'El servidor devolvió un catálogo con formato inválido.');
+          }
+          const lista = datos.filter(producto =>
+            producto &&
+            typeof producto.nombre === 'string' &&
+            Number.isFinite(Number(producto.precio))
+          );
+          if (!lista.length) throw new Error('El catálogo digital no contiene productos válidos.');
+          productos = lista;
+          guardarCache(lista);
+          renderizarCatalogo();
+        })
+        .catch(error => {
+          const mensaje = cache
+            ? 'No se pudo actualizar el catálogo. Se muestra la última versión guardada en este dispositivo.'
+            : 'No se pudo cargar el catálogo digital. Intenta actualizar la página.';
+          mostrarMensaje(mensaje, true);
+          console.error('Error al cargar catálogo digital:', error);
+        })
+        .finally(() => {
+          clearTimeout(temporizador);
+          getById('cargando').classList.add('d-none');
+        });
+    }
+
+    function leerCache() {
+      try {
+        const guardado = localStorage.getItem(CACHE_CATALOGO_DIGITAL);
+        if (!guardado) return null;
+        const datos = JSON.parse(guardado);
+        return Array.isArray(datos) ? datos : null;
+      } catch (error) {
+        console.warn('No se pudo leer el catálogo digital guardado:', error);
+        return null;
+      }
+    }
+
+    function guardarCache(lista) {
+      try {
+        localStorage.setItem(CACHE_CATALOGO_DIGITAL, JSON.stringify(lista));
+      } catch (error) {
+        console.warn('No se pudo guardar el catálogo digital:', error);
+      }
+    }
+
+    function filtrarCatalogo() {
+      const consulta = getById('buscador').value.trim().toLocaleLowerCase();
+      getById('btnLimpiarBuscador').classList.toggle('d-none', !getById('buscador').value);
+      const exactos = consulta
+        ? productos.filter(producto => String(producto.codigo || '').trim().toLocaleLowerCase() === consulta)
+        : [];
+      const resultados = exactos.length
+        ? exactos
+        : productos.filter(producto =>
+          String(producto.codigo || '').toLocaleLowerCase().includes(consulta) ||
+          String(producto.nombre || '').toLocaleLowerCase().includes(consulta) ||
+          String(producto.categoria || '').toLocaleLowerCase().includes(consulta)
+        );
+      renderizarProductos(resultados);
+    }
+
+    function limpiarBusqueda() {
+      getById('buscador').value = '';
+      filtrarCatalogo();
+      getById('buscador').focus();
+    }
+
+    function renderizarCatalogo() {
+      getById('cargando').classList.add('d-none');
+      mostrarMensaje('', false);
+      filtrarCatalogo();
+    }
+
+    function renderizarProductos(lista) {
+      const contenedor = getById('contenedorProductos');
+      contenedor.replaceChildren();
+      if (!lista.length) {
+        mostrarMensaje('No se encontraron productos coincidentes.', false);
+        return;
+      }
+      mostrarMensaje('', false);
+      const tarjetas = document.createDocumentFragment();
+      lista.forEach(producto => tarjetas.appendChild(crearTarjeta(producto)));
+      contenedor.appendChild(tarjetas);
+    }
+
+    function crearTarjeta(producto) {
+      const columna = document.createElement('div');
+      columna.className = 'col-12 col-md-6 col-xl-4';
+      const tarjeta = document.createElement('article');
+      tarjeta.className = 'card card-product d-flex flex-column p-3 mb-1';
+      const urlImagen = obtenerUrlImagen(producto.imagen);
+      if (urlImagen) {
+        const imagen = document.createElement('img');
+        imagen.className = 'product-photo';
+        imagen.src = urlImagen;
+        imagen.alt = producto.nombre;
+        imagen.loading = 'lazy';
+        imagen.addEventListener('error', () => {
+          const fallback = crearImagenAlternativa();
+          imagen.replaceWith(fallback);
+        }, { once: true });
+        tarjeta.appendChild(imagen);
+      } else {
+        tarjeta.appendChild(crearImagenAlternativa());
+      }
+
+      const codigo = document.createElement('div');
+      codigo.className = 'd-flex justify-content-end align-items-start mb-2';
+      const etiquetaCodigo = document.createElement('span');
+      etiquetaCodigo.className = 'product-code';
+      etiquetaCodigo.textContent = producto.codigo || '';
+      codigo.appendChild(etiquetaCodigo);
+
+      const nombre = document.createElement('div');
+      nombre.className = 'product-name mb-3';
+      nombre.textContent = producto.nombre;
+
+      const pie = document.createElement('div');
+      pie.className = 'product-card-footer d-flex justify-content-between align-items-center gap-2 mt-auto';
+      const marca = document.createElement('span');
+      marca.className = 'badge badge-cat';
+      marca.textContent = producto.categoria || 'General';
+      marca.setAttribute('aria-label', `Marca: ${producto.categoria || 'General'}`);
+      const precio = document.createElement('span');
+      precio.className = 'product-price';
+      precio.textContent = `$${Number(producto.precio).toFixed(2)}`;
+      pie.append(marca, precio);
+      tarjeta.append(codigo, nombre, pie);
+      columna.appendChild(tarjeta);
+      return columna;
+    }
+
+    function crearImagenAlternativa() {
+      const alternativa = document.createElement('div');
+      alternativa.className = 'product-photo-fallback';
+      alternativa.setAttribute('aria-label', 'Imagen no disponible');
+      const icono = document.createElement('i');
+      icono.className = 'bi bi-image';
+      icono.setAttribute('aria-hidden', 'true');
+      alternativa.appendChild(icono);
+      return alternativa;
+    }
+
+    function obtenerUrlImagen(valor) {
+      if (typeof valor !== 'string' || !valor.trim()) return '';
+      try {
+        const url = new URL(valor.trim());
+        if (url.protocol !== 'https:' && url.protocol !== 'http:') return '';
+        const idDrive = url.searchParams.get('id');
+        if (url.hostname === 'drive.google.com' && idDrive) {
+          return `https://drive.google.com/thumbnail?id=${encodeURIComponent(idDrive)}&sz=w800`;
+        }
+        return url.href;
+      } catch (error) {
+        console.warn('Se ignoró una URL de imagen inválida:', error);
+        return '';
+      }
+    }
+
+    function mostrarMensaje(texto, esError) {
+      const mensaje = getById('mensajeCatalogo');
+      mensaje.textContent = texto;
+      mensaje.classList.toggle('d-none', !texto);
+      mensaje.classList.toggle('catalog-error', Boolean(texto) && esError);
+    }
+  </script>
+  <script src="usdt-rate.js"></script>
+</body>
+</html>
