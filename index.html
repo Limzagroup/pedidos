@@ -1431,9 +1431,9 @@
     <section class="catalog-products" aria-label="Productos disponibles">
       <div id="searchWrapper" class="search-container">
         <div class="modern-search-wrapper">
-          <label class="visually-hidden" for="buscador">Buscar productos por código, nombre o categoría</label>
+          <label class="visually-hidden" for="buscador">Buscar productos por COD, nombre o categoría</label>
           <i class="bi bi-search modern-search-icon" aria-hidden="true"></i>
-          <input type="search" id="buscador" class="modern-search-input" placeholder="Buscar código, producto o marca..." autocomplete="off">
+          <input type="search" id="buscador" class="modern-search-input" placeholder="Buscar COD, producto o marca..." autocomplete="off">
           <button class="modern-search-clear d-none" id="btnLimpiarBuscador" type="button" aria-label="Limpiar búsqueda">
             <i class="bi bi-x-circle-fill" aria-hidden="true"></i>
           </button>
@@ -1842,10 +1842,10 @@
             <div class="d-flex justify-content-between align-items-start mb-2">
               <span class="badge badge-cat" aria-label="Marca: ${prod.categoria}">${prod.categoria}</span>
               <div class="d-flex align-items-center gap-2">
-                <span class="text-muted small fw-semibold">${prod.codigo}</span>
+                <span class="text-muted small fw-semibold">COD: ${prod.codigo}</span>
               </div>
             </div>
-            <div class="fw-bold fs-6 mb-3 text-dark lh-sm">${prod.nombre}</div>
+            <div class="fw-bold fs-6 mb-3 text-dark lh-sm">${prod.nombre}${prod.empaque ? ` (${prod.empaque})` : ''}</div>
             <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
               <span class="price-tag">$${prod.precio.toFixed(2)} <span class="visually-hidden">por unidad</span></span>
               <div id="ctrl-${id}">
@@ -1854,12 +1854,6 @@
             </div>
           </div>
         `;
-        if (prod.empaque) {
-          const presentacion = document.createElement('div');
-          presentacion.className = 'text-muted small mb-3';
-          presentacion.textContent = `Presentación: ${prod.empaque}`;
-          col.querySelector('.card-product .fw-bold.fs-6').after(presentacion);
-        }
         tarjetas.appendChild(col);
       });
       contenedor.appendChild(tarjetas);
@@ -2063,11 +2057,10 @@
         detalles.className = 'order-summary-details';
         const nombre = document.createElement('div');
         nombre.className = 'order-summary-name';
-        nombre.textContent = item.nombre;
+        nombre.textContent = `${item.nombre}${item.empaque ? ` (${item.empaque})` : ''}`;
         const metadatos = document.createElement('div');
         metadatos.className = 'order-summary-meta';
-        const presentacion = item.empaque ? `, presentación ${item.empaque}` : '';
-        metadatos.textContent = `${item.categoria || 'General'}, código ${item.codigo || 'N/A'}${presentacion}, $${Number(item.precio).toFixed(2)} c/u`;
+        metadatos.textContent = `${item.categoria || 'General'}, COD ${item.codigo || 'N/A'}, $${Number(item.precio).toFixed(2)} c/u`;
         const precio = document.createElement('span');
         precio.className = 'order-summary-subtotal';
         precio.textContent = `$${subtotal.toFixed(2)}`;
@@ -2262,7 +2255,7 @@
       btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>Enviando pedido...';
       document.getElementById('formularioPedido').setAttribute('aria-busy', 'true');
       const items = Object.values(carrito);
-      const resumenTexto = items.map(i => `${i.cantidad}x [${i.categoria || 'General'} - ${i.codigo}] ${i.nombre}${i.empaque ? ` - Presentación: ${i.empaque}` : ''} ($${(i.precio * i.cantidad).toFixed(2)})`).join("\n");
+      const resumenTexto = items.map(i => `${i.cantidad}x [${i.categoria || 'General'} - COD ${i.codigo}] ${i.nombre}${i.empaque ? ` (${i.empaque})` : ''} ($${(i.precio * i.cantidad).toFixed(2)})`).join("\n");
       const total = items.reduce((acc, i) => acc + (i.precio * i.cantidad), 0);
       const itemsDetalle = items.map(i => ({codigo: i.codigo, nombre: i.nombre, categoria: i.categoria, empaque: i.empaque, cantidad: i.cantidad, precio: i.precio}));
       const rifVal = document.getElementById('clienteRif').value.trim().toUpperCase();
