@@ -1552,7 +1552,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     const URL_API_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbwVvAAODNFh4408zZRaxd89p-rWIjXvBWc5_wH3_ofX0fz4NJUqpHrvFLaIWoLkkoAv/exec";
-    const CACHE_CATALOGO_LOCAL_KEY = 'limza-catalogo-v2';
+    const CACHE_CATALOGO_LOCAL_KEY = 'limza-catalogo-v3';
     const TIMEOUT_CATALOGO_MS = 10000;
     let catalogo = [];
     let catalogoCacheCargado = false;
@@ -1577,15 +1577,22 @@
       getById('btnAbrirModal').addEventListener('click', abrirModalFinalizar);
       getById('btnAbrirPedidoDesktop').addEventListener('click', abrirModalFinalizar);
       getById('vendedorNombre').addEventListener('input', () => {
-        limpiarCaracteresEspeciales(getById('vendedorNombre'));
+        const campo = getById('vendedorNombre');
+        forzarMayusculas(campo);
+        limpiarCaracteresEspeciales(campo);
         validarCampoVendedor();
       });
       getById('clienteNombre').addEventListener('input', () => {
-        limpiarCaracteresEspeciales(getById('clienteNombre'));
+        const campo = getById('clienteNombre');
+        forzarMayusculas(campo);
+        limpiarCaracteresEspeciales(campo);
         validarCampoCliente();
       });
       getById('comentarioPedido').addEventListener('input', () => limpiarCaracteresEspeciales(getById('comentarioPedido')));
-      getById('zonaPedido').addEventListener('input', validarCampoZona);
+      getById('zonaPedido').addEventListener('input', () => {
+        forzarMayusculas(getById('zonaPedido'));
+        validarCampoZona();
+      });
       getById('clienteRif').addEventListener('input', () => validarCampoRif());
       getById('formularioPedido').addEventListener('submit', enviarPedido);
       let lastScrollTop = 0;
@@ -2142,6 +2149,24 @@
       actualizarItemUI(codigo);
       actualizarBarraTotales();
     }
+    function forzarMayusculas(el) {
+      const inicio = el.selectionStart;
+      const fin = el.selectionEnd;
+      const valorOriginal = el.value;
+      const valorMayusculas = valorOriginal.toUpperCase();
+      if (valorOriginal === valorMayusculas) return;
+
+      const nuevaPosicionInicio = inicio === null
+        ? null
+        : valorOriginal.slice(0, inicio).toUpperCase().length;
+      const nuevaPosicionFin = fin === null
+        ? null
+        : valorOriginal.slice(0, fin).toUpperCase().length;
+      el.value = valorMayusculas;
+      if (nuevaPosicionInicio !== null && nuevaPosicionFin !== null) {
+        el.setSelectionRange(nuevaPosicionInicio, nuevaPosicionFin);
+      }
+    }
     function limpiarCaracteresEspeciales(el) {
       const valor = el.value.normalize('NFC');
       const posicion = el.selectionStart;
@@ -2240,6 +2265,9 @@
     }
     function enviarPedido(e) {
       e.preventDefault();
+      forzarMayusculas(getById('clienteNombre'));
+      forzarMayusculas(getById('zonaPedido'));
+      forzarMayusculas(getById('vendedorNombre'));
       const vendedorValido = validarCampoVendedor();
       const clienteValido = validarCampoCliente();
       const zonaValida = validarCampoZona();
@@ -2302,7 +2330,17 @@
         }
         if (respuesta.exito) {
           modalInstance.hide();
-          mostrarAlertaPersonalizada('¡Orden completada!', 'Tu pedido ha sido registrado con éxito. Se envío el comprobante a LIMZA GROUP.', 'exito');
+          const comprobantePrincipalEnviado = respuesta.estadoComprobantePrincipal === 'enviado';
+          const estadoCopiaVendedor = respuesta.estadoCopiaVendedor;
+          const mensajeComprobanteVendedor = estadoCopiaVendedor === 'enviado'
+            ? 'Se envió una copia al correo asociado al vendedor.'
+            : estadoCopiaVendedor === 'fallo'
+              ? 'No se pudo enviar la copia al vendedor.'
+              : 'No se encontró un correo válido del vendedor en la pestaña VENDEDORES.';
+          const mensajeExito = comprobantePrincipalEnviado
+            ? `Tu pedido ha sido registrado y enviado a LIMZA GROUP. ${mensajeComprobanteVendedor}`
+            : `Tu pedido ha sido registrado, pero no se pudo enviar el comprobante a LIMZA GROUP. ${mensajeComprobanteVendedor}`;
+          mostrarAlertaPersonalizada('¡Orden completada!', mensajeExito, 'exito');
           carrito = {};
           itemEditando = null;
           document.getElementById('formularioPedido').reset();
