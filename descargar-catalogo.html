@@ -754,12 +754,19 @@
     }
 
     function crearNombreCatalogoPdf() {
-      if (getById('seleccionarTodas').checked) return 'catalogo-limza-completo.pdf';
-      const marcas = obtenerMarcasSeleccionadas()
-        .map(nombre => nombre.toLocaleLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''))
-        .map(nombre => nombre.replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''))
-        .filter(Boolean);
-      return `catalogo-limza-${marcas.join('-') || 'seleccion'}.pdf`;
+      const fecha = new Date();
+      const dia = String(fecha.getDate()).padStart(2, '0');
+      const meses = ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'];
+      const mes = meses[fecha.getMonth()];
+      const anio = String(fecha.getFullYear()).slice(-2);
+      const marcas = getById('seleccionarTodas').checked
+        ? ['MULTIMARCAS', 'CEBRA']
+        : obtenerMarcasSeleccionadas()
+          .map(nombre => nombre.normalize('NFD').replace(/[\u0300-\u036f]/g, ''))
+          .map(nombre => nombre.replace(/[^a-zA-Z0-9]+/g, '_').replace(/^_|_$/g, '').toUpperCase())
+          .filter(Boolean);
+      const nombreMarcas = marcas.length === 1 ? marcas[0] : marcas.join('_') || 'SELECCION';
+      return `LIMZAGROUP_${nombreMarcas}_${dia}${mes}${anio}.pdf`;
     }
 
     function descargarArchivoPdf(bytes, nombreArchivo) {
@@ -945,16 +952,22 @@
         });
       }
       if (logoMarca) {
+        const marcaProducto = String(producto.categoria || '').trim().toUpperCase();
         const xLogo = x + 6.055;
-        const separacionSegura = 8;
+        const separacionSegura = marcaProducto === 'LUCERNA'
+          ? 40
+          : ['TUBRICA', 'EMTOP', 'EXCELINE', 'VISALOCK'].includes(marcaProducto)
+            ? 26
+            : 8;
         const anchoMaximoLogo = Math.max(0, Math.min(
           anchoTarjeta - 12.11,
           izquierdaPrecio - xLogo - separacionSegura,
           izquierdaCodigo - xLogo - separacionSegura
         ));
+        const ajusteVerticalLogo = marcaProducto === 'TUBRICA' ? -3 : 0;
         const cajaLogo = {
           x: xLogo,
-          y: yInferiorTarjeta + 4.3524,
+          y: yInferiorTarjeta + 4.3524 + ajusteVerticalLogo,
           width: anchoMaximoLogo,
           height: 20
         };
