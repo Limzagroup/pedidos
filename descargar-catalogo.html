@@ -133,6 +133,95 @@
       width: 16px;
       text-align: center;
     }
+    .navbar-menu #btnCambiarTema {
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .navbar-menu #btnCambiarTema:hover,
+    .navbar-menu #btnCambiarTema:focus,
+    .navbar-menu #btnCambiarTema:active {
+      background: transparent;
+      box-shadow: none;
+    }
+    .theme-switch {
+      position: relative;
+      display: inline-block;
+      flex: 0 0 112px;
+      width: 112px;
+      height: 36px;
+      border: 1px solid #5a5a5a;
+      border-radius: 999px;
+      background: #3a3a3a;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
+    }
+    .theme-switch-thumb {
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      display: flex;
+      width: 28px;
+      height: 28px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: #f5f5f5;
+      transition: transform 0.2s ease;
+    }
+    .theme-switch-label {
+      position: absolute;
+      top: 50%;
+      right: 7px;
+      left: 39px;
+      overflow: hidden;
+      color: #ffffff;
+      font-size: 0.82rem;
+      font-weight: 700;
+      line-height: 1;
+      text-align: center;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      transform: translateY(-50%);
+      transition: left 0.2s ease, right 0.2s ease;
+    }
+    .theme-switch i {
+      display: block;
+      color: #333333;
+      font-size: 14px;
+      line-height: 1;
+      pointer-events: none;
+    }
+    #btnCambiarTema[aria-checked="true"] .theme-switch {
+      border-color: var(--brand-orange);
+      background: var(--brand-orange);
+    }
+    #btnCambiarTema[aria-checked="true"] .theme-switch-thumb {
+      background: #ffffff;
+      transform: translateX(76px);
+    }
+    #btnCambiarTema[aria-checked="true"] .theme-switch-label {
+      right: 39px;
+      left: 7px;
+    }
+    @media (hover: hover) {
+      #btnCambiarTema:hover .theme-switch {
+        border-color: var(--brand-orange);
+        filter: brightness(1.12);
+      }
+    }
+    #btnCambiarTema:active .theme-switch-thumb {
+      transform: scale(0.9);
+    }
+    #btnCambiarTema[aria-checked="true"]:active .theme-switch-thumb {
+      transform: translateX(76px) scale(0.9);
+    }
+    #btnCambiarTema:focus-visible {
+      outline: none;
+      box-shadow: none;
+    }
+    #btnCambiarTema:focus-visible .theme-switch {
+      outline: 2px solid var(--brand-orange);
+      outline-offset: 2px;
+    }
     :focus-visible {
       outline: 3px solid var(--brand-orange);
       outline-offset: 3px;
@@ -361,8 +450,9 @@
           <a class="dropdown-item" href="descargar-catalogo.html" aria-current="page">
             <i class="bi bi-file-earmark-arrow-down" aria-hidden="true"></i><span>Descargar catálogo</span>
           </a>
-          <button id="btnCambiarTema" class="dropdown-item" type="button" aria-label="Cambiar a modo claro">
-            <i id="iconoTema" class="bi bi-sun" aria-hidden="true"></i><span id="etiquetaTema">Modo claro</span>
+          <button id="btnCambiarTema" class="dropdown-item" type="button" role="switch" aria-label="Cambiar a modo claro" aria-checked="false">
+            <i id="iconoTema" class="bi bi-moon" aria-hidden="true"></i>
+            <span class="theme-switch" aria-hidden="true"><span class="theme-switch-thumb"></span><span id="etiquetaTema" class="theme-switch-label">Oscuro</span></span>
           </button>
         </div>
       </div>
@@ -438,8 +528,9 @@
       document.body.classList.toggle('light-mode', esClaro);
       const destino = esClaro ? 'oscuro' : 'claro';
       getById('btnCambiarTema').setAttribute('aria-label', `Cambiar a modo ${destino}`);
-      getById('etiquetaTema').textContent = `Modo ${destino}`;
-      getById('iconoTema').className = `bi bi-${esClaro ? 'moon' : 'sun'}`;
+      getById('btnCambiarTema').setAttribute('aria-checked', String(esClaro));
+      getById('etiquetaTema').textContent = esClaro ? 'Claro' : 'Oscuro';
+      getById('iconoTema').className = `bi bi-${esClaro ? 'sun' : 'moon'}`;
     }
 
     function alternarTema(event) {

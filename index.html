@@ -115,7 +115,7 @@
       font-weight: 700;
       line-height: 1;
       border-radius: 50%;
-      box-shadow: none;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
       user-select: none;
     }
     .order-qty-button i {
@@ -126,7 +126,7 @@
     .qty-btn:hover, .qty-btn:active {
       background: transparent;
       color: rgba(255, 255, 255, 0.78);
-      box-shadow: none;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
     }
     .qty-input {
       width: 48px;
@@ -1048,7 +1048,7 @@
       min-width: 220px;
       padding: 8px;
       border-radius: 14px;
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+      box-shadow: none;
     }
     .navbar-menu .dropdown-item {
       display: flex;
@@ -1062,6 +1062,95 @@
     .navbar-menu .dropdown-item i {
       width: 16px;
       text-align: center;
+    }
+    .navbar-menu #btnCambiarTema {
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .navbar-menu #btnCambiarTema:hover,
+    .navbar-menu #btnCambiarTema:focus,
+    .navbar-menu #btnCambiarTema:active {
+      background: transparent;
+      box-shadow: none;
+    }
+    .theme-switch {
+      position: relative;
+      display: inline-block;
+      flex: 0 0 112px;
+      width: 112px;
+      height: 36px;
+      border: 1px solid #5a5a5a;
+      border-radius: 999px;
+      background: #3a3a3a;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
+    }
+    .theme-switch-thumb {
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      display: flex;
+      width: 28px;
+      height: 28px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: #f5f5f5;
+      transition: transform 0.2s ease;
+    }
+    .theme-switch-label {
+      position: absolute;
+      top: 50%;
+      right: 7px;
+      left: 39px;
+      overflow: hidden;
+      color: #ffffff;
+      font-size: 0.82rem;
+      font-weight: 700;
+      line-height: 1;
+      text-align: center;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      transform: translateY(-50%);
+      transition: left 0.2s ease, right 0.2s ease;
+    }
+    .theme-switch i {
+      display: block;
+      color: #333333;
+      font-size: 14px;
+      line-height: 1;
+      pointer-events: none;
+    }
+    #btnCambiarTema[aria-checked="true"] .theme-switch {
+      border-color: var(--brand-orange);
+      background: var(--brand-orange);
+    }
+    #btnCambiarTema[aria-checked="true"] .theme-switch-thumb {
+      background: #ffffff;
+      transform: translateX(76px);
+    }
+    #btnCambiarTema[aria-checked="true"] .theme-switch-label {
+      right: 39px;
+      left: 7px;
+    }
+    @media (hover: hover) {
+      #btnCambiarTema:hover .theme-switch {
+        border-color: var(--brand-orange);
+        filter: brightness(1.12);
+      }
+    }
+    #btnCambiarTema:active .theme-switch-thumb {
+      transform: scale(0.9);
+    }
+    #btnCambiarTema[aria-checked="true"]:active .theme-switch-thumb {
+      transform: translateX(76px) scale(0.9);
+    }
+    #btnCambiarTema:focus-visible {
+      outline: none;
+      box-shadow: none;
+    }
+    #btnCambiarTema:focus-visible .theme-switch {
+      outline: 2px solid var(--brand-orange);
+      outline-offset: 2px;
     }
     :root {
       color-scheme: dark;
@@ -1170,6 +1259,17 @@
       color: #f5f5f5;
       background: #181818;
       border: 1px solid #333333 !important;
+    }
+    #btnBorrarPedido {
+      color: #f5f5f5;
+      background: transparent;
+      border: 1px solid #3a3a3a;
+    }
+    #btnBorrarPedido:hover,
+    #btnBorrarPedido:focus {
+      color: #ffffff;
+      background: transparent;
+      border-color: #4a4a4a;
     }
     .modal-header {
       color: #f5f5f5;
@@ -1323,6 +1423,17 @@
       border-radius: 20px;
       box-shadow: 0 18px 50px rgba(0, 0, 0, 0.18) !important;
     }
+    body.light-mode #btnBorrarPedido {
+      color: #333333;
+      background: transparent;
+      border-color: #e5e5e5;
+    }
+    body.light-mode #btnBorrarPedido:hover,
+    body.light-mode #btnBorrarPedido:focus {
+      color: #191919;
+      background: transparent;
+      border-color: #d5d5d5;
+    }
     body.light-mode .modal-header,
     body.light-mode .form-label {
       color: #191919;
@@ -1376,7 +1487,7 @@
       --bs-dropdown-link-hover-color: #191919;
       --bs-dropdown-link-active-bg: #f3f3f3;
       --bs-dropdown-link-active-color: #191919;
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
+      box-shadow: none;
     }
     @media (hover: hover) and (pointer: fine) {
       body.light-mode .menu-toggle:hover {
@@ -1431,9 +1542,9 @@
             <i class="bi bi-file-earmark-arrow-down" aria-hidden="true"></i>
             <span>Descargar catálogo</span>
           </a>
-          <button id="btnCambiarTema" class="dropdown-item" type="button" aria-label="Cambiar a modo claro">
-            <i id="iconoTema" class="bi bi-sun" aria-hidden="true"></i>
-            <span id="etiquetaTema">Modo claro</span>
+          <button id="btnCambiarTema" class="dropdown-item" type="button" role="switch" aria-label="Cambiar a modo claro" aria-checked="false">
+            <i id="iconoTema" class="bi bi-moon" aria-hidden="true"></i>
+            <span class="theme-switch" aria-hidden="true"><span class="theme-switch-thumb"></span><span id="etiquetaTema" class="theme-switch-label">Oscuro</span></span>
           </button>
         </div>
       </div>
@@ -1499,7 +1610,13 @@
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable order-modal-dialog">
       <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
         <div class="modal-header border-bottom-0 pb-0">
-          <h2 class="modal-title fs-5 fw-bold text-dark" id="tituloModalFinalizar"><i class="bi bi-receipt me-2 text-primary" aria-hidden="true"></i>Revisar Pedido</h2>
+          <div class="d-flex align-items-center gap-4">
+            <h2 class="modal-title fs-5 fw-bold text-dark mb-0" id="tituloModalFinalizar"><i class="bi bi-receipt me-2 text-primary" aria-hidden="true"></i>Revisar Pedido</h2>
+            <button type="button" id="btnBorrarPedido" class="btn btn-sm d-inline-flex align-items-center gap-1" aria-label="Borrar todo el pedido" disabled style="min-height: 32px; padding: 5px 10px; border-radius: 8px; white-space: nowrap;">
+              <i class="bi bi-trash3" aria-hidden="true"></i>
+              <span>Borrar todo</span>
+            </button>
+          </div>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
         </div>
         <div class="modal-body">
@@ -1549,6 +1666,21 @@
       </div>
     </div>
   </div>
+  <div class="modal fade" id="modalConfirmarBorrado" tabindex="-1" aria-hidden="true" aria-labelledby="tituloConfirmarBorrado" aria-describedby="mensajeConfirmarBorrado" data-bs-backdrop="static" style="z-index: 1070;">
+    <div class="modal-dialog modal-dialog-centered modal-sm" style="width: calc(100% - 1rem); max-width: 340px; margin: 0.5rem auto;">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+        <div class="modal-body text-center p-4">
+          <i class="bi bi-trash3 text-danger" aria-hidden="true" style="font-size: 3rem;"></i>
+          <h2 id="tituloConfirmarBorrado" class="fs-5 mt-3 fw-bold text-dark">¿Borrar pedido?</h2>
+          <p id="mensajeConfirmarBorrado" class="text-muted small mb-4">Se eliminarán todos los productos agregados.</p>
+          <div class="d-flex justify-content-center gap-2">
+            <button type="button" id="btnCancelarBorrado" class="btn btn-outline-secondary py-2 fw-bold rounded-3" style="width: 120px;" data-bs-dismiss="modal">No</button>
+            <button type="button" id="btnConfirmarBorrado" class="btn btn-danger py-2 fw-bold rounded-3" style="width: 120px;">Sí</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
   <!-- Modal de Alerta Táctica (Reemplaza los molestos pop-ups del navegador) -->
   <div class="modal fade" id="modalAlerta" tabindex="-1" aria-hidden="true" aria-labelledby="alertaTitulo" aria-describedby="alertaMensaje" style="z-index: 1060;">
     <div class="modal-dialog modal-dialog-centered modal-sm">
@@ -1569,6 +1701,7 @@
     const CACHE_CARRITO_LOCAL_KEY = 'limza-pedido-carrito-v1';
     const TIMEOUT_CATALOGO_MS = 10000;
     let catalogo = [];
+    const catalogoPorClave = new Map();
     let catalogoCacheCargado = false;
     let catalogoRenderizado = false;
     let carrito = {};
@@ -1579,15 +1712,30 @@
     let estadoValidacionVendedor = '';
     let posicionScrollAntesDeBuscar = null;
     let modalInstance = null;
+    let modalConfirmarBorradoInstance = null;
     let modalAlertaInstance = null;
+    let cerrarRevisionTrasBorrado = false;
     const pulsacionesProlongadasActivas = new Map();
     const getById = (id) => document.getElementById(id);
     const claveProducto = (producto) => String(producto.id || producto.codigo);
     function initApp() {
       carrito = leerCarritoGuardado();
       modalInstance = new bootstrap.Modal(getById('modalFinalizar'));
+      modalConfirmarBorradoInstance = new bootstrap.Modal(getById('modalConfirmarBorrado'));
       modalAlertaInstance = new bootstrap.Modal(getById('modalAlerta'));
+      getById('modalConfirmarBorrado').addEventListener('shown.bs.modal', () => {
+        const fondos = document.querySelectorAll('.modal-backdrop');
+        const fondoConfirmacion = fondos[fondos.length - 1];
+        if (fondoConfirmacion) fondoConfirmacion.style.zIndex = '1065';
+      });
+      getById('modalConfirmarBorrado').addEventListener('hidden.bs.modal', () => {
+        if (cerrarRevisionTrasBorrado) {
+          cerrarRevisionTrasBorrado = false;
+          modalInstance.hide();
+        }
+      });
       instalarManejadoresPulsacionProlongada();
+      instalarManejadoresResumen();
       const temaGuardado = leerTemaGuardado();
       aplicarTema(temaGuardado);
       getById('btnCambiarTema').addEventListener('click', alternarTema);
@@ -1595,6 +1743,8 @@
       getById('btnLimpiarBuscador').addEventListener('click', limpiarBuscadorManualmente);
       getById('btnAbrirModal').addEventListener('click', abrirModalFinalizar);
       getById('btnAbrirPedidoDesktop').addEventListener('click', abrirModalFinalizar);
+      getById('btnBorrarPedido').addEventListener('click', solicitarBorradoPedido);
+      getById('btnConfirmarBorrado').addEventListener('click', confirmarBorradoPedido);
       getById('vendedorNombre').addEventListener('input', () => {
         const campo = getById('vendedorNombre');
         forzarMayusculas(campo);
@@ -1671,6 +1821,18 @@
       document.addEventListener('pointerup', finalizarPulsacionProlongada, true);
       document.addEventListener('pointercancel', cancelarPulsacionProlongada, true);
     }
+    function instalarManejadoresResumen() {
+      ['modalListaItems', 'desktopListaItems'].forEach(id => {
+        const contenedor = getById(id);
+        contenedor.addEventListener('click', event => {
+          if (!(event.target instanceof Element)) return;
+          const boton = event.target.closest('.btn-delete-icon');
+          if (boton && contenedor.contains(boton)) {
+            eliminarDelResumen(boton.dataset.codigo);
+          }
+        });
+      });
+    }
     function registrarPulsacionProlongada(boton, incrementar) {
       if (!boton) return;
       boton.addEventListener('pointerdown', event => {
@@ -1723,9 +1885,10 @@
       document.body.classList.toggle('light-mode', esClaro);
       const botonTema = getById('btnCambiarTema');
       const temaDestino = esClaro ? 'oscuro' : 'claro';
+      botonTema.setAttribute('aria-checked', String(esClaro));
       botonTema.setAttribute('aria-label', `Cambiar a modo ${temaDestino}`);
-      getById('etiquetaTema').textContent = `Modo ${temaDestino}`;
-      getById('iconoTema').className = `bi bi-${esClaro ? 'moon' : 'sun'}`;
+      getById('etiquetaTema').textContent = esClaro ? 'Claro' : 'Oscuro';
+      getById('iconoTema').className = `bi bi-${esClaro ? 'sun' : 'moon'}`;
     }
     function alternarTema(event) {
       const tema = document.body.classList.contains('light-mode') ? 'oscuro' : 'claro';
@@ -1824,6 +1987,11 @@
     }
     function renderizarCatalogo(datos) {
       catalogo = Array.isArray(datos) ? datos : [];
+      catalogoPorClave.clear();
+      catalogo.forEach(producto => {
+        const clave = claveProducto(producto);
+        if (!catalogoPorClave.has(clave)) catalogoPorClave.set(clave, producto);
+      });
       catalogoRenderizado = true;
       document.getElementById('cargando').classList.add('d-none');
       document.getElementById('cargando').setAttribute('aria-busy', 'false');
@@ -1932,7 +2100,7 @@
       });
     }
     function renderBotonesTarjeta(codigo, cant) {
-      const prod = catalogo.find(p => claveProducto(p) === codigo);
+      const prod = catalogoPorClave.get(codigo);
       if (prod && !prod.disponible) {
         return `
           <button class="btn btn-light btn-sm rounded-pill px-3 py-1 fw-bold text-muted border shadow-none d-flex align-items-center gap-1"
@@ -1982,7 +2150,7 @@
       `;
     }
     function iniciarAgregar(codigo) {
-      const prod = catalogo.find(p => claveProducto(p) === codigo);
+      const prod = catalogoPorClave.get(codigo);
       itemEditando = codigo;
       if (prod && prod.disponible && !carrito[codigo]) {
         carrito[codigo] = { ...prod, cantidad: 1 };
@@ -1999,7 +2167,7 @@
       const cantidad = inputEl
         ? Number.parseInt(inputEl.value, 10)
         : (carrito[codigo] ? carrito[codigo].cantidad : 1);
-      const prod = catalogo.find(p => claveProducto(p) === codigo);
+      const prod = catalogoPorClave.get(codigo);
       if (!Number.isFinite(cantidad) || cantidad <= 0) {
         delete carrito[codigo];
       } else if (prod) {
@@ -2028,7 +2196,7 @@
         eliminarProducto(codigo);
         return;
       }
-      const prod = catalogo.find(p => claveProducto(p) === codigo);
+      const prod = catalogoPorClave.get(codigo);
       if (prod) carrito[codigo] = { ...prod, cantidad: nuevaCant };
       actualizarItemUI(codigo);
       actualizarBarraTotales();
@@ -2039,7 +2207,7 @@
         eliminarProducto(codigo);
         return;
       }
-      const prod = catalogo.find(p => claveProducto(p) === codigo);
+      const prod = catalogoPorClave.get(codigo);
       if (prod) carrito[codigo] = { ...prod, cantidad };
       actualizarItemUI(codigo);
       actualizarBarraTotales();
@@ -2086,7 +2254,22 @@
       getById('desktopItemsCount').setAttribute('aria-label', textoCantidad);
       document.getElementById('btnAbrirModal').disabled = !carritoTieneItems;
       getById('btnAbrirPedidoDesktop').disabled = !carritoTieneItems;
+      getById('btnBorrarPedido').disabled = !carritoTieneItems;
       renderizarResumenPedido();
+    }
+    function solicitarBorradoPedido() {
+      if (!Object.keys(carrito).length) return;
+      modalConfirmarBorradoInstance.show();
+    }
+    function confirmarBorradoPedido() {
+      if (!Object.keys(carrito).length) return;
+      const codigos = Object.keys(carrito);
+      carrito = {};
+      itemEditando = null;
+      codigos.forEach(actualizarItemUI);
+      actualizarBarraTotales();
+      cerrarRevisionTrasBorrado = true;
+      modalConfirmarBorradoInstance.hide();
     }
     function mostrarAvisoToast(mensaje) {
       const toast = document.getElementById('toastAviso');
@@ -2187,9 +2370,6 @@
             button,
             () => ajustarCantidadEnResumen(codigo, delta)
           );
-        });
-        contenedor.querySelectorAll('.btn-delete-icon').forEach(button => {
-          button.addEventListener('click', () => eliminarDelResumen(button.dataset.codigo));
         });
       });
       getById('modalTotal').textContent = `$${total.toFixed(2)}`;
@@ -2323,8 +2503,7 @@
       const registrado = formatoValido &&
         vendedorValidado?.registrado === true &&
         vendedorValidado.nombre === nombre;
-      const errorVendedor = Boolean(el.value.trim()) && !registrado &&
-        estadoValidacionVendedor !== 'verificando';
+      const errorVendedor = !registrado && estadoValidacionVendedor !== 'verificando';
       el.classList.toggle('is-valid', registrado);
       el.classList.toggle('is-invalid', errorVendedor);
       el.setAttribute('aria-invalid', String(errorVendedor));
