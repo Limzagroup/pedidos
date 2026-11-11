@@ -115,18 +115,16 @@
       font-weight: 700;
       line-height: 1;
       border-radius: 50%;
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+      box-shadow: none;
       user-select: none;
-    }
-    .order-qty-button i {
-      display: block;
-      font-size: 0.875rem;
-      line-height: 1;
     }
     .qty-btn:hover, .qty-btn:active {
       background: transparent;
       color: rgba(255, 255, 255, 0.78);
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
+      box-shadow: none;
+    }
+    .qty-btn.is-pressed:not(:disabled) {
+      color: #191919;
     }
     .qty-input {
       width: 48px;
@@ -347,17 +345,34 @@
       justify-content: center;
       border: 0;
       background: transparent;
-      color: #ffffff;
+      color: #191919;
       box-shadow: none;
     }
-    .order-qty-control .order-qty-button {
-      min-height: 32px;
+    .order-qty-button span {
+      display: inline-flex;
+      width: 100%;
+      height: 100%;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      font-weight: 700;
+      line-height: 1;
     }
     .order-qty-button:hover:not(:disabled) {
       background: transparent;
     }
+    .order-qty-button:active:not(:disabled) {
+      background: transparent;
+    }
+    .order-qty-button:active:not(:disabled) span {
+      color: var(--brand-orange-hover);
+    }
+    .order-qty-button.is-pressed:not(:disabled) span {
+      color: var(--brand-orange-hover);
+    }
     .order-qty-button:disabled {
       cursor: not-allowed;
+      color: #a3a3a3;
     }
     .order-qty-value {
       min-width: 18px;
@@ -1048,7 +1063,7 @@
       min-width: 220px;
       padding: 8px;
       border-radius: 14px;
-      box-shadow: none;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
     }
     .navbar-menu .dropdown-item {
       display: flex;
@@ -1224,6 +1239,12 @@
       background: #242424;
       border-color: #3a3a3a;
     }
+    .order-qty-button {
+      color: #f5f5f5;
+    }
+    .order-qty-button:disabled {
+      color: rgba(255, 255, 255, 0.55);
+    }
     .order-total {
       border-color: #333333;
     }
@@ -1388,6 +1409,15 @@
       background: #f5f5f5;
       border-color: #e5e5e5;
     }
+    body.light-mode .order-qty-button {
+      color: #191919;
+    }
+    body.light-mode .order-qty-button:disabled {
+      color: #a3a3a3;
+    }
+    body.light-mode .order-qty-value {
+      color: #191919;
+    }
     body.light-mode .order-total {
       border-color: #e5e5e5;
     }
@@ -1472,7 +1502,7 @@
       --bs-dropdown-link-hover-color: #191919;
       --bs-dropdown-link-active-bg: #f3f3f3;
       --bs-dropdown-link-active-color: #191919;
-      box-shadow: none;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
     }
     @media (hover: hover) and (pointer: fine) {
       body.light-mode .menu-toggle:hover {
@@ -1823,8 +1853,9 @@
       boton.addEventListener('pointerdown', event => {
         if (event.button !== 0) return;
         event.preventDefault();
+        boton.classList.add('is-pressed');
         cancelarTemporizadoresPulsacion(event.pointerId);
-        const pulsacion = { incrementar, temporizador: null, intervalo: null, iniciada: false };
+        const pulsacion = { boton, incrementar, temporizador: null, intervalo: null, iniciada: false };
         pulsacion.temporizador = setTimeout(() => {
           pulsacion.iniciada = true;
           pulsacion.incrementar();
@@ -1844,10 +1875,13 @@
     function finalizarPulsacionProlongada(event) {
       const pulsacion = pulsacionesProlongadasActivas.get(event.pointerId);
       if (!pulsacion) return;
+      pulsacion.boton.classList.remove('is-pressed');
       cancelarTemporizadoresPulsacion(event.pointerId);
       if (!pulsacion.iniciada) pulsacion.incrementar();
     }
     function cancelarPulsacionProlongada(event) {
+      const pulsacion = pulsacionesProlongadasActivas.get(event.pointerId);
+      if (pulsacion) pulsacion.boton.classList.remove('is-pressed');
       cancelarTemporizadoresPulsacion(event.pointerId);
     }
     function cancelarTemporizadoresPulsacion(pointerId) {
@@ -2310,10 +2344,10 @@
         const btnMenos = document.createElement('button');
         btnMenos.type = 'button';
         btnMenos.className = 'order-qty-button order-qty-decrease-button';
-        const iconoMenos = document.createElement('i');
-        iconoMenos.className = 'bi bi-dash';
-        iconoMenos.setAttribute('aria-hidden', 'true');
-        btnMenos.appendChild(iconoMenos);
+        const simboloMenos = document.createElement('span');
+        simboloMenos.setAttribute('aria-hidden', 'true');
+        simboloMenos.textContent = '−';
+        btnMenos.appendChild(simboloMenos);
         btnMenos.dataset.codigo = claveProducto(item);
         btnMenos.disabled = item.cantidad <= 1;
         btnMenos.setAttribute('aria-label', `Reducir cantidad de ${item.nombre}`);
@@ -2324,10 +2358,10 @@
         const btnMas = document.createElement('button');
         btnMas.type = 'button';
         btnMas.className = 'order-qty-button order-qty-increase-button';
-        const iconoMas = document.createElement('i');
-        iconoMas.className = 'bi bi-plus-lg';
-        iconoMas.setAttribute('aria-hidden', 'true');
-        btnMas.appendChild(iconoMas);
+        const simboloMas = document.createElement('span');
+        simboloMas.setAttribute('aria-hidden', 'true');
+        simboloMas.textContent = '+';
+        btnMas.appendChild(simboloMas);
         btnMas.dataset.codigo = claveProducto(item);
         btnMas.setAttribute('aria-label', `Aumentar cantidad de ${item.nombre}`);
         const btnEliminar = document.createElement('button');
