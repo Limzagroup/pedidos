@@ -1519,7 +1519,7 @@
             <div class="order-zone-vendedor-row mb-2">
               <div class="order-field order-zone-field">
                 <label for="zonaPedido" class="form-label order-field-label fw-semibold">Zona <span class="order-field-optional">(Opcional)</span></label>
-                <input type="text" id="zonaPedido" class="form-control rounded-3 px-3" maxlength="40" placeholder="Altamira" autocomplete="off" aria-describedby="zonaAyuda">
+                <input type="text" id="zonaPedido" class="form-control rounded-3 px-3" maxlength="40" placeholder="Valencia" autocomplete="off" aria-describedby="zonaAyuda">
                 <div id="zonaAyuda" class="val-feedback val-feedback-invalid px-2"></div>
               </div>
               <div class="order-field order-vendedor-field">
@@ -1566,12 +1566,17 @@
   <script>
     const URL_API_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbwVvAAODNFh4408zZRaxd89p-rWIjXvBWc5_wH3_ofX0fz4NJUqpHrvFLaIWoLkkoAv/exec";
     const CACHE_CATALOGO_LOCAL_KEY = 'limza-catalogo-v3';
+    const CACHE_CARRITO_LOCAL_KEY = 'limza-pedido-carrito-v1';
     const TIMEOUT_CATALOGO_MS = 10000;
     let catalogo = [];
     let catalogoCacheCargado = false;
     let catalogoRenderizado = false;
     let carrito = {};
     let itemEditando = null;
+    let solicitudVendedor = 0;
+    let temporizadorValidacionVendedor = null;
+    let vendedorValidado = null;
+    let estadoValidacionVendedor = '';
     let posicionScrollAntesDeBuscar = null;
     let modalInstance = null;
     let modalAlertaInstance = null;
@@ -1579,6 +1584,7 @@
     const getById = (id) => document.getElementById(id);
     const claveProducto = (producto) => String(producto.id || producto.codigo);
     function initApp() {
+      carrito = leerCarritoGuardado();
       modalInstance = new bootstrap.Modal(getById('modalFinalizar'));
       modalAlertaInstance = new bootstrap.Modal(getById('modalAlerta'));
       instalarManejadoresPulsacionProlongada();
@@ -1593,7 +1599,7 @@
         const campo = getById('vendedorNombre');
         forzarMayusculas(campo);
         limpiarCaracteresEspeciales(campo);
-        validarCampoVendedor();
+        programarValidacionVendedor();
       });
       getById('clienteNombre').addEventListener('input', () => {
         const campo = getById('clienteNombre');
@@ -1621,7 +1627,45 @@
           lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
         }, false);
       }
+      actualizarBarraTotales();
       cargarCatalogoRemoto();
+    }
+    function leerCarritoGuardado() {
+      try {
+        const guardado = JSON.parse(localStorage.getItem(CACHE_CARRITO_LOCAL_KEY) || 'null');
+        if (!guardado || typeof guardado !== 'object' || Array.isArray(guardado)) return {};
+        return Object.entries(guardado).reduce((carritoRestaurado, [clave, item]) => {
+          const cantidad = Number(item?.cantidad);
+          const precio = Number(item?.precio);
+          if (
+            !item ||
+            typeof item !== 'object' ||
+            !String(item.codigo || '').trim() ||
+            !Number.isInteger(cantidad) ||
+            cantidad <= 0 ||
+            !Number.isFinite(precio) ||
+            precio < 0
+          ) {
+            return carritoRestaurado;
+          }
+          carritoRestaurado[clave] = { ...item, cantidad, precio };
+          return carritoRestaurado;
+        }, {});
+      } catch (err) {
+        console.warn('No se pudo recuperar el pedido guardado:', err);
+        return {};
+      }
+    }
+    function guardarCarritoLocal() {
+      try {
+        if (Object.keys(carrito).length) {
+          localStorage.setItem(CACHE_CARRITO_LOCAL_KEY, JSON.stringify(carrito));
+        } else {
+          localStorage.removeItem(CACHE_CARRITO_LOCAL_KEY);
+        }
+      } catch (err) {
+        console.warn('No se pudo guardar el pedido localmente:', err);
+      }
     }
     function instalarManejadoresPulsacionProlongada() {
       document.addEventListener('pointerup', finalizarPulsacionProlongada, true);
@@ -1702,7 +1746,7 @@
       }
       const controlador = new AbortController();
       const temporizador = setTimeout(() => controlador.abort(), TIMEOUT_CATALOGO_MS);
-      fetch(`${URL_API_APPS_SCRIPT}?action=catalogo`, { cache: 'no-store', signal: controlador.signal })
+      fetch(`${URL_API_APPS_SCRIPT}?action=catalogo&_=${Date.now()}`, { cache: 'no-store', signal: controlador.signal })
         .then(res => {
           if (!res.ok) {
             throw new Error(`HTTP ${res.status}`);
@@ -1736,9 +1780,13 @@
             catalogoCacheCargado = true;
             renderizarCatalogo(catalogoGuardado.productos);
           }
-          const mensaje = catalogoCacheCargado
-            ? 'No se pudo actualizar el inventario. Se muestra el catálogo guardado en este dispositivo.'
-            : (err.message || 'Error de sincronización con el servidor de inventario.');
+          if (catalogoCacheCargado) {
+            cargando.classList.add('d-none');
+            cargando.setAttribute('aria-busy', 'false');
+            console.warn("No se pudo actualizar el inventario; se conserva el catálogo guardado:", err);
+            return;
+          }
+          const mensaje = err.message || 'Error de sincronización con el servidor de inventario.';
           cargando.innerHTML = `<div class="text-danger fw-bold">${mensaje}</div>`;
           cargando.classList.remove('d-none');
           cargando.setAttribute('aria-busy', 'false');
@@ -2019,6 +2067,7 @@
       }
     }
     function actualizarBarraTotales() {
+      guardarCarritoLocal();
       const items = Object.values(carrito);
       let total = 0;
       let count = 0;
@@ -2193,14 +2242,94 @@
         }
       }
     }
+    function normalizarNombreVendedor(nombre) {
+      return String(nombre || '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, ' ')
+        .trim()
+        .replace(/\s+/g, ' ');
+    }
+    function mostrarAyudaVendedor(texto, estado) {
+      const ayuda = getById('vendedorAyuda');
+      ayuda.textContent = texto;
+      ayuda.className = `val-feedback px-2${texto ? ` d-block text-${estado}` : ''}`;
+    }
+    function programarValidacionVendedor() {
+      window.clearTimeout(temporizadorValidacionVendedor);
+      solicitudVendedor += 1;
+      vendedorValidado = null;
+      const campo = getById('vendedorNombre');
+      const nombre = campo.value.trim();
+      const formatoValido = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s]{6,40}$/.test(nombre);
+
+      if (!formatoValido) {
+        estadoValidacionVendedor = '';
+        mostrarAyudaVendedor(nombre ? 'Nombre inválido.' : '', 'danger');
+        validarCampoVendedor();
+        return;
+      }
+
+      estadoValidacionVendedor = 'verificando';
+      mostrarAyudaVendedor('Verificando...', 'muted');
+      validarCampoVendedor();
+      const solicitud = solicitudVendedor;
+      temporizadorValidacionVendedor = window.setTimeout(
+        () => consultarVendedorRegistrado(nombre, solicitud),
+        350
+      );
+    }
+    async function consultarVendedorRegistrado(nombre, solicitud) {
+      try {
+        const url = `${URL_API_APPS_SCRIPT}?action=validarVendedor&nombre=${encodeURIComponent(nombre)}&_=${Date.now()}`;
+        const respuesta = await fetch(url, { cache: 'no-store' });
+        if (!respuesta.ok) throw new Error(`HTTP ${respuesta.status}`);
+        const datos = await respuesta.json();
+        if (datos?.exito !== true || typeof datos.registrado !== 'boolean') {
+          throw new Error(datos?.mensaje || 'El servidor devolvió una respuesta de validación inválida.');
+        }
+        if (solicitud !== solicitudVendedor ||
+            normalizarNombreVendedor(getById('vendedorNombre').value) !== normalizarNombreVendedor(nombre)) {
+          return;
+        }
+        vendedorValidado = {
+          nombre: normalizarNombreVendedor(nombre),
+          registrado: datos.registrado
+        };
+        estadoValidacionVendedor = datos.registrado ? 'registrado' : 'no-registrado';
+        mostrarAyudaVendedor(
+          datos.registrado
+            ? 'Registrado.'
+            : 'No registrado.',
+          datos.registrado ? 'success' : 'danger'
+        );
+        validarCampoVendedor();
+      } catch (error) {
+        if (solicitud !== solicitudVendedor) return;
+        estadoValidacionVendedor = 'error';
+        console.error('No se pudo validar el vendedor:', error);
+        mostrarAyudaVendedor(
+          'Error de conexión.',
+          'danger'
+        );
+        validarCampoVendedor();
+      }
+    }
     function validarCampoVendedor(actualizarBoton = true) {
-      const el = document.getElementById('vendedorNombre');
-      const esValido = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s]{6,40}$/.test(el.value.trim());
-      el.classList.toggle('is-valid', esValido && el.value.trim() !== '');
-      el.classList.toggle('is-invalid', !esValido || el.value.trim() === '');
-      el.setAttribute('aria-invalid', String(!esValido || el.value.trim() === ''));
+      const el = getById('vendedorNombre');
+      const nombre = normalizarNombreVendedor(el.value);
+      const formatoValido = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s]{6,40}$/.test(el.value.trim());
+      const registrado = formatoValido &&
+        vendedorValidado?.registrado === true &&
+        vendedorValidado.nombre === nombre;
+      const errorVendedor = Boolean(el.value.trim()) && !registrado &&
+        estadoValidacionVendedor !== 'verificando';
+      el.classList.toggle('is-valid', registrado);
+      el.classList.toggle('is-invalid', errorVendedor);
+      el.setAttribute('aria-invalid', String(errorVendedor));
       if (actualizarBoton) revisarBotonEnvio();
-      return esValido;
+      return registrado;
     }
     function validarCampoCliente(actualizarBoton = true) {
       const el = document.getElementById('clienteNombre');
@@ -2384,6 +2513,6 @@
     }
   </script>
   <!-- Tasa USDT manual leída de G1 en la hoja del catálogo. -->
-  <script src="usdt-rate.js"></script>
+  <script src="usdt-rate.js?v=2"></script>
 </body>
 </html>

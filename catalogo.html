@@ -283,6 +283,26 @@
       line-height: 1;
       white-space: nowrap;
     }
+    @media (max-width: 575.98px) {
+      .catalog-grid { --bs-gutter-x: 0.6rem; --bs-gutter-y: 0.75rem; }
+      .card-product { padding: 0.75rem !important; border-radius: 12px; }
+      .product-photo,
+      .product-photo-fallback {
+        height: 120px;
+        margin-bottom: 8px;
+        border-radius: 9px;
+      }
+      .product-name {
+        min-height: 2.5rem;
+        margin-bottom: 0.5rem !important;
+        font-size: 0.88rem;
+        line-height: 1.3;
+      }
+      .product-card-footer { flex-wrap: wrap; row-gap: 0.4rem; }
+      .product-card-footer .badge-cat { font-size: 0.75rem; }
+      .product-price { font-size: 1.15rem; }
+      .product-code { font-size: 0.72rem; }
+    }
     .catalog-status {
       color: var(--text-muted);
     }
@@ -358,7 +378,7 @@
   <script>
     const URL_API_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbwVvAAODNFh4408zZRaxd89p-rWIjXvBWc5_wH3_ofX0fz4NJUqpHrvFLaIWoLkkoAv/exec';
     const URL_CATALOGO_DIGITAL = 'https://script.google.com/macros/s/AKfycbz6CAkq2nh-FnyUE6jE4dTmwPbIkFog10jEr4xuJp11-XbqB_mceR5AAiIhuuoIiw8kCg/exec?action=catalogo';
-    const CACHE_CATALOGO_DIGITAL = 'limza-catalogo-digital-v1';
+    const CACHE_CATALOGO_DIGITAL = 'limza-catalogo-digital-v2';
     const getById = id => document.getElementById(id);
     let productos = [];
 
@@ -420,21 +440,40 @@
 
       const controlador = new AbortController();
       const temporizador = setTimeout(() => controlador.abort(), 15000);
-      fetch(URL_CATALOGO_DIGITAL, { cache: 'no-store', signal: controlador.signal })
-        .then(respuesta => {
+      const urlCatalogoPedidos = `${URL_API_APPS_SCRIPT}?action=catalogo&_=${Date.now()}`;
+      Promise.all([
+        fetch(`${URL_CATALOGO_DIGITAL}&_=${Date.now()}`, { cache: 'no-store', signal: controlador.signal }),
+        fetch(urlCatalogoPedidos, { cache: 'no-store', signal: controlador.signal })
+      ])
+        .then(respuestas => Promise.all(respuestas.map(respuesta => {
           if (!respuesta.ok) throw new Error(`HTTP ${respuesta.status}`);
           return respuesta.json();
-        })
-        .then(datos => {
-          if (!Array.isArray(datos)) {
-            throw new Error(datos?.mensaje || 'El servidor devolvió un catálogo con formato inválido.');
+        })))
+        .then(([catalogoDigital, catalogoPedidos]) => {
+          if (!Array.isArray(catalogoDigital)) {
+            throw new Error(catalogoDigital?.mensaje || 'El servidor devolvió un catálogo digital con formato inválido.');
           }
-          const lista = datos.filter(producto =>
-            producto &&
-            typeof producto.nombre === 'string' &&
-            Number.isFinite(Number(producto.precio))
+          if (!Array.isArray(catalogoPedidos)) {
+            throw new Error(catalogoPedidos?.mensaje || 'El servidor de pedidos devolvió un catálogo con formato inválido.');
+          }
+          const productosDigitales = catalogoDigital.filter(esProductoValido);
+          const productosCebra = catalogoPedidos.filter(producto =>
+            esProductoValido(producto) &&
+            String(producto.categoria || '').trim().toUpperCase() === 'CEBRA' &&
+            producto.disponible !== false
           );
-          if (!lista.length) throw new Error('El catálogo digital no contiene productos válidos.');
+          if (!productosDigitales.length) throw new Error('El catálogo digital no contiene productos válidos.');
+          if (!productosCebra.length) throw new Error('No se encontraron productos CEBRA disponibles.');
+          const productosPorCodigo = new Map(
+            productosDigitales.map(producto => [normalizarCodigo(producto.codigo), producto])
+          );
+          productosCebra.forEach(producto => {
+            const codigo = normalizarCodigo(producto.codigo);
+            if (!codigo || !productosPorCodigo.has(codigo)) {
+              productosPorCodigo.set(codigo || `${producto.id || producto.nombre}-${productosPorCodigo.size}`, producto);
+            }
+          });
+          const lista = [...productosPorCodigo.values()];
           productos = lista;
           guardarCache(lista);
           renderizarCatalogo();
@@ -462,6 +501,16 @@
         console.warn('No se pudo leer el catálogo digital guardado:', error);
         return null;
       }
+    }
+
+    function esProductoValido(producto) {
+      return producto &&
+        typeof producto.nombre === 'string' &&
+        Number.isFinite(Number(producto.precio));
+    }
+
+    function normalizarCodigo(codigo) {
+      return String(codigo || '').trim().toLocaleUpperCase();
     }
 
     function guardarCache(lista) {
@@ -515,7 +564,7 @@
 
     function crearTarjeta(producto) {
       const columna = document.createElement('div');
-      columna.className = 'col-12 col-md-6 col-xl-4';
+      columna.className = 'col-6 col-md-4 col-xl-3';
       const tarjeta = document.createElement('article');
       tarjeta.className = 'card card-product d-flex flex-column p-3 mb-1';
       const urlImagen = obtenerUrlImagen(producto.imagen);
@@ -538,12 +587,14 @@
       codigo.className = 'd-flex justify-content-end align-items-start mb-2';
       const etiquetaCodigo = document.createElement('span');
       etiquetaCodigo.className = 'product-code';
-      etiquetaCodigo.textContent = producto.codigo || '';
+      etiquetaCodigo.textContent = producto.codigo ? `COD: ${producto.codigo}` : '';
       codigo.appendChild(etiquetaCodigo);
 
       const nombre = document.createElement('div');
       nombre.className = 'product-name mb-3';
-      nombre.textContent = producto.nombre;
+      nombre.textContent = producto.empaque
+        ? `${producto.nombre} · Empaque: ${producto.empaque}`
+        : producto.nombre;
 
       const pie = document.createElement('div');
       pie.className = 'product-card-footer d-flex justify-content-between align-items-center gap-2 mt-auto';
@@ -594,6 +645,6 @@
       mensaje.classList.toggle('catalog-error', Boolean(texto) && esError);
     }
   </script>
-  <script src="usdt-rate.js"></script>
+  <script src="usdt-rate.js?v=2"></script>
 </body>
 </html>

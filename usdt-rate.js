@@ -6,6 +6,10 @@
     return;
   }
 
+  const CACHE_TASA_USDT_KEY = "limza-tasa-usdt-v1";
+  const MAX_INTENTOS = 3;
+  const REINTENTOS_MS = [1500, 5000];
+
   const estilos = document.createElement("style");
   estilos.textContent = `
     .usdt-rate {
@@ -68,47 +72,126 @@
   elemento.append(etiqueta, valor);
   contenedor.insertBefore(elemento, menu);
 
-  const callbackName = `__limzaTasaUsdt_${Date.now()}_${Math.random().toString(36).slice(2)}`;
-  const script = document.createElement("script");
-  let completado = false;
-  const timeout = window.setTimeout(
-    () => finalizar(new Error("Se agotó el tiempo de lectura de la tasa USDT.")),
-    10000
-  );
+  let tasaGuardada = leerTasaGuardada();
+  let intentos = 0;
+  let consultando = false;
+  let temporizadorReintento = null;
+  if (tasaGuardada) mostrarTasa(tasaGuardada.tasa, tasaGuardada.guardadoEn, true);
 
-  function finalizar(error, datos) {
-    if (completado) return;
-    completado = true;
-    window.clearTimeout(timeout);
-    delete window[callbackName];
-    script.remove();
-
-    if (
-      error ||
-      !datos ||
-      datos.exito !== true ||
-      !Number.isFinite(Number(datos.tasa)) ||
-      Number(datos.tasa) <= 0
-    ) {
-      if (error) console.error("No se pudo cargar la tasa manual USDT:", error);
-      else console.error("Apps Script devolvió una tasa USDT inválida.", datos);
-      valor.textContent = "Bs. no disponible";
-      elemento.title = datos && datos.mensaje
-        ? String(datos.mensaje)
-        : "No se pudo leer la tasa USDT/VES de la hoja Multimarcas.";
-      return;
-    }
-
-    const tasaFormateada = new Intl.NumberFormat("es-VE", {
+  function formatearTasa(tasa) {
+    return new Intl.NumberFormat("es-VE", {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
-    }).format(Number(datos.tasa));
-    valor.textContent = `Bs. ${tasaFormateada}`;
-    elemento.title = `Tasa manual USDT/VES: Bs. ${tasaFormateada}`;
+    }).format(tasa);
   }
 
-  window[callbackName] = (datos) => finalizar(null, datos);
-  script.onerror = () => finalizar(new Error("No se pudo leer la tasa manual desde Apps Script."));
-  script.src = `${URL_API_APPS_SCRIPT}?action=tasaUSDT&callback=${encodeURIComponent(callbackName)}`;
-  document.head.appendChild(script);
+  function mostrarTasa(tasa, fecha, guardada) {
+    const tasaFormateada = formatearTasa(tasa);
+    valor.textContent = `Bs. ${tasaFormateada}`;
+    const fechaFormateada = new Intl.DateTimeFormat("es-VE", {
+      dateStyle: "short",
+      timeStyle: "short"
+    }).format(new Date(fecha));
+    elemento.title = guardada
+      ? `Última tasa USDT/VES guardada: Bs. ${tasaFormateada} (${fechaFormateada}). Se está verificando si hay una tasa más reciente.`
+      : `Tasa manual USDT/VES: Bs. ${tasaFormateada} (actualizada ${fechaFormateada}).`;
+  }
+
+  function leerTasaGuardada() {
+    try {
+      const datos = JSON.parse(localStorage.getItem(CACHE_TASA_USDT_KEY) || "null");
+      if (!datos || !Number.isFinite(datos.tasa) || datos.tasa <= 0 ||
+          !Number.isFinite(datos.guardadoEn) ||
+          !Number.isFinite(new Date(datos.guardadoEn).getTime())) {
+        return null;
+      }
+      return datos;
+    } catch (error) {
+      console.warn("No se pudo leer la tasa USDT guardada:", error);
+      return null;
+    }
+  }
+
+  function guardarTasa(tasa, guardadoEn) {
+    tasaGuardada = { tasa, guardadoEn };
+    try {
+      localStorage.setItem(CACHE_TASA_USDT_KEY, JSON.stringify(tasaGuardada));
+    } catch (error) {
+      console.warn("No se pudo guardar la tasa USDT localmente:", error);
+    }
+  }
+
+  function manejarFallo(error) {
+    if (tasaGuardada) {
+      mostrarTasa(tasaGuardada.tasa, tasaGuardada.guardadoEn, true);
+    } else {
+      valor.textContent = "Bs. no disponible";
+      elemento.title = "No se pudo leer la tasa USDT/VES. Se volverá a intentar automáticamente.";
+    }
+
+    if (intentos < MAX_INTENTOS) {
+      console.warn("No se pudo actualizar la tasa USDT; se volverá a intentar:", error);
+      temporizadorReintento = window.setTimeout(consultarTasa, REINTENTOS_MS[intentos - 1]);
+    } else {
+      console.error("No se pudo actualizar la tasa USDT después de varios intentos:", error);
+    }
+  }
+
+  function consultarTasa() {
+    if (consultando) return;
+    consultando = true;
+    intentos += 1;
+    const callbackName = `__limzaTasaUsdt_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+    const script = document.createElement("script");
+    let completado = false;
+    const timeout = window.setTimeout(
+      () => finalizar(new Error("Se agotó el tiempo de lectura de la tasa USDT.")),
+      10000
+    );
+
+    function finalizar(error, datos) {
+      if (completado) return;
+      completado = true;
+      consultando = false;
+      window.clearTimeout(timeout);
+      delete window[callbackName];
+      script.remove();
+
+      if (
+        error ||
+        !datos ||
+        datos.exito !== true ||
+        !Number.isFinite(Number(datos.tasa)) ||
+        Number(datos.tasa) <= 0
+      ) {
+        manejarFallo(error || new Error(
+          datos && datos.mensaje ? String(datos.mensaje) : "Apps Script devolvió una tasa USDT inválida."
+        ));
+        return;
+      }
+
+      const tasa = Number(datos.tasa);
+      const guardadoEn = Date.now();
+      guardarTasa(tasa, guardadoEn);
+      mostrarTasa(tasa, guardadoEn, false);
+      intentos = 0;
+      window.clearTimeout(temporizadorReintento);
+      temporizadorReintento = null;
+    }
+
+    window[callbackName] = (datos) => finalizar(null, datos);
+    script.onerror = () => finalizar(new Error("No se pudo leer la tasa manual desde Apps Script."));
+    script.src = `${URL_API_APPS_SCRIPT}?action=tasaUSDT&callback=${encodeURIComponent(callbackName)}&_=${Date.now()}`;
+    document.head.appendChild(script);
+  }
+
+  window.addEventListener("online", () => {
+    if (consultando) return;
+    window.clearTimeout(temporizadorReintento);
+    temporizadorReintento = null;
+    intentos = 0;
+    consultarTasa();
+  });
+
+  consultarTasa();
 })();
