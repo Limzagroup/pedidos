@@ -463,6 +463,10 @@
           <legend class="h6 fw-bold">O selecciona las marcas</legend>
           <div id="listaMarcas" class="brand-list" aria-label="Marcas del catálogo"></div>
         </fieldset>
+        <fieldset id="filtroSubcategoriasCebra" class="brand-fieldset mb-4 d-none">
+          <legend class="h6 fw-bold">Productos CEBRA por subcategoría</legend>
+          <div id="listaSubcategoriasCebra" class="brand-list" aria-label="Subcategorías de productos CEBRA"></div>
+        </fieldset>
         <button id="btnDescargar" class="btn btn-primary btn-lg w-100 fw-bold" type="button">
           <i class="bi bi-file-earmark-pdf me-2" aria-hidden="true"></i>Descargar PDF
         </button>
@@ -481,7 +485,7 @@
   <script>
     const URL_API_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbwVvAAODNFh4408zZRaxd89p-rWIjXvBWc5_wH3_ofX0fz4NJUqpHrvFLaIWoLkkoAv/exec';
     const URL_CATALOGO_DIGITAL = 'https://script.google.com/macros/s/AKfycbz6CAkq2nh-FnyUE6jE4dTmwPbIkFog10jEr4xuJp11-XbqB_mceR5AAiIhuuoIiw8kCg/exec?action=catalogo';
-    const CACHE_CATALOGO_DESCARGA = 'limza-catalogo-descarga-v1';
+    const CACHE_CATALOGO_DESCARGA = 'limza-catalogo-descarga-v2-subcategorias';
     const PRODUCTOS_POR_PAGINA = 15;
     const getById = id => document.getElementById(id);
     let productos = [];
@@ -494,6 +498,7 @@
       getById('btnCambiarTema').addEventListener('click', alternarTema);
       getById('seleccionarTodas').addEventListener('change', cambiarSeleccionCompleta);
       getById('listaMarcas').addEventListener('change', actualizarSeleccion);
+      getById('listaSubcategoriasCebra').addEventListener('change', actualizarResumen);
       getById('btnDescargar').addEventListener('click', descargarCatalogo);
       aplicarTema(leerTemaGuardado());
       cargarCatalogo();
@@ -671,7 +676,34 @@
         etiqueta.append(casilla, texto);
         lista.appendChild(etiqueta);
       });
-      actualizarResumen();
+      construirListaSubcategoriasCebra();
+      actualizarSeleccion();
+    }
+
+    function construirListaSubcategoriasCebra() {
+      const lista = getById('listaSubcategoriasCebra');
+      const subcategorias = [...new Map(productos
+        .filter(producto => normalizarNombreMarca(producto.categoria) === 'cebra')
+        .map(producto => {
+          const subcategoria = String(producto.subcategoria || '').trim() || 'Sin subcategoría';
+          return [normalizarNombreMarca(subcategoria), subcategoria];
+        })
+      ).values()].sort((a, b) => a.localeCompare(b, 'es'));
+
+      lista.replaceChildren();
+      subcategorias.forEach((subcategoria, indice) => {
+        const etiqueta = document.createElement('label');
+        etiqueta.className = 'brand-option';
+        const casilla = document.createElement('input');
+        casilla.type = 'checkbox';
+        casilla.value = subcategoria;
+        casilla.checked = true;
+        casilla.id = `cebra-subcategoria-${indice}`;
+        const texto = document.createElement('span');
+        texto.textContent = subcategoria;
+        etiqueta.append(casilla, texto);
+        lista.appendChild(etiqueta);
+      });
     }
 
     function mostrarControles() {
@@ -694,6 +726,13 @@
       const seleccionarTodas = getById('seleccionarTodas');
       seleccionarTodas.checked = casillas.length > 0 && seleccionadas === casillas.length;
       seleccionarTodas.indeterminate = seleccionadas > 0 && seleccionadas < casillas.length;
+      const cebraSeleccionada = casillas.some(casilla =>
+        casilla.checked && normalizarNombreMarca(casilla.value) === 'cebra'
+      );
+      getById('filtroSubcategoriasCebra').classList.toggle(
+        'd-none',
+        !cebraSeleccionada || !getById('listaSubcategoriasCebra').childElementCount
+      );
       actualizarResumen();
     }
 
@@ -712,8 +751,20 @@
 
     function obtenerProductosSeleccionados() {
       const marcas = new Set(obtenerMarcasSeleccionadas());
+      const subcategoriasCebra = new Set(
+        [...getById('listaSubcategoriasCebra').querySelectorAll('input[type="checkbox"]:checked')]
+          .map(casilla => normalizarNombreMarca(casilla.value))
+      );
+      const haySubcategoriasCebra = getById('listaSubcategoriasCebra').childElementCount > 0;
       return productos.filter(producto =>
-        marcas.has(String(producto.categoria || 'General').trim() || 'General')
+        marcas.has(String(producto.categoria || 'General').trim() || 'General') &&
+        (
+          normalizarNombreMarca(producto.categoria) !== 'cebra' ||
+          !haySubcategoriasCebra ||
+          subcategoriasCebra.has(
+            normalizarNombreMarca(String(producto.subcategoria || '').trim() || 'Sin subcategoría')
+          )
+        )
       );
     }
 
