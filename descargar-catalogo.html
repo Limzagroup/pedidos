@@ -813,17 +813,25 @@
           { length: Math.ceil(lista.length / PRODUCTOS_POR_PAGINA) },
           (_, indice) => lista.slice(indice * PRODUCTOS_POR_PAGINA, (indice + 1) * PRODUCTOS_POR_PAGINA)
         );
+        actualizarProgresoPdf(4, 'Cargando imágenes del catálogo...');
+        const imagenes = await cargarImagenesPdf(
+          lista,
+          generacion.controller.signal,
+          imagenesPreparadas,
+          (lotesCompletados, totalLotes) => {
+            const avance = totalLotes ? lotesCompletados / totalLotes : 1;
+            actualizarProgresoPdf(
+              4 + avance * 51,
+              `Preparando imágenes (${lotesCompletados} de ${totalLotes})...`
+            );
+          }
+        );
         for (let indicePagina = 0; indicePagina < paginasProductos.length; indicePagina += 1) {
           comprobarGeneracionPdf(generacion);
           const productosPagina = paginasProductos[indicePagina];
           actualizarProgresoPdf(
-            5 + indicePagina / paginasProductos.length * 88,
-            `Preparando imágenes de la página ${indicePagina + 1} de ${paginasProductos.length}...`
-          );
-          const imagenes = await cargarImagenesPdf(
-            productosPagina,
-            generacion.controller.signal,
-            imagenesPreparadas
+            56 + indicePagina / paginasProductos.length * 39,
+            `Creando página ${indicePagina + 1} de ${paginasProductos.length}...`
           );
           const pagina = documento.addPage([anchoPagina, altoPagina]);
           pagina.drawPage(fondoPlantilla, { x: 0, y: 0, width: anchoPagina, height: altoPagina });
@@ -913,18 +921,20 @@
       return new Uint8Array(await respuesta.arrayBuffer());
     }
 
-    async function cargarImagenesPdf(lista, signal, cache) {
+    async function cargarImagenesPdf(lista, signal, cache, informarProgreso) {
       const ids = [...new Set(lista.flatMap(producto => [
         extraerIdImagenDrive(producto.imagen),
         extraerIdImagenDrive(producto.logoMarca)
       ]).filter(Boolean))].filter(id => !cache.has(id));
-      const datosPorId = {};
+      let datosPorId = {};
       const lotes = [];
       for (let inicio = 0; inicio < ids.length; inicio += 4) {
         lotes.push(ids.slice(inicio, inicio + 4));
       }
-      for (let inicio = 0; inicio < lotes.length; inicio += 3) {
-        const resultados = await Promise.all(lotes.slice(inicio, inicio + 3).map(async lote => {
+      let lotesCompletados = 0;
+      if (!lotes.length && informarProgreso) informarProgreso(0, 0);
+      for (let inicio = 0; inicio < lotes.length; inicio += 4) {
+        const resultados = await Promise.all(lotes.slice(inicio, inicio + 4).map(async lote => {
           let ultimoError;
           for (let intento = 0; intento < 3; intento += 1) {
             comprobarSignalPdf(signal);
@@ -946,17 +956,20 @@
           throw ultimoError || new Error('No se pudieron cargar las imágenes para el PDF.');
         }));
         resultados.forEach(resultado => Object.assign(datosPorId, resultado));
+        comprobarSignalPdf(signal);
+        const imagenesConvertidas = await Promise.all(
+          Object.entries(datosPorId).map(async ([id, dataUrl]) => [
+            id,
+            await convertirImagenParaPdf(dataUrl, signal)
+          ])
+        );
+        comprobarSignalPdf(signal);
+        imagenesConvertidas.forEach(([id, imagen]) => cache.set(id, imagen));
+        datosPorId = {};
+        lotesCompletados += resultados.length;
+        if (informarProgreso) informarProgreso(lotesCompletados, lotes.length);
       }
 
-      comprobarSignalPdf(signal);
-      const imagenesConvertidas = await Promise.all(
-        Object.entries(datosPorId).map(async ([id, dataUrl]) => [
-          id,
-          await convertirImagenParaPdf(dataUrl, signal)
-        ])
-      );
-      comprobarSignalPdf(signal);
-      imagenesConvertidas.forEach(([id, imagen]) => cache.set(id, imagen));
       return Object.fromEntries(
         [...new Set(lista.flatMap(producto => [
           extraerIdImagenDrive(producto.imagen),
