@@ -22,6 +22,9 @@
       --border-color: #333333;
       --brand-orange: #f97316;
       --brand-orange-hover: #ea580c;
+      --disabled-button-bg: #333333;
+      --disabled-button-border: #454545;
+      --disabled-button-text: #a3a3a3;
     }
     body {
       min-height: 100vh;
@@ -37,6 +40,9 @@
       --text-main: #191919;
       --text-muted: #6b6b6b;
       --border-color: #e5e5e5;
+      --disabled-button-bg: #e2e8f0;
+      --disabled-button-border: #cbd5e1;
+      --disabled-button-text: #475569;
       background: linear-gradient(180deg, #f0f0f0 0, #f7f7f7 280px, #f5f5f5 100%);
     }
     .text-primary { color: var(--brand-orange) !important; }
@@ -48,6 +54,31 @@
     .btn-primary:focus {
       background: var(--brand-orange-hover);
       border-color: var(--brand-orange-hover);
+    }
+    #btnDescargar {
+      --bs-btn-color: #ffffff;
+      --bs-btn-bg: var(--brand-orange);
+      --bs-btn-border-color: var(--brand-orange);
+      --bs-btn-hover-color: #ffffff;
+      --bs-btn-hover-bg: var(--brand-orange-hover);
+      --bs-btn-hover-border-color: var(--brand-orange-hover);
+      --bs-btn-focus-shadow-rgb: 249, 115, 22;
+      --bs-btn-active-color: #ffffff;
+      --bs-btn-active-bg: var(--brand-orange-hover);
+      --bs-btn-active-border-color: var(--brand-orange-hover);
+      --bs-btn-disabled-color: var(--disabled-button-text);
+      --bs-btn-disabled-bg: var(--disabled-button-bg);
+      --bs-btn-disabled-border-color: var(--disabled-button-border);
+    }
+    #btnDescargar:disabled,
+    #btnDescargar:disabled:hover,
+    #btnDescargar:disabled:focus {
+      background: var(--disabled-button-bg);
+      border-color: var(--disabled-button-border);
+      color: var(--disabled-button-text);
+      cursor: not-allowed;
+      opacity: 1;
+      box-shadow: none;
     }
     .navbar {
       z-index: 1050;
@@ -349,6 +380,12 @@
       gap: 12px;
       margin-bottom: 8px;
     }
+    .progress-eta {
+      margin: 0 0 8px;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      font-variant-numeric: tabular-nums;
+    }
     #estadoGeneracion {
       min-width: 0;
       color: var(--text-main);
@@ -372,6 +409,29 @@
       border: 0;
       border-radius: 999px;
       background: var(--border-color);
+    }
+    .progress-track {
+      position: relative;
+      overflow: hidden;
+      border-radius: 999px;
+    }
+    .progress-sweep {
+      position: absolute;
+      z-index: 1;
+      top: 0;
+      bottom: 0;
+      left: -35%;
+      width: 35%;
+      pointer-events: none;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.58), transparent);
+      opacity: 0;
+    }
+    .progress-track.is-active .progress-sweep {
+      opacity: 1;
+      animation: progress-sweep 1.35s ease-in-out infinite;
+    }
+    @keyframes progress-sweep {
+      to { transform: translateX(390%); }
     }
     #progresoGeneracion::-webkit-progress-bar {
       border-radius: 999px;
@@ -411,6 +471,7 @@
     }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { transition-duration: 0.01ms !important; }
+      .progress-track.is-active .progress-sweep { animation: none !important; }
     }
   </style>
 </head>
@@ -475,7 +536,11 @@
             <div id="estadoGeneracion" role="status" aria-live="polite"></div>
             <span id="progresoPorcentaje">0%</span>
           </div>
-          <progress id="progresoGeneracion" max="100" value="0" aria-label="Progreso de generación del PDF"></progress>
+          <div id="tiempoEstimado" class="progress-eta">Calculando tiempo estimado...</div>
+          <div id="pistaProgreso" class="progress-track">
+            <progress id="progresoGeneracion" max="100" value="0" aria-label="Progreso de generación del PDF"></progress>
+            <span class="progress-sweep" aria-hidden="true"></span>
+          </div>
         </div>
       </div>
     </section>
@@ -782,19 +847,44 @@
       if (generacionPdfActiva) return;
       const generacion = { controller: new AbortController() };
       generacionPdfActiva = generacion;
+      const inicioGeneracion = performance.now();
+      const estadoTiempo = {
+        fase: 'Calculando estimación...',
+        gruposRestantes: 0,
+        segundosPorGrupo: 0,
+        ultimaMuestra: inicioGeneracion,
+        segundosFinalizacion: 0
+      };
+      const actualizarTiempoEstimado = () => {
+        const ahora = performance.now();
+        const transcurrido = (ahora - inicioGeneracion) / 1000;
+        let texto = `Tiempo transcurrido: ${formatearTiempoRestante(transcurrido)}`;
+        if (estadoTiempo.fase === 'imagenes' && estadoTiempo.gruposRestantes > 0) {
+          const desdeUltimoGrupo = (ahora - estadoTiempo.ultimaMuestra) / 1000;
+          const restante = estadoTiempo.segundosPorGrupo * estadoTiempo.gruposRestantes
+            - desdeUltimoGrupo + estadoTiempo.segundosFinalizacion;
+          texto += restante > 1
+            ? ` · Tiempo restante aproximado: ~${formatearTiempoRestante(restante)}`
+            : ' · Ajustando el tiempo restante...';
+        }
+        getById('tiempoEstimado').textContent = texto;
+      };
+      const temporizadorTiempo = window.setInterval(actualizarTiempoEstimado, 1000);
+      actualizarTiempoEstimado();
       const botonDescargar = getById('btnDescargar');
       botonDescargar.disabled = true;
       const progresoEstado = getById('progresoEstado');
       if (ocultarProgresoTimer) window.clearTimeout(ocultarProgresoTimer);
       progresoEstado.classList.remove('d-none');
       progresoEstado.classList.add('is-floating');
+      getById('pistaProgreso').classList.add('is-active');
       mostrarEstadoGeneracion('', false);
-      actualizarProgresoPdf(0, 'Iniciando generación...');
+      actualizarProgresoPdf(0, 'Generando tu catálogo...');
 
       try {
         const { PDFDocument, StandardFonts, rgb } = window.PDFLib;
         const bytesPlantilla = await cargarPlantillaCatalogoPdf(generacion.controller.signal);
-        actualizarProgresoPdf(2, 'Preparando el catálogo...');
+        actualizarProgresoPdf(2, 'Preparando el diseño del catálogo...');
         comprobarGeneracionPdf(generacion);
         const documento = await PDFDocument.create();
         const [fondoPlantilla] = await documento.embedPdf(bytesPlantilla, [0]);
@@ -813,7 +903,7 @@
           { length: Math.ceil(lista.length / PRODUCTOS_POR_PAGINA) },
           (_, indice) => lista.slice(indice * PRODUCTOS_POR_PAGINA, (indice + 1) * PRODUCTOS_POR_PAGINA)
         );
-        actualizarProgresoPdf(4, 'Cargando imágenes del catálogo...');
+        actualizarProgresoPdf(3, 'Cargando imágenes para tu catálogo...');
         const imagenes = await cargarImagenesPdf(
           lista,
           generacion.controller.signal,
@@ -821,18 +911,32 @@
           (lotesCompletados, totalLotes) => {
             const avance = totalLotes ? lotesCompletados / totalLotes : 1;
             actualizarProgresoPdf(
-              4 + avance * 51,
-              `Preparando imágenes (${lotesCompletados} de ${totalLotes})...`
+              3 + avance * 92,
+              `Cargando imágenes para tu catálogo (${lotesCompletados} de ${totalLotes})...`
             );
+            const gruposTotales = Math.ceil(totalLotes / 4);
+            const gruposCompletados = Math.ceil(lotesCompletados / 4);
+            if (gruposTotales && gruposCompletados) {
+              estadoTiempo.fase = 'imagenes';
+              estadoTiempo.gruposRestantes = gruposTotales - gruposCompletados;
+              if (!estadoTiempo.gruposRestantes) {
+                estadoTiempo.fase = 'Finalizando preparación de imágenes...';
+              }
+              estadoTiempo.segundosPorGrupo =
+                (performance.now() - inicioGeneracion) / 1000 / gruposCompletados;
+              estadoTiempo.ultimaMuestra = performance.now();
+              estadoTiempo.segundosFinalizacion = Math.max(2, paginasProductos.length * 0.2);
+            } else {
+              estadoTiempo.fase = 'Preparando páginas y archivo PDF...';
+            }
+            actualizarTiempoEstimado();
           }
         );
+        estadoTiempo.fase = 'Preparando páginas y archivo PDF...';
+        actualizarTiempoEstimado();
         for (let indicePagina = 0; indicePagina < paginasProductos.length; indicePagina += 1) {
           comprobarGeneracionPdf(generacion);
           const productosPagina = paginasProductos[indicePagina];
-          actualizarProgresoPdf(
-            56 + indicePagina / paginasProductos.length * 39,
-            `Creando página ${indicePagina + 1} de ${paginasProductos.length}...`
-          );
           const pagina = documento.addPage([anchoPagina, altoPagina]);
           pagina.drawPage(fondoPlantilla, { x: 0, y: 0, width: anchoPagina, height: altoPagina });
           for (let posicionPagina = 0; posicionPagina < PRODUCTOS_POR_PAGINA; posicionPagina += 1) {
@@ -861,17 +965,33 @@
             fuentes.titulo,
             colorTexto
           );
+          actualizarProgresoPdf(
+            95 + (indicePagina + 1) / paginasProductos.length * 3,
+            `Armando páginas del catálogo (${indicePagina + 1} de ${paginasProductos.length})...`
+          );
+          estadoTiempo.fase = `Preparando PDF: página ${indicePagina + 1} de ${paginasProductos.length}.`;
+          actualizarTiempoEstimado();
         }
 
-        actualizarProgresoPdf(96, 'Guardando PDF...');
+        actualizarProgresoPdf(98, 'Guardando tu catálogo en PDF...');
+        estadoTiempo.fase = 'Guardando el archivo PDF...';
+        actualizarTiempoEstimado();
         const archivo = await documento.save();
         comprobarGeneracionPdf(generacion);
-        actualizarProgresoPdf(99, 'Preparando descarga...');
+        actualizarProgresoPdf(99, 'Preparando el archivo para descargar...');
         descargarArchivoPdf(archivo, crearNombreCatalogoPdf());
-        actualizarProgresoPdf(100, 'PDF listo para descargar.');
+        actualizarProgresoPdf(100, '¡Tu catálogo está listo para descargar!');
+        estadoTiempo.fase = 'Catálogo listo.';
+        actualizarTiempoEstimado();
       } catch (error) {
-        if (generacion.controller.signal.aborted) return;
+        if (generacion.controller.signal.aborted) {
+          estadoTiempo.fase = 'Generación cancelada.';
+          actualizarTiempoEstimado();
+          return;
+        }
         console.error('No se pudo generar el PDF del catálogo:', error);
+        estadoTiempo.fase = 'No se pudo completar la generación.';
+        actualizarTiempoEstimado();
         mostrarEstadoGeneracion(
           error && error.message
             ? `No se pudo generar el PDF: ${error.message}`
@@ -881,6 +1001,8 @@
       } finally {
         if (generacionPdfActiva === generacion) {
           generacionPdfActiva = null;
+          window.clearInterval(temporizadorTiempo);
+          getById('pistaProgreso').classList.remove('is-active');
           botonDescargar.disabled = false;
           actualizarResumen();
           ocultarProgresoTimer = window.setTimeout(() => {
@@ -1251,6 +1373,16 @@
       progreso.setAttribute('aria-valuetext', `${valor}%`);
       getById('progresoPorcentaje').textContent = `${valor}%`;
       mostrarEstadoGeneracion(mensaje, false);
+    }
+
+    function formatearTiempoRestante(segundos) {
+      const totalSegundos = Math.max(1, Math.ceil(segundos));
+      if (totalSegundos < 60) return `${totalSegundos} s`;
+      const minutos = Math.floor(totalSegundos / 60);
+      const segundosRestantes = totalSegundos % 60;
+      return segundosRestantes
+        ? `${minutos} min ${segundosRestantes} s`
+        : `${minutos} min`;
     }
 
     function mostrarEstadoGeneracion(mensaje, esError, esExito = false) {
