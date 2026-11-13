@@ -921,6 +921,50 @@
       return new Uint8Array(await respuesta.arrayBuffer());
     }
 
+    async function solicitarImagenesPdfLote(lote, signal) {
+      let imagenes = {};
+      let faltantes = [...lote];
+      try {
+        const url = `${URL_API_APPS_SCRIPT}?action=imagenesPdf&ids=${encodeURIComponent(lote.join(','))}`;
+        const respuesta = await fetch(url, { cache: 'no-store', signal });
+        if (!respuesta.ok) throw new Error(`El servicio optimizado de imágenes respondió HTTP ${respuesta.status}.`);
+        const resultado = await respuesta.json();
+        if (!resultado || resultado.exito !== true || !resultado.imagenes || typeof resultado.imagenes !== 'object') {
+          throw new Error('El servicio optimizado de imágenes devolvió una respuesta inválida.');
+        }
+        imagenes = resultado.imagenes;
+        const idsFaltantes = new Set(Array.isArray(resultado.faltantes) ? resultado.faltantes : []);
+        faltantes = lote.filter(id => idsFaltantes.has(id) || !imagenes[id]);
+      } catch (error) {
+        if (signal.aborted) throw error;
+        console.warn('No se pudo usar el servicio optimizado; se probará el servicio actual de imágenes.', error);
+        imagenes = {};
+        faltantes = [...lote];
+      }
+
+      if (!faltantes.length) return imagenes;
+
+      let ultimoError;
+      for (let intento = 0; intento < 3; intento += 1) {
+        comprobarSignalPdf(signal);
+        try {
+          const url = `${URL_CATALOGO_DIGITAL.split('?')[0]}?action=imagenesPdf&ids=${encodeURIComponent(faltantes.join(','))}`;
+          const respuesta = await fetch(url, { cache: 'no-store', signal });
+          if (!respuesta.ok) throw new Error(`El servicio de imágenes respondió HTTP ${respuesta.status}.`);
+          const resultado = await respuesta.json();
+          if (!resultado || resultado.exito !== true || !resultado.imagenes) {
+            throw new Error('El servicio no pudo preparar las imágenes para el PDF.');
+          }
+          return { ...imagenes, ...resultado.imagenes };
+        } catch (error) {
+          ultimoError = error;
+          if (signal.aborted || (error.message && error.message.includes('HTTP 4'))) throw error;
+          if (intento < 2) await new Promise(resolve => window.setTimeout(resolve, 400 * (intento + 1)));
+        }
+      }
+      throw ultimoError || new Error('No se pudieron cargar las imágenes para el PDF.');
+    }
+
     async function cargarImagenesPdf(lista, signal, cache, informarProgreso) {
       const ids = [...new Set(lista.flatMap(producto => [
         extraerIdImagenDrive(producto.imagen),
@@ -934,27 +978,9 @@
       let lotesCompletados = 0;
       if (!lotes.length && informarProgreso) informarProgreso(0, 0);
       for (let inicio = 0; inicio < lotes.length; inicio += 4) {
-        const resultados = await Promise.all(lotes.slice(inicio, inicio + 4).map(async lote => {
-          let ultimoError;
-          for (let intento = 0; intento < 3; intento += 1) {
-            comprobarSignalPdf(signal);
-            try {
-              const url = `${URL_CATALOGO_DIGITAL.split('?')[0]}?action=imagenesPdf&ids=${encodeURIComponent(lote.join(','))}`;
-              const respuesta = await fetch(url, { cache: 'no-store', signal });
-              if (!respuesta.ok) throw new Error(`El servicio de imágenes respondió HTTP ${respuesta.status}.`);
-              const resultado = await respuesta.json();
-              if (!resultado || resultado.exito !== true || !resultado.imagenes) {
-                throw new Error('El servicio no pudo preparar las imágenes para el PDF.');
-              }
-              return resultado.imagenes;
-            } catch (error) {
-              ultimoError = error;
-              if (signal.aborted || (error.message && error.message.includes('HTTP 4'))) throw error;
-              if (intento < 2) await new Promise(resolve => window.setTimeout(resolve, 400 * (intento + 1)));
-            }
-          }
-          throw ultimoError || new Error('No se pudieron cargar las imágenes para el PDF.');
-        }));
+        const resultados = await Promise.all(
+          lotes.slice(inicio, inicio + 4).map(lote => solicitarImagenesPdfLote(lote, signal))
+        );
         resultados.forEach(resultado => Object.assign(datosPorId, resultado));
         comprobarSignalPdf(signal);
         const imagenesConvertidas = await Promise.all(
