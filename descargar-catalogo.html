@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Descargar catálogo | LIMZA GROUP</title>
+  <title>MULTIMARCAS | LIMZA GROUP</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Descarga el catálogo completo de LIMZA GROUP o selecciona las marcas que necesitas.">
   <link rel="icon" type="image/x-icon" href="https://limzagroup.github.io/pedidos/favicon.ico">
@@ -262,6 +262,14 @@
       gap: var(--catalog-spacing);
       padding: 0;
     }
+    #listaMarcas {
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, 126px), 126px));
+      justify-content: space-between;
+    }
+    #listaSubcategoriasCebra {
+      grid-template-columns: repeat(auto-fill, 145px);
+      justify-content: space-between;
+    }
     .brand-option {
       display: flex;
       min-height: 40px;
@@ -273,6 +281,13 @@
       background: var(--bg-color);
       cursor: pointer;
       transition: border-color 160ms ease, background-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+    }
+    .brand-option-cebra {
+      grid-column: 1;
+    }
+    .brand-section-heading {
+      grid-column: 1 / -1;
+      margin: 8px 0;
     }
     .brand-option:hover {
       border-color: color-mix(in srgb, var(--brand-orange) 60%, var(--border-color));
@@ -338,9 +353,9 @@
     }
     .select-all-row {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
+      align-items: flex-start;
+      flex-direction: column;
+      gap: var(--catalog-spacing);
       margin-bottom: var(--catalog-spacing);
       padding: 10px 12px;
       border: 1px solid color-mix(in srgb, var(--brand-orange) 40%, var(--border-color));
@@ -358,14 +373,13 @@
     }
     .select-all-option span { white-space: nowrap; }
     #resumenSeleccion {
-      flex: 0 0 auto;
-      padding: 5px 9px;
-      border-radius: 999px;
-      background: var(--surface);
+      flex: 0 1 auto;
+      max-width: calc(100% - 32px);
+      margin-left: 32px;
       color: var(--text-muted) !important;
       font-size: 0.78rem;
       line-height: 1.25;
-      text-align: center;
+      text-align: left;
     }
     .brand-fieldset {
       margin-bottom: 16px !important;
@@ -466,8 +480,6 @@
     }
     @media (max-width: 575.98px) {
       .brand-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .select-all-row { align-items: flex-start; flex-direction: column; gap: var(--catalog-spacing); }
-      #resumenSeleccion { margin-left: 26px; padding: 0; background: transparent; text-align: left; }
     }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { transition-duration: 0.01ms !important; }
@@ -506,22 +518,21 @@
   </nav>
   <main id="contenidoPrincipal" class="container py-2" tabindex="-1">
     <section class="download-panel" aria-labelledby="tituloDescarga">
-      <h1 id="tituloDescarga" class="h3 fw-bold mb-2">Descargar catálogo</h1>
-      <div id="cargando" class="catalog-status py-3" role="status" aria-live="polite">
-        <span class="spinner-border spinner-border-sm text-primary me-2" aria-hidden="true"></span>
-        Cargando marcas y productos...
+      <h1 id="tituloDescarga" class="h3 fw-bold mb-3">MULTIMARCAS</h1>
+      <div class="select-all-row">
+        <label class="select-all-option" for="seleccionarTodas">
+          <input id="seleccionarTodas" type="checkbox" checked disabled>
+          <span>Todas las marcas</span>
+        </label>
+        <span id="resumenSeleccion" aria-live="polite">
+          <span class="spinner-border spinner-border-sm text-primary me-2" aria-hidden="true"></span>
+          Cargando marcas y productos...
+        </span>
       </div>
       <div id="mensaje" class="alert alert-danger d-none" role="alert"></div>
       <div id="controlesDescarga" class="d-none">
-        <div class="select-all-row">
-          <label class="select-all-option" for="seleccionarTodas">
-            <input id="seleccionarTodas" type="checkbox" checked>
-            <span>Todas las marcas</span>
-          </label>
-          <span id="resumenSeleccion" aria-live="polite"></span>
-        </div>
         <fieldset class="brand-fieldset mb-4">
-          <legend class="h6 fw-bold">O selecciona las marcas</legend>
+          <legend class="h6 fw-bold">Seleccionar marcas</legend>
           <div id="listaMarcas" class="brand-list" aria-label="Marcas del catálogo"></div>
         </fieldset>
         <fieldset id="filtroSubcategoriasCebra" class="brand-fieldset mb-4 d-none">
@@ -529,7 +540,7 @@
           <div id="listaSubcategoriasCebra" class="brand-list" aria-label="Subcategorías de productos CEBRA"></div>
         </fieldset>
         <button id="btnDescargar" class="btn btn-primary btn-lg w-100 fw-bold" type="button">
-          <i class="bi bi-file-earmark-pdf me-2" aria-hidden="true"></i>Descargar PDF
+          <i class="bi bi-file-earmark-pdf me-2" aria-hidden="true"></i>Descargar catálogo
         </button>
         <div id="progresoEstado" class="mt-3 d-none">
           <div class="progress-header">
@@ -670,13 +681,13 @@
         if (!cache) {
           getById('mensaje').textContent = 'No se pudo cargar el catálogo completo, incluido CEBRA. Intenta actualizar la página.';
           getById('mensaje').classList.remove('d-none');
+          getById('resumenSeleccion').textContent = 'No se pudo cargar el catálogo.';
         } else {
           getById('mensaje').textContent = 'No se pudo actualizar el catálogo; se utiliza la última versión guardada en este dispositivo.';
           getById('mensaje').className = 'alert alert-warning';
         }
       } finally {
         clearTimeout(temporizador);
-        getById('cargando').classList.add('d-none');
       }
     }
 
@@ -725,12 +736,22 @@
     function construirListaMarcas() {
       const marcas = [...new Set(productos.map(producto =>
         String(producto.categoria || 'General').trim() || 'General'
-      ))].sort((a, b) => a.localeCompare(b, 'es'));
+      ))];
+      const marcaCebra = marcas.find(marca => normalizarNombreMarca(marca) === 'cebra');
+      const marcasOrdenadas = marcas.filter(marca => normalizarNombreMarca(marca) !== 'cebra');
+      if (marcaCebra) marcasOrdenadas.push(marcaCebra);
       const lista = getById('listaMarcas');
       lista.replaceChildren();
-      marcas.forEach((marca, indice) => {
+      marcasOrdenadas.forEach((marca, indice) => {
+        if (normalizarNombreMarca(marca) === 'cebra') {
+          const encabezadoPinturas = document.createElement('h2');
+          encabezadoPinturas.className = 'brand-section-heading h3 fw-bold';
+          encabezadoPinturas.textContent = 'PINTURAS';
+          lista.appendChild(encabezadoPinturas);
+        }
         const etiqueta = document.createElement('label');
         etiqueta.className = 'brand-option';
+        if (normalizarNombreMarca(marca) === 'cebra') etiqueta.classList.add('brand-option-cebra');
         const casilla = document.createElement('input');
         casilla.type = 'checkbox';
         casilla.value = marca;
@@ -772,6 +793,7 @@
     }
 
     function mostrarControles() {
+      getById('seleccionarTodas').disabled = false;
       getById('controlesDescarga').classList.remove('d-none');
       if (!getById('listaMarcas').childElementCount) construirListaMarcas();
       actualizarResumen();
