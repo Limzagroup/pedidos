@@ -382,7 +382,7 @@
       <h1 id="tituloDescarga" class="h3 fw-bold mb-3">MULTIMARCAS</h1>
       <div class="select-all-row">
         <label class="select-all-option" for="seleccionarTodas">
-          <input id="seleccionarTodas" type="checkbox" checked disabled>
+          <input id="seleccionarTodas" type="checkbox" disabled>
           <span>Todas las marcas</span>
         </label>
         <span id="resumenSeleccion" aria-live="polite">
@@ -431,7 +431,9 @@
     const FILA_INICIO_MUESTRAS_CEBRA = 3;
     const FILA_FIN_MUESTRAS_CEBRA = 134;
     const FILA_INICIO_IMAGENES_CEBRA = 135;
+    const VALORES_NO_PUBLICADOS = new Set(['no', 'no publicar', 'agotado', 'falso', 'false', '0']);
     let productos = [];
+    let disponibilidadCebraValidada = false;
     let generacionPdfActiva = null;
     let ocultarProgresoTimer = null;
 
@@ -482,19 +484,30 @@
           throw new Error('El servicio de logos devolvió un formato inválido.');
         }
         const buscarLogoMarca = crearBuscadorLogoMarca(logosMarcas);
-        const productosPublicados = catalogoDigital.filter(esProductoValido).map(producto => ({
-          ...producto,
-          logoMarca: producto.logoMarca || buscarLogoMarca(producto.categoria)
-        }));
         const productosCebra = catalogoPedidos.filter(producto =>
           esProductoValido(producto) &&
-          String(producto.categoria || '').trim().toUpperCase() === 'CEBRA' &&
-          producto.disponible !== false
+          normalizarNombreMarca(producto.categoria) === 'cebra' &&
+          estaProductoDisponible(producto)
         ).map(producto => ({
           ...producto,
           imagen: obtenerFilaCebra(producto) >= FILA_INICIO_IMAGENES_CEBRA
             ? producto.imagen
             : '',
+          logoMarca: producto.logoMarca || buscarLogoMarca(producto.categoria)
+        }));
+        const codigosCebraDisponibles = new Set(
+          productosCebra.map(producto => normalizarCodigo(producto.codigo))
+        );
+        const productosPublicados = catalogoDigital
+          .filter(esProductoValido)
+          .filter(producto =>
+            estaProductoDisponible(producto) &&
+            (
+              normalizarNombreMarca(producto.categoria) !== 'cebra' ||
+              codigosCebraDisponibles.has(normalizarCodigo(producto.codigo))
+            )
+          ).map(producto => ({
+          ...producto,
           logoMarca: producto.logoMarca || buscarLogoMarca(producto.categoria)
         }));
         if (!productosPublicados.length) throw new Error('El catálogo digital no contiene productos válidos.');
@@ -515,11 +528,13 @@
               ...productoExistente,
               id: producto.id,
               imagen: producto.imagen,
+              disponible: producto.disponible,
               subcategoria: producto.subcategoria || productoExistente.subcategoria
             });
           }
         });
         const lista = [...porCodigo.values()];
+        disponibilidadCebraValidada = true;
         productos = lista;
         guardarCache(lista);
         construirListaMarcas();
@@ -562,6 +577,11 @@
         .replace(/[\u0300-\u036f]/g, '')
         .trim()
         .toLocaleLowerCase('es');
+    }
+
+    function estaProductoDisponible(producto) {
+      if (producto && (producto.disponible === false || producto.disponible === 0)) return false;
+      return !VALORES_NO_PUBLICADOS.has(String(producto && producto.disponible || '').trim().toLowerCase());
     }
 
     function obtenerFilaCebra(producto) {
@@ -614,7 +634,7 @@
         const casilla = document.createElement('input');
         casilla.type = 'checkbox';
         casilla.value = marca;
-        casilla.checked = true;
+        casilla.checked = false;
         casilla.id = `marca-${indice}`;
         const texto = document.createElement('span');
         texto.textContent = marca;
@@ -687,7 +707,8 @@
       const cantidad = obtenerProductosSeleccionados().length;
       getById('resumenSeleccion').textContent =
         `${cantidad} ${cantidad === 1 ? 'producto' : 'productos'} de ${marcasSeleccionadas.length} ${marcasSeleccionadas.length === 1 ? 'marca seleccionada' : 'marcas seleccionadas'}`;
-      getById('btnDescargar').disabled = cantidad === 0;
+      const cebraSeleccionada = marcasSeleccionadas.some(marca => normalizarNombreMarca(marca) === 'cebra');
+      getById('btnDescargar').disabled = cantidad === 0 || (cebraSeleccionada && !disponibilidadCebraValidada);
     }
 
     function obtenerMarcasSeleccionadas() {
