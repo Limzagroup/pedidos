@@ -138,7 +138,7 @@
       --bs-dropdown-link-color: #f5f5f5;
       --bs-dropdown-link-hover-bg: #292929;
       --bs-dropdown-link-hover-color: #ffffff;
-      min-width: 216px;
+      min-width: 280px;
       padding: 8px 6px;
       border-radius: 14px;
       box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
@@ -508,6 +508,7 @@
       .progress-track.is-active .progress-sweep { animation: none !important; }
     }
   </style>
+  <link rel="stylesheet" href="navigation.css">
 </head>
 <body>
   <a class="visually-hidden-focusable position-fixed top-0 start-0 m-2 p-2 bg-light text-dark rounded" href="#contenidoPrincipal">Saltar al contenido</a>
@@ -516,28 +517,37 @@
       <a href="./" aria-label="Ir a pedidos">
         <img src="https://limzagroup.github.io/pedidos/LIMZAGROUP_LOGO.webp" alt="LIMZA GROUP" width="220" height="55" fetchpriority="high" style="max-height: 55px; width: auto; object-fit: contain;">
       </a>
-      <div class="dropdown navbar-actions">
-        <button id="btnMenu" class="menu-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Abrir menú" title="Abrir menú">
+      <div class="navbar-actions">
+        <button id="btnAbrirMenu" class="menu-toggle" type="button" aria-expanded="false" aria-label="Abrir menú" title="Abrir menú" aria-controls="menuPrincipal">
           <span class="menu-toggle-icon" aria-hidden="true"></span>
         </button>
-        <div class="dropdown-menu dropdown-menu-end navbar-menu" aria-labelledby="btnMenu">
-          <a class="dropdown-item" href="./">
-            <i class="bi bi-receipt" aria-hidden="true"></i><span>Pedidos</span>
-          </a>
-          <a class="dropdown-item" href="catalogo.html">
-            <i class="bi bi-grid-3x3-gap" aria-hidden="true"></i><span>Catálogo digital</span>
-          </a>
-          <a class="dropdown-item" href="descargar-catalogo.html" aria-current="page">
-            <i class="bi bi-file-earmark-arrow-down" aria-hidden="true"></i><span>Descargar catálogo</span>
-          </a>
-          <div class="theme-setting">
-            <span class="theme-label-group"><i id="iconoTema" class="bi bi-moon" aria-hidden="true"></i><span id="etiquetaTema">Oscuro</span></span>
-            <button id="btnCambiarTema" type="button" role="switch" aria-label="Cambiar a modo claro" aria-checked="false">
-              <span class="theme-switch" aria-hidden="true"><span class="theme-switch-thumb"></span></span>
-            </button>
-          </div>
-        </div>
       </div>
+      <nav id="menuPrincipal" class="app-menu" aria-label="Menú principal" hidden>
+        <a href="https://limzagroup.github.io/app/">
+          <i class="bi bi-grid" aria-hidden="true"></i><span>Catálogo</span>
+        </a>
+        <a href="./">
+          <i class="bi bi-bag-check" aria-hidden="true"></i><span>Pedidos</span>
+        </a>
+        <a href="https://limzagroup.github.io/app/crear-guias.html">
+          <i class="bi bi-box-seam" aria-hidden="true"></i><span>Crear guías</span>
+        </a>
+        <a href="https://limzagroup.github.io/app/agregar-productos.html">
+          <i class="bi bi-pencil-square" aria-hidden="true"></i><span>Agregar producto</span>
+        </a>
+        <a href="https://limzagroup.github.io/app/carga-imagenes.html">
+          <i class="bi bi-images" aria-hidden="true"></i><span>Carga masiva de imágenes</span>
+        </a>
+        <a href="descargar-catalogo.html" aria-current="page">
+          <i class="bi bi-file-earmark-arrow-down" aria-hidden="true"></i><span>Descargar catálogo</span>
+        </a>
+        <div class="theme-setting">
+          <span class="theme-label-group"><i id="iconoTema" class="bi bi-moon" aria-hidden="true"></i><span id="etiquetaTema">Oscuro</span></span>
+          <button id="btnCambiarTema" type="button" role="switch" aria-label="Cambiar a modo claro" aria-checked="false">
+            <span class="theme-switch" aria-hidden="true"><span class="theme-switch-thumb"></span></span>
+          </button>
+        </div>
+      </nav>
     </div>
   </nav>
   <main id="contenidoPrincipal" class="container py-2" tabindex="-1">
@@ -586,7 +596,7 @@
   <script>
     const URL_API_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbwVvAAODNFh4408zZRaxd89p-rWIjXvBWc5_wH3_ofX0fz4NJUqpHrvFLaIWoLkkoAv/exec';
     const URL_CATALOGO_DIGITAL = 'https://script.google.com/macros/s/AKfycbz6CAkq2nh-FnyUE6jE4dTmwPbIkFog10jEr4xuJp11-XbqB_mceR5AAiIhuuoIiw8kCg/exec?action=catalogo';
-    const CACHE_CATALOGO_DESCARGA = 'limza-catalogo-descarga-v2-subcategorias';
+    const CACHE_CATALOGO_DESCARGA = 'limza-catalogo-descarga-v3-subcategorias';
     const PRODUCTOS_POR_PAGINA = 15;
     const getById = id => document.getElementById(id);
     let productos = [];
@@ -596,11 +606,6 @@
     document.addEventListener('DOMContentLoaded', iniciar);
 
     function iniciar() {
-      const botonSwitchTema = getById('btnCambiarTema');
-      botonSwitchTema.addEventListener('click', alternarTema);
-      botonSwitchTema.parentElement.addEventListener('click', (event) => {
-        if (!botonSwitchTema.contains(event.target)) event.stopPropagation();
-      });
       getById('seleccionarTodas').addEventListener('change', cambiarSeleccionCompleta);
       getById('listaMarcas').addEventListener('change', actualizarSeleccion);
       getById('listaSubcategoriasCebra').addEventListener('change', actualizarResumen);
@@ -626,18 +631,6 @@
       getById('btnCambiarTema').setAttribute('aria-checked', String(esClaro));
       getById('etiquetaTema').textContent = esClaro ? 'Claro' : 'Oscuro';
       getById('iconoTema').className = `bi bi-${esClaro ? 'sun' : 'moon'}`;
-    }
-
-    function alternarTema(event) {
-      event.stopPropagation();
-      const tema = document.body.classList.contains('light-mode') ? 'oscuro' : 'claro';
-      aplicarTema(tema);
-      try {
-        localStorage.setItem('limza-tema', tema);
-      } catch (error) {
-        console.warn('No se pudo guardar la preferencia de tema:', error);
-      }
-      if (event.detail > 0) event.currentTarget.blur();
     }
 
     async function cargarCatalogo() {
@@ -699,7 +692,15 @@
         );
         productosCebra.forEach(producto => {
           const codigo = normalizarCodigo(producto.codigo);
-          if (!porCodigo.has(codigo)) porCodigo.set(codigo, producto);
+          const productoExistente = porCodigo.get(codigo);
+          if (!productoExistente) {
+            porCodigo.set(codigo, producto);
+          } else if (normalizarNombreMarca(productoExistente.categoria) === 'cebra') {
+            porCodigo.set(codigo, {
+              ...productoExistente,
+              subcategoria: producto.subcategoria || productoExistente.subcategoria
+            });
+          }
         });
         const lista = [...porCodigo.values()];
         productos = lista;
@@ -1546,6 +1547,7 @@
     }
 
   </script>
-  <script src="usdt-rate.js?v=6"></script>
+  <script src="navigation.js"></script>
+  <script src="usdt-rate.js?v=7"></script>
 </body>
 </html>
