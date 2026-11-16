@@ -13,22 +13,24 @@
   const estilos = document.createElement("style");
   estilos.textContent = `
     .usdt-rate {
-      min-width: 92px;
-      padding: 6px 10px;
-      border: 1px solid rgba(249, 115, 22, 0.34);
-      border-radius: 12px;
-      background: linear-gradient(145deg, #292929, #1b1b1b);
+      min-width: 104px;
+      min-height: 38px;
+      padding: 5px 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 999px;
+      background: linear-gradient(145deg, #1b1b1b, #262626);
       color: #f8fafc;
       font-size: 0.74rem;
       font-weight: 600;
       line-height: 1.15;
-      text-align: left;
+      text-align: center;
       white-space: nowrap;
       display: inline-flex;
       flex-direction: column;
-      align-items: flex-start;
+      align-items: center;
+      justify-content: center;
       gap: 2px;
-      box-shadow: 0 5px 14px rgba(0, 0, 0, 0.24), inset 0 1px rgba(255, 255, 255, 0.05);
+      box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.52), inset 0 1px 2px rgba(0, 0, 0, 0.28);
       box-sizing: border-box;
     }
     .usdt-rate > span:first-child {
@@ -46,9 +48,10 @@
       gap: 8px;
     }
     body.light-mode .usdt-rate {
-      border-color: rgba(234, 88, 12, 0.3);
-      background: linear-gradient(145deg, #ffffff, #fff7ed);
+      border-color: rgba(15, 23, 42, 0.12);
+      background: linear-gradient(145deg, #f1f5f9, #ffffff);
       color: #172033;
+      box-shadow: inset 0 2px 6px rgba(15, 23, 42, 0.12), inset 0 1px 2px rgba(15, 23, 42, 0.05);
     }
     body.light-mode .usdt-rate > span:first-child {
       color: #c2410c;
@@ -56,7 +59,8 @@
     @media (max-width: 375px) {
       .usdt-rate {
         min-width: 80px;
-        padding: 5px 7px;
+        min-height: 36px;
+        padding: 4px 8px;
       }
       .usdt-rate > span:first-child {
         font-size: 0.52rem;

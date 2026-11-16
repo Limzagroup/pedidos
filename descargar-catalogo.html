@@ -420,12 +420,14 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
   <script src="./muestras-color.js"></script>
+  <script src="./catalog-utils.js"></script>
   <script>
     const URL_API_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbwVvAAODNFh4408zZRaxd89p-rWIjXvBWc5_wH3_ofX0fz4NJUqpHrvFLaIWoLkkoAv/exec';
     const URL_CATALOGO_DIGITAL = 'https://script.google.com/macros/s/AKfycbz6CAkq2nh-FnyUE6jE4dTmwPbIkFog10jEr4xuJp11-XbqB_mceR5AAiIhuuoIiw8kCg/exec?action=catalogo';
     const CACHE_CATALOGO_DESCARGA = 'limza-catalogo-descarga-v3-subcategorias';
     const PRODUCTOS_POR_PAGINA = 15;
     const getById = id => document.getElementById(id);
+    const { esProductoValido, normalizarCodigo } = window.LimzaCatalogUtils;
     let productos = [];
     let generacionPdfActiva = null;
     let ocultarProgresoTimer = null;
@@ -545,16 +547,6 @@
       } catch (error) {
         console.warn('No se pudo guardar el catálogo:', error);
       }
-    }
-
-    function esProductoValido(producto) {
-      return producto &&
-        typeof producto.nombre === 'string' &&
-        Number.isFinite(Number(producto.precio));
-    }
-
-    function normalizarCodigo(codigo) {
-      return String(codigo || '').trim().toLocaleUpperCase();
     }
 
     function normalizarNombreMarca(marca) {
@@ -954,10 +946,11 @@
     }
 
     async function cargarImagenesPdf(lista, signal, cache, informarProgreso) {
-      const ids = [...new Set(lista.flatMap(producto => [
+      const idsImagenes = [...new Set(lista.flatMap(producto => [
         obtenerIdImagenProductoPdf(producto),
         extraerIdImagenDrive(producto.logoMarca)
-      ]).filter(Boolean))].filter(id => !cache.has(id));
+      ]).filter(Boolean))];
+      const ids = idsImagenes.filter(id => !cache.has(id));
       let datosPorId = {};
       const lotes = [];
       for (let inicio = 0; inicio < ids.length; inicio += 4) {
@@ -984,12 +977,9 @@
         if (informarProgreso) informarProgreso(lotesCompletados, lotes.length);
       }
 
-      return Object.fromEntries(
-        [...new Set(lista.flatMap(producto => [
-          obtenerIdImagenProductoPdf(producto),
-          extraerIdImagenDrive(producto.logoMarca)
-        ]).filter(id => id && cache.has(id)))].map(id => [id, cache.get(id)])
-      );
+      return Object.fromEntries(idsImagenes
+        .filter(id => cache.has(id))
+        .map(id => [id, cache.get(id)]));
     }
 
     function comprobarSignalPdf(signal) {

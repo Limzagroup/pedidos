@@ -17,9 +17,9 @@
   justify-content: center;
   transform: translateY(-50%);
   border: 1px solid #3a3a3a;
-  border-radius: 12px;
+  border-radius: 10px;
   background: #242424;
-  color: #f5f5f5;
+  color: #b3b3b3;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
@@ -34,11 +34,11 @@
 }
 
 .menu-toggle-icon {
-  width: 15px;
-  height: 1.5px;
-  border-radius: 2px;
+  width: 26px;
+  height: 3px;
+  border-radius: 999px;
   background: currentColor;
-  box-shadow: 0 -5px currentColor, 0 5px currentColor;
+  box-shadow: 0 -8px currentColor, 0 8px currentColor;
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -46,7 +46,7 @@
     border-color: var(--brand-orange);
     background: #333333;
     color: var(--brand-orange);
-    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2), 0 4px 12px rgba(249, 115, 22, 0.28);
+    box-shadow: 0 0 0 1px rgba(249, 115, 22, 0.18), 0 3px 8px rgba(0, 0, 0, 0.24);
   }
 }
 
@@ -55,7 +55,7 @@
   border-color: var(--brand-orange);
   background: #333333;
   color: var(--brand-orange);
-  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2), 0 4px 12px rgba(249, 115, 22, 0.28);
+  box-shadow: 0 0 0 1px rgba(249, 115, 22, 0.22), 0 2px 6px rgba(0, 0, 0, 0.28);
 }
 
 .menu-toggle:focus:not(:focus-visible):not([aria-expanded="true"]) {
@@ -64,7 +64,9 @@
 }
 
 .menu-toggle:focus-visible {
-  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.32), 0 4px 12px rgba(249, 115, 22, 0.24);
+  outline: 2px solid rgba(249, 115, 22, 0.68);
+  outline-offset: 1px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 }
 
 .app-menu {
@@ -75,8 +77,8 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  width: min(280px, calc(100vw - 24px));
-  padding: 8px;
+  width: min(210px, calc(100vw - 24px));
+  padding: 6px;
   border: 1px solid #4b3422;
   border-radius: 14px;
   background: #181818;
@@ -91,10 +93,11 @@
 .app-menu a {
   width: 100%;
   min-height: 48px;
-  padding: 6px 7px;
-  display: flex;
+  padding: 6px;
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   border-radius: 10px;
   color: #f5f5f5;
   font-size: 0.95rem;
@@ -107,19 +110,29 @@
 
 .app-menu a i {
   display: grid;
-  flex: 0 0 34px;
-  width: 34px;
-  height: 34px;
+  width: 30px;
+  height: 30px;
+  box-sizing: border-box;
+  justify-self: center;
+  align-self: center;
   place-items: center;
   border-radius: 8px;
-  background: #392719;
+  background: #24170f;
   color: var(--brand-orange);
   font-size: 0.9rem;
+  line-height: 1;
+}
+
+.app-menu a span {
+  min-width: 0;
 }
 
 .theme-label-group i {
-  width: 16px;
-  text-align: center;
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  line-height: 1;
 }
 
 .app-menu a:hover,
@@ -140,13 +153,14 @@
   justify-content: space-between;
   gap: 12px;
   margin-top: 3px;
-  padding: 7px 7px;
+  padding: 7px 7px 7px 6px;
 }
 
 .theme-label-group {
-  display: inline-flex;
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
   align-items: center;
-  gap: 12px;
+  gap: 8px;
 }
 
 #btnCambiarTema {
@@ -155,7 +169,7 @@
   width: 50px;
   height: 28px;
   place-items: center;
-  margin: 0;
+  margin: 0 12px 0 0;
   padding: 0;
   border: 0;
   border-radius: 999px;
@@ -235,7 +249,7 @@
 body.light-mode .menu-toggle {
   border-color: #4a4a4a;
   background: #ffffff;
-  color: #333333;
+  color: #777777;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.24);
 }
 
@@ -271,6 +285,7 @@ body.light-mode .app-menu a[aria-current="page"] {
     border-color: var(--brand-orange);
     background: #fff3e8;
     color: var(--brand-orange);
+    box-shadow: 0 0 0 1px rgba(249, 115, 22, 0.16), 0 3px 8px rgba(15, 23, 42, 0.14);
   }
 }
 
@@ -279,4 +294,15 @@ body.light-mode .menu-toggle[aria-expanded="true"] {
   border-color: var(--brand-orange);
   background: #fff3e8;
   color: var(--brand-orange);
+  box-shadow: 0 0 0 1px rgba(249, 115, 22, 0.2), 0 2px 6px rgba(15, 23, 42, 0.16);
+}
+
+body.light-mode .menu-toggle.show {
+  box-shadow: 0 0 0 1px rgba(249, 115, 22, 0.2), 0 2px 6px rgba(15, 23, 42, 0.16);
+}
+
+body.light-mode .menu-toggle:focus-visible {
+  outline: 2px solid rgba(249, 115, 22, 0.68);
+  outline-offset: 1px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.16);
 }
