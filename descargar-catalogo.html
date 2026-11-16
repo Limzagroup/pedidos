@@ -138,8 +138,8 @@
       --bs-dropdown-link-color: #f5f5f5;
       --bs-dropdown-link-hover-bg: #292929;
       --bs-dropdown-link-hover-color: #ffffff;
-      min-width: 220px;
-      padding: 8px;
+      min-width: 216px;
+      padding: 8px 6px;
       border-radius: 14px;
       box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
     }
@@ -164,9 +164,31 @@
       width: 16px;
       text-align: center;
     }
-    .navbar-menu #btnCambiarTema {
+    .navbar-menu .theme-setting {
+      display: flex;
+      min-height: 46px;
+      align-items: center;
       justify-content: space-between;
       gap: 12px;
+      padding: 7px 10px;
+    }
+    .navbar-menu .theme-label-group i {
+      width: 16px;
+      text-align: center;
+    }
+    .navbar-menu #btnCambiarTema {
+      display: inline-grid;
+      flex: 0 0 50px;
+      width: 50px;
+      height: 28px;
+      place-items: center;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: inherit;
+      cursor: pointer;
     }
     .theme-label-group {
       display: inline-flex;
@@ -188,7 +210,7 @@
       border: 1px solid #5a5a5a;
       border-radius: 999px;
       background: #3a3a3a;
-      transition: background-color 0.2s ease, border-color 0.2s ease;
+      transition: background-color 280ms cubic-bezier(0.4, 0, 0.2, 1), border-color 280ms cubic-bezier(0.4, 0, 0.2, 1);
     }
     .theme-switch-thumb {
       position: absolute;
@@ -201,7 +223,7 @@
       justify-content: center;
       border-radius: 50%;
       background: #f5f5f5;
-      transition: transform 0.2s ease;
+      transition: transform 280ms cubic-bezier(0.4, 0, 0.2, 1), background-color 180ms ease;
     }
     .theme-switch i {
       display: block;
@@ -508,10 +530,12 @@
           <a class="dropdown-item" href="descargar-catalogo.html" aria-current="page">
             <i class="bi bi-file-earmark-arrow-down" aria-hidden="true"></i><span>Descargar catálogo</span>
           </a>
-          <button id="btnCambiarTema" class="dropdown-item" type="button" role="switch" aria-label="Cambiar a modo claro" aria-checked="false">
+          <div class="theme-setting">
             <span class="theme-label-group"><i id="iconoTema" class="bi bi-moon" aria-hidden="true"></i><span id="etiquetaTema">Oscuro</span></span>
-            <span class="theme-switch" aria-hidden="true"><span class="theme-switch-thumb"></span></span>
-          </button>
+            <button id="btnCambiarTema" type="button" role="switch" aria-label="Cambiar a modo claro" aria-checked="false">
+              <span class="theme-switch" aria-hidden="true"><span class="theme-switch-thumb"></span></span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -558,6 +582,7 @@
   </main>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+  <script src="./muestras-color.js"></script>
   <script>
     const URL_API_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbwVvAAODNFh4408zZRaxd89p-rWIjXvBWc5_wH3_ofX0fz4NJUqpHrvFLaIWoLkkoAv/exec';
     const URL_CATALOGO_DIGITAL = 'https://script.google.com/macros/s/AKfycbz6CAkq2nh-FnyUE6jE4dTmwPbIkFog10jEr4xuJp11-XbqB_mceR5AAiIhuuoIiw8kCg/exec?action=catalogo';
@@ -571,7 +596,11 @@
     document.addEventListener('DOMContentLoaded', iniciar);
 
     function iniciar() {
-      getById('btnCambiarTema').addEventListener('click', alternarTema);
+      const botonSwitchTema = getById('btnCambiarTema');
+      botonSwitchTema.addEventListener('click', alternarTema);
+      botonSwitchTema.parentElement.addEventListener('click', (event) => {
+        if (!botonSwitchTema.contains(event.target)) event.stopPropagation();
+      });
       getById('seleccionarTodas').addEventListener('change', cambiarSeleccionCompleta);
       getById('listaMarcas').addEventListener('change', actualizarSeleccion);
       getById('listaSubcategoriasCebra').addEventListener('change', actualizarResumen);
@@ -600,6 +629,7 @@
     }
 
     function alternarTema(event) {
+      event.stopPropagation();
       const tema = document.body.classList.contains('light-mode') ? 'oscuro' : 'claro';
       aplicarTema(tema);
       try {
@@ -920,6 +950,7 @@
         const colorBlanco = rgb(1, 1, 1);
         const colorFondoTarjetaVacia = rgb(248 / 255, 248 / 255, 248 / 255);
         const imagenesIncrustadas = new Map();
+        const muestrasIncrustadas = new Map();
         const imagenesPreparadas = new Map();
         const paginasProductos = Array.from(
           { length: Math.ceil(lista.length / PRODUCTOS_POR_PAGINA) },
@@ -963,15 +994,20 @@
           pagina.drawPage(fondoPlantilla, { x: 0, y: 0, width: anchoPagina, height: altoPagina });
           for (let posicionPagina = 0; posicionPagina < PRODUCTOS_POR_PAGINA; posicionPagina += 1) {
             const producto = productosPagina[posicionPagina] || null;
-            const idImagen = producto ? extraerIdImagenDrive(producto.imagen) : '';
+            const pintura = producto ? analizarPinturaCatalogoPdf(producto) : null;
+            const idImagen = producto && !pintura ? extraerIdImagenDrive(producto.imagen) : '';
             const idLogoMarca = producto ? extraerIdImagenDrive(producto.logoMarca) : '';
             const imagen = await incrustarImagenPdf(documento, imagenesIncrustadas, idImagen, imagenes);
             const logoMarca = await incrustarImagenPdf(documento, imagenesIncrustadas, idLogoMarca, imagenes);
+            const muestra = pintura
+              ? await incrustarMuestraPinturaPdf(documento, muestrasIncrustadas, pintura)
+              : null;
             dibujarProductoPlantillaPdf(
               pagina,
               producto,
               imagen,
               logoMarca,
+              muestra,
               posicionPagina,
               altoPagina,
               fuentes,
@@ -1111,7 +1147,7 @@
 
     async function cargarImagenesPdf(lista, signal, cache, informarProgreso) {
       const ids = [...new Set(lista.flatMap(producto => [
-        extraerIdImagenDrive(producto.imagen),
+        obtenerIdImagenProductoPdf(producto),
         extraerIdImagenDrive(producto.logoMarca)
       ]).filter(Boolean))].filter(id => !cache.has(id));
       let datosPorId = {};
@@ -1142,7 +1178,7 @@
 
       return Object.fromEntries(
         [...new Set(lista.flatMap(producto => [
-          extraerIdImagenDrive(producto.imagen),
+          obtenerIdImagenProductoPdf(producto),
           extraerIdImagenDrive(producto.logoMarca)
         ]).filter(id => id && cache.has(id)))].map(id => [id, cache.get(id)])
       );
@@ -1167,6 +1203,91 @@
     function extraerIdImagenDrive(url) {
       const coincidencia = String(url || '').match(/[?&]id=([A-Za-z0-9_-]+)/);
       return coincidencia ? coincidencia[1] : '';
+    }
+
+    function analizarPinturaCatalogoPdf(producto) {
+      return window.analizarPinturaCatalogo(producto);
+    }
+
+    function obtenerIdImagenProductoPdf(producto) {
+      return analizarPinturaCatalogoPdf(producto)
+        ? ''
+        : extraerIdImagenDrive(producto.imagen);
+    }
+
+    async function incrustarMuestraPinturaPdf(documento, cache, pintura) {
+      const clave = `${normalizarNombreMarca(pintura.linea)}|${normalizarNombreMarca(pintura.color)}`;
+      if (cache.has(clave)) return cache.get(clave);
+      const dataUrl = crearMuestraPinturaDataUrl(pintura.color, pintura.linea);
+      const muestra = await documento.embedPng(convertirDataUrlABytes(dataUrl));
+      cache.set(clave, muestra);
+      return muestra;
+    }
+
+    function crearMuestraPinturaDataUrl(color, linea) {
+      const canvas = document.createElement('canvas');
+      canvas.width = 480;
+      canvas.height = 360;
+      const contexto = canvas.getContext('2d');
+      if (!contexto) throw new Error('El navegador no pudo dibujar la muestra de pintura.');
+
+      const margen = 8;
+      const ancho = canvas.width - margen * 2;
+      const alto = canvas.height - margen * 2;
+      const radio = 28;
+      contexto.beginPath();
+      contexto.moveTo(margen + radio, margen);
+      contexto.lineTo(margen + ancho - radio, margen);
+      contexto.quadraticCurveTo(margen + ancho, margen, margen + ancho, margen + radio);
+      contexto.lineTo(margen + ancho, margen + alto - radio);
+      contexto.quadraticCurveTo(margen + ancho, margen + alto, margen + ancho - radio, margen + alto);
+      contexto.lineTo(margen + radio, margen + alto);
+      contexto.quadraticCurveTo(margen, margen + alto, margen, margen + alto - radio);
+      contexto.lineTo(margen, margen + radio);
+      contexto.quadraticCurveTo(margen, margen, margen + radio, margen);
+      contexto.closePath();
+
+      const colorMuestra = window.obtenerColorMuestraCatalogo(color, linea);
+      const gradiente = colorMuestra.match(/^linear-gradient\(\s*([-\d.]+)deg\s*,\s*(.*?)\s*\)$/i);
+      if (gradiente) {
+        const angulo = Number(gradiente[1]) * Math.PI / 180;
+        const direccionX = Math.sin(angulo);
+        const direccionY = -Math.cos(angulo);
+        const mitadLongitud = (
+          Math.abs(canvas.width * direccionX) +
+          Math.abs(canvas.height * direccionY)
+        ) / 2;
+        const relleno = contexto.createLinearGradient(
+          canvas.width / 2 - direccionX * mitadLongitud,
+          canvas.height / 2 - direccionY * mitadLongitud,
+          canvas.width / 2 + direccionX * mitadLongitud,
+          canvas.height / 2 + direccionY * mitadLongitud
+        );
+        const paradas = [...gradiente[2].matchAll(/(#[0-9a-f]{6})\s+([\d.]+)%/gi)];
+        if (!paradas.length) throw new Error(`No se pudo interpretar el degradado de ${color}.`);
+        paradas.forEach((parada) => relleno.addColorStop(Number(parada[2]) / 100, parada[1]));
+        contexto.fillStyle = relleno;
+      } else {
+        contexto.fillStyle = colorMuestra;
+      }
+      contexto.fill();
+      contexto.lineWidth = 4;
+      contexto.strokeStyle = '#c9c9c9';
+      contexto.stroke();
+      return canvas.toDataURL('image/png');
+    }
+
+    function convertirDataUrlABytes(dataUrl) {
+      const separador = dataUrl.indexOf(',');
+      if (separador < 0 || !dataUrl.startsWith('data:image/png;base64,')) {
+        throw new Error('No se pudo preparar la muestra de pintura para el PDF.');
+      }
+      const binario = atob(dataUrl.slice(separador + 1));
+      const bytes = new Uint8Array(binario.length);
+      for (let indice = 0; indice < binario.length; indice += 1) {
+        bytes[indice] = binario.charCodeAt(indice);
+      }
+      return bytes;
     }
 
     function convertirImagenParaPdf(dataUrl, signal) {
@@ -1214,6 +1335,7 @@
       producto,
       imagen,
       logoMarca,
+      muestra,
       posicionPagina,
       altoPagina,
       fuentes,
@@ -1251,7 +1373,16 @@
       const tamanoPrecio = Math.min(15, 54 / fuentes.precio.widthOfTextAtSize(precio, 1));
       const anchoPrecio = fuentes.precio.widthOfTextAtSize(precio, tamanoPrecio);
       const izquierdaPrecio = x + 133.025 - anchoPrecio / 2;
-      if (imagen) {
+      if (muestra) {
+        const anchoMuestra = 124;
+        const altoMuestra = 92;
+        pagina.drawImage(muestra, {
+          x: x + (anchoTarjeta - anchoMuestra) / 2,
+          y: yInferiorTarjeta + 54,
+          width: anchoMuestra,
+          height: altoMuestra
+        });
+      } else if (imagen) {
         const cajaImagen = { x: x + 10, y: yInferiorTarjeta + 32, width: anchoTarjeta - 20, height: 136 };
         const escalaImagen = Math.min(cajaImagen.width / imagen.width, cajaImagen.height / imagen.height);
         const anchoImagen = imagen.width * escalaImagen;
@@ -1415,6 +1546,6 @@
     }
 
   </script>
-  <script src="usdt-rate.js"></script>
+  <script src="usdt-rate.js?v=6"></script>
 </body>
 </html>

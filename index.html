@@ -1060,8 +1060,8 @@
       --bs-dropdown-link-hover-color: #ffffff;
       --bs-dropdown-link-active-bg: #292929;
       --bs-dropdown-link-active-color: #ffffff;
-      min-width: 220px;
-      padding: 8px;
+      min-width: 216px;
+      padding: 8px 6px;
       border-radius: 14px;
       box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
     }
@@ -1078,9 +1078,31 @@
       width: 16px;
       text-align: center;
     }
-    .navbar-menu #btnCambiarTema {
+    .navbar-menu .theme-setting {
+      display: flex;
+      min-height: 46px;
+      align-items: center;
       justify-content: space-between;
       gap: 12px;
+      padding: 7px 10px;
+    }
+    .navbar-menu .theme-label-group i {
+      width: 16px;
+      text-align: center;
+    }
+    .navbar-menu #btnCambiarTema {
+      display: inline-grid;
+      flex: 0 0 50px;
+      width: 50px;
+      height: 28px;
+      place-items: center;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: inherit;
+      cursor: pointer;
     }
     .theme-label-group {
       display: inline-flex;
@@ -1102,7 +1124,7 @@
       border: 1px solid #5a5a5a;
       border-radius: 999px;
       background: #3a3a3a;
-      transition: background-color 0.2s ease, border-color 0.2s ease;
+      transition: background-color 280ms cubic-bezier(0.4, 0, 0.2, 1), border-color 280ms cubic-bezier(0.4, 0, 0.2, 1);
     }
     .theme-switch-thumb {
       position: absolute;
@@ -1115,7 +1137,7 @@
       justify-content: center;
       border-radius: 50%;
       background: #f5f5f5;
-      transition: transform 0.2s ease;
+      transition: transform 280ms cubic-bezier(0.4, 0, 0.2, 1), background-color 180ms ease;
     }
     .theme-switch i {
       display: block;
@@ -1557,10 +1579,12 @@
             <i class="bi bi-file-earmark-arrow-down" aria-hidden="true"></i>
             <span>Descargar catálogo</span>
           </a>
-          <button id="btnCambiarTema" class="dropdown-item" type="button" role="switch" aria-label="Cambiar a modo claro" aria-checked="false">
+          <div class="theme-setting">
             <span class="theme-label-group"><i id="iconoTema" class="bi bi-moon" aria-hidden="true"></i><span id="etiquetaTema">Oscuro</span></span>
-            <span class="theme-switch" aria-hidden="true"><span class="theme-switch-thumb"></span></span>
-          </button>
+            <button id="btnCambiarTema" type="button" role="switch" aria-label="Cambiar a modo claro" aria-checked="false">
+              <span class="theme-switch" aria-hidden="true"><span class="theme-switch-thumb"></span></span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -1753,7 +1777,11 @@
       instalarManejadoresResumen();
       const temaGuardado = leerTemaGuardado();
       aplicarTema(temaGuardado);
-      getById('btnCambiarTema').addEventListener('click', alternarTema);
+      const botonSwitchTema = getById('btnCambiarTema');
+      botonSwitchTema.addEventListener('click', alternarTema);
+      botonSwitchTema.parentElement.addEventListener('click', (event) => {
+        if (!botonSwitchTema.contains(event.target)) event.stopPropagation();
+      });
       getById('buscador').addEventListener('input', manejarEntradaBuscador);
       getById('btnLimpiarBuscador').addEventListener('click', limpiarBuscadorManualmente);
       getById('btnAbrirModal').addEventListener('click', abrirModalFinalizar);
@@ -1910,6 +1938,7 @@
       getById('iconoTema').className = `bi bi-${esClaro ? 'sun' : 'moon'}`;
     }
     function alternarTema(event) {
+      event.stopPropagation();
       const tema = document.body.classList.contains('light-mode') ? 'oscuro' : 'claro';
       aplicarTema(tema);
       try {
@@ -2711,6 +2740,6 @@
     }
   </script>
   <!-- Tasa USDT manual leída de G1 en la hoja del catálogo. -->
-  <script src="usdt-rate.js?v=2"></script>
+  <script src="usdt-rate.js?v=6"></script>
 </body>
 </html>

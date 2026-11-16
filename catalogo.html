@@ -100,8 +100,8 @@
       --bs-dropdown-link-color: #f5f5f5;
       --bs-dropdown-link-hover-bg: #292929;
       --bs-dropdown-link-hover-color: #ffffff;
-      min-width: 220px;
-      padding: 8px;
+      min-width: 216px;
+      padding: 8px 6px;
       border-radius: 14px;
       box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
     }
@@ -126,9 +126,31 @@
       width: 16px;
       text-align: center;
     }
-    .navbar-menu #btnCambiarTema {
+    .navbar-menu .theme-setting {
+      display: flex;
+      min-height: 46px;
+      align-items: center;
       justify-content: space-between;
       gap: 12px;
+      padding: 7px 10px;
+    }
+    .navbar-menu .theme-label-group i {
+      width: 16px;
+      text-align: center;
+    }
+    .navbar-menu #btnCambiarTema {
+      display: inline-grid;
+      flex: 0 0 50px;
+      width: 50px;
+      height: 28px;
+      place-items: center;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: inherit;
+      cursor: pointer;
     }
     .theme-label-group {
       display: inline-flex;
@@ -150,7 +172,7 @@
       border: 1px solid #5a5a5a;
       border-radius: 999px;
       background: #3a3a3a;
-      transition: background-color 0.2s ease, border-color 0.2s ease;
+      transition: background-color 280ms cubic-bezier(0.4, 0, 0.2, 1), border-color 280ms cubic-bezier(0.4, 0, 0.2, 1);
     }
     .theme-switch-thumb {
       position: absolute;
@@ -163,7 +185,7 @@
       justify-content: center;
       border-radius: 50%;
       background: #f5f5f5;
-      transition: transform 0.2s ease;
+      transition: transform 280ms cubic-bezier(0.4, 0, 0.2, 1), background-color 180ms ease;
     }
     .theme-switch i {
       display: block;
@@ -286,35 +308,35 @@
     body.light-mode .modern-search-icon {
       color: #777777;
     }
-    .catalog-grid { --bs-gutter-y: 1rem; }
+    .catalog-grid { --bs-gutter-y: 1.25rem; }
     .card-product {
       height: 100%;
-      border: 1px solid var(--border-color);
-      border-radius: 16px;
-      background: var(--surface);
-      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+      border: 1px solid transparent;
+      border-radius: 18px;
+      background: #1e1e1e;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
       transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
     }
     .card-product:hover {
       border-color: #64748b;
-      box-shadow: 0 8px 22px rgba(15, 23, 42, 0.16);
+      box-shadow: 0 12px 26px rgba(15, 23, 42, 0.18);
       transform: translateY(-2px);
     }
     body.light-mode .card-product {
       border-color: transparent;
       border-radius: 18px;
       background: #ffffff;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.14);
     }
     body.light-mode .card-product:hover {
       border-color: #e5e5e5;
-      background: #fafafa;
-      box-shadow: 0 8px 22px rgba(15, 23, 42, 0.1);
+      background: #ffffff;
+      box-shadow: 0 12px 26px rgba(15, 23, 42, 0.18);
     }
     .product-photo {
       width: 100%;
-      height: 180px;
-      margin-bottom: 12px;
+      height: 190px;
+      margin: 0 0 12px;
       border-radius: 12px;
       background: #ffffff;
       object-fit: contain;
@@ -322,7 +344,7 @@
     .product-photo-fallback {
       display: flex;
       width: 100%;
-      height: 180px;
+      height: 190px;
       align-items: center;
       justify-content: center;
       margin-bottom: 12px;
@@ -335,47 +357,190 @@
       color: var(--text-muted);
       font-size: 0.8rem;
       font-weight: 600;
+      white-space: nowrap;
     }
     .product-name {
-      min-height: 3rem;
+      min-height: 2.7rem;
       overflow-wrap: anywhere;
       color: var(--text-main);
-      font-size: 1rem;
+      font-size: 1.08rem;
       font-weight: 700;
       line-height: 1.35;
     }
-    .product-card-footer .badge-cat {
+    .card-product .product-name-with-empaque {
+      min-height: 0 !important;
+      margin: 0 0 4px !important;
+    }
+    .paint-product .product-name {
+      min-height: 0;
+      margin-bottom: 4px !important;
+    }
+    .product-brand {
+      max-width: 70%;
       overflow-wrap: anywhere;
       color: var(--brand-orange);
       font-size: 0.85rem;
       font-weight: 700;
     }
+    .paint-color-name,
+    .product-empaque {
+      min-height: 1.6rem;
+      margin: 2px 0 8px;
+      color: var(--text-main);
+      font-size: 0.95rem;
+    }
+    .paint-product .paint-color-name { margin-top: 0; }
+    .product-empaque {
+      min-height: 1.6rem;
+      margin: 0 0 8px;
+    }
+    .paint-swatch-menu {
+      display: flex;
+      min-width: 0;
+      align-items: center;
+      gap: 2px;
+      margin-bottom: 10px;
+      padding: 2px;
+      border: 1px solid var(--border-color);
+      border-radius: 999px;
+      background: var(--surface);
+    }
+    .paint-swatches {
+      display: flex;
+      flex: 1 1 auto;
+      min-width: 0;
+      min-height: 42px;
+      align-items: center;
+      gap: 10px;
+      padding: 4px 8px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .paint-swatches::-webkit-scrollbar { display: none; }
+    .paint-swatches-centered { justify-content: center; }
+    .paint-swatches-single .paint-swatch[aria-pressed="true"] { transform: none; }
+    .paint-scroll-button {
+      display: inline-flex;
+      flex: 0 0 26px;
+      width: 26px;
+      height: 30px;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--brand-orange);
+      cursor: pointer;
+      transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    }
+    .paint-scroll-button:hover:not(:disabled) {
+      background: var(--brand-orange-light);
+    }
+    .paint-scroll-button:disabled {
+      color: var(--text-muted);
+      cursor: default;
+      opacity: 0.45;
+    }
+    .paint-scroll-button[hidden] { display: none; }
+    .paint-scroll-button:focus-visible {
+      outline: 2px solid var(--brand-orange);
+      outline-offset: 2px;
+    }
+    .paint-swatch {
+      box-sizing: border-box;
+      flex: 0 0 34px;
+      width: 34px;
+      height: 34px;
+      padding: 0;
+      border: 1px solid transparent;
+      border-radius: 50%;
+      background: var(--swatch-color, #d1d5db);
+      cursor: pointer;
+      transition: transform 0.18s ease;
+    }
+    .paint-swatch-black { border-color: #fff; }
+    .paint-swatch[aria-pressed="true"] {
+      position: relative;
+      z-index: 1;
+      transform: scale(1.18);
+    }
+    .paint-swatch:focus-visible {
+      outline: 2px solid #fff;
+      outline-offset: 0;
+    }
+    .paint-presentations {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin: 2px 0 12px;
+    }
+    .paint-presentation {
+      min-height: 38px;
+      padding: 5px 10px;
+      border: 0;
+      border-radius: 999px;
+      background: var(--surface);
+      color: var(--text-main);
+      font: inherit;
+      box-shadow: inset 0 0 0 1px var(--border-color);
+      line-height: 1.15;
+    }
+    .paint-presentation[aria-pressed="true"] {
+      background: var(--brand-orange);
+      color: #ffffff;
+      box-shadow: none;
+    }
+    .paint-presentation:hover:not([aria-pressed="true"]) {
+      background: var(--brand-orange-light);
+      box-shadow: inset 0 0 0 1px var(--brand-orange);
+    }
+    .product-card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 8px;
+      margin-top: auto;
+    }
+    .product-price-details {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+    }
     .product-price {
       color: var(--text-main);
       font-size: 1.5rem;
-      font-weight: 700;
+      font-weight: 800;
       line-height: 1;
       white-space: nowrap;
     }
     @media (max-width: 575.98px) {
       .catalog-grid { --bs-gutter-x: 0.6rem; --bs-gutter-y: 0.75rem; }
-      .card-product { padding: 0.75rem !important; border-radius: 12px; }
+      .card-product { padding: 0.75rem !important; border-radius: 14px; }
       .product-photo,
       .product-photo-fallback {
-        height: 120px;
+        height: 130px;
         margin-bottom: 8px;
         border-radius: 9px;
       }
+      .product-brand { max-width: 75%; font-size: 0.72rem; }
       .product-name {
-        min-height: 2.5rem;
+        min-height: 2.45rem;
         margin-bottom: 0.5rem !important;
-        font-size: 0.88rem;
+        font-size: 0.84rem;
         line-height: 1.3;
       }
+      .paint-color-name,
+      .product-empaque { font-size: 0.78rem; min-height: 1.3rem; margin-bottom: 5px; }
+      .paint-swatch-menu { gap: 1px; margin-bottom: 7px; }
+      .paint-swatches { gap: 9px; min-height: 34px; padding: 4px 8px; }
+      .paint-swatch { flex-basis: 27px; width: 27px; height: 27px; }
+      .paint-presentations { gap: 5px; margin-bottom: 9px; }
+      .paint-presentation { min-height: 33px; padding: 4px 5px; font-size: 0.76rem; }
       .product-card-footer { flex-wrap: wrap; row-gap: 0.4rem; }
-      .product-card-footer .badge-cat { font-size: 0.75rem; }
       .product-price { font-size: 1.15rem; }
-      .product-code { font-size: 0.72rem; }
+      .product-code { font-size: 0.66rem; }
     }
     .catalog-status {
       color: var(--text-muted);
@@ -418,10 +583,12 @@
             <i class="bi bi-file-earmark-arrow-down" aria-hidden="true"></i>
             <span>Descargar catálogo</span>
           </a>
-          <button id="btnCambiarTema" class="dropdown-item" type="button" role="switch" aria-label="Cambiar a modo claro" aria-checked="false">
+          <div class="theme-setting">
             <span class="theme-label-group"><i id="iconoTema" class="bi bi-moon" aria-hidden="true"></i><span id="etiquetaTema">Oscuro</span></span>
-            <span class="theme-switch" aria-hidden="true"><span class="theme-switch-thumb"></span></span>
-          </button>
+            <button id="btnCambiarTema" type="button" role="switch" aria-label="Cambiar a modo claro" aria-checked="false">
+              <span class="theme-switch" aria-hidden="true"><span class="theme-switch-thumb"></span></span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -449,19 +616,29 @@
     </div>
   </main>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="./muestras-color.js"></script>
   <script>
     const URL_API_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbwVvAAODNFh4408zZRaxd89p-rWIjXvBWc5_wH3_ofX0fz4NJUqpHrvFLaIWoLkkoAv/exec';
     const URL_CATALOGO_DIGITAL = 'https://script.google.com/macros/s/AKfycbz6CAkq2nh-FnyUE6jE4dTmwPbIkFog10jEr4xuJp11-XbqB_mceR5AAiIhuuoIiw8kCg/exec?action=catalogo';
-    const CACHE_CATALOGO_DIGITAL = 'limza-catalogo-digital-v2';
+    const CACHE_CATALOGO_DIGITAL = 'limza-catalogo-digital-v3';
     const getById = id => document.getElementById(id);
     let productos = [];
 
     document.addEventListener('DOMContentLoaded', iniciarCatalogo);
 
     function iniciarCatalogo() {
-      getById('btnCambiarTema').addEventListener('click', alternarTema);
+      const botonSwitchTema = getById('btnCambiarTema');
+      botonSwitchTema.addEventListener('click', alternarTema);
+      botonSwitchTema.parentElement.addEventListener('click', (event) => {
+        if (!botonSwitchTema.contains(event.target)) event.stopPropagation();
+      });
       getById('buscador').addEventListener('input', filtrarCatalogo);
       getById('btnLimpiarBuscador').addEventListener('click', limpiarBusqueda);
+      window.addEventListener('resize', () => {
+        document.querySelectorAll('.paint-swatches').forEach(swatches => {
+          swatches.dispatchEvent(new Event('scroll'));
+        });
+      }, { passive: true });
       let ultimoDesplazamiento = window.pageYOffset || document.documentElement.scrollTop;
       window.addEventListener('scroll', () => {
         const desplazamiento = window.pageYOffset || document.documentElement.scrollTop;
@@ -496,6 +673,7 @@
     }
 
     function alternarTema(event) {
+      event.stopPropagation();
       const tema = document.body.classList.contains('light-mode') ? 'oscuro' : 'claro';
       aplicarTema(tema);
       try {
@@ -633,57 +811,331 @@
       }
       mostrarMensaje('', false);
       const tarjetas = document.createDocumentFragment();
-      lista.forEach(producto => tarjetas.appendChild(crearTarjeta(producto)));
+      construirTarjetasCatalogo(lista).forEach(elemento => {
+        tarjetas.appendChild(elemento.tipo === 'pintura'
+          ? crearTarjetaPintura(elemento)
+          : crearTarjetaProducto(elemento.producto));
+      });
       contenedor.appendChild(tarjetas);
     }
 
-    function crearTarjeta(producto) {
+    function construirTarjetasCatalogo(lista) {
+      const elementos = [];
+      const pinturasPorLinea = new Map();
+      lista.forEach(producto => {
+        const pintura = analizarPintura(producto);
+        if (!pintura) {
+          elementos.push({ tipo: 'producto', producto });
+          return;
+        }
+
+        const claveLinea = `${normalizarNombre(producto.categoria)}|${normalizarNombre(pintura.linea)}`;
+        let grupo = pinturasPorLinea.get(claveLinea);
+        if (!grupo) {
+          grupo = {
+            tipo: 'pintura',
+            linea: pintura.linea,
+            marca: producto.categoria || 'CEBRA',
+            colores: new Map(),
+            productosSinColor: []
+          };
+          pinturasPorLinea.set(claveLinea, grupo);
+          elementos.push(grupo);
+        }
+
+        if (!pintura.color) {
+          grupo.productosSinColor.push(producto);
+          return;
+        }
+        const claveColor = normalizarNombre(pintura.color);
+        if (!grupo.colores.has(claveColor)) {
+          grupo.colores.set(claveColor, { nombre: pintura.color, productos: [] });
+        }
+        grupo.colores.get(claveColor).productos.push(producto);
+      });
+      return elementos;
+    }
+
+    function analizarPintura(producto) {
+      return window.analizarPinturaCatalogo(producto);
+    }
+
+    function normalizarNombre(texto) {
+      return String(texto || '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .trim()
+        .toLocaleUpperCase();
+    }
+
+    function crearTarjetaProducto(producto) {
       const columna = document.createElement('div');
-      columna.className = 'col-6 col-md-4 col-xl-3';
+      columna.className = 'col-6 col-md-4';
       const tarjeta = document.createElement('article');
       tarjeta.className = 'card card-product d-flex flex-column p-3 mb-1';
-      const urlImagen = obtenerUrlImagen(producto.imagen);
+      tarjeta.appendChild(crearImagenProducto(producto));
+      const nombre = document.createElement('div');
+      nombre.className = `product-name${producto.empaque ? ' product-name-with-empaque' : ' mb-3'}`;
+      nombre.textContent = producto.nombre;
+      const empaque = document.createElement('div');
+      empaque.className = 'product-empaque';
+      empaque.textContent = producto.empaque ? `Empaque: ${mostrarNombrePresentacion(producto.empaque)}` : '';
+      const pie = document.createElement('div');
+      pie.className = 'product-card-footer';
+      const codigo = document.createElement('div');
+      codigo.className = 'product-code';
+      codigo.textContent = producto.codigo ? `COD: ${producto.codigo}` : '';
+      const precio = document.createElement('span');
+      precio.className = 'product-price';
+      precio.textContent = `$${Number(producto.precio).toFixed(2)}`;
+      const detallePrecio = document.createElement('div');
+      detallePrecio.className = 'product-price-details';
+      detallePrecio.append(codigo, precio);
+      pie.append(crearMarca(producto.categoria || 'General'), detallePrecio);
+      tarjeta.append(nombre);
+      if (producto.empaque) tarjeta.appendChild(empaque);
+      tarjeta.appendChild(pie);
+      columna.appendChild(tarjeta);
+      return columna;
+    }
+
+    function crearTarjetaPintura(grupo) {
+      const columna = document.createElement('div');
+      columna.className = 'col-6 col-md-4';
+      const tarjeta = document.createElement('article');
+      tarjeta.className = 'card card-product paint-product d-flex flex-column p-3 mb-1';
+      const colores = ordenarColoresCatalogo([...grupo.colores.values()], grupo.linea);
+      let colorSeleccionado = colores.find(color => normalizarNombre(color.nombre) === 'BLANCO NIEVE') ||
+        colores.find(color => normalizarNombre(color.nombre) === 'BLANCO') ||
+        colores[0] ||
+        { nombre: '', productos: grupo.productosSinColor };
+      let presentacionSeleccionada = '';
+      const imagenInicial = crearImagenProducto(colorSeleccionado.productos[0]);
+      tarjeta.appendChild(imagenInicial);
+      const lineaNombre = document.createElement('div');
+      lineaNombre.className = 'product-name mb-2';
+      lineaNombre.textContent = grupo.linea;
+      tarjeta.appendChild(lineaNombre);
+
+      const colorLabel = document.createElement('div');
+      colorLabel.className = 'paint-color-name';
+      const menuColores = document.createElement('div');
+      menuColores.className = 'paint-swatch-menu';
+      const swatches = document.createElement('div');
+      swatches.className = 'paint-swatches';
+      if (colores.length === 1) swatches.classList.add('paint-swatches-single');
+      swatches.setAttribute('role', 'group');
+      swatches.setAttribute('aria-label', `Colores de ${grupo.linea}`);
+      const flechaAnterior = crearFlechaColores('left', 'Ver colores anteriores');
+      const flechaSiguiente = crearFlechaColores('right', 'Ver más colores');
+      menuColores.append(flechaAnterior, swatches, flechaSiguiente);
+      function actualizarFlechas() {
+        const maximoDesplazamiento = swatches.scrollWidth - swatches.clientWidth;
+        const hayDesplazamiento = maximoDesplazamiento > 1;
+        swatches.classList.toggle('paint-swatches-centered', !hayDesplazamiento);
+        flechaAnterior.hidden = !hayDesplazamiento;
+        flechaSiguiente.hidden = !hayDesplazamiento;
+        flechaAnterior.disabled = !hayDesplazamiento || swatches.scrollLeft <= 1;
+        flechaSiguiente.disabled = !hayDesplazamiento || swatches.scrollLeft >= maximoDesplazamiento - 1;
+      }
+      swatches.addEventListener('scroll', actualizarFlechas, { passive: true });
+      flechaAnterior.addEventListener('click', () => {
+        swatches.scrollBy({ left: -Math.max(swatches.clientWidth * 0.75, 90), behavior: 'smooth' });
+      });
+      flechaSiguiente.addEventListener('click', () => {
+        swatches.scrollBy({ left: Math.max(swatches.clientWidth * 0.75, 90), behavior: 'smooth' });
+      });
+      requestAnimationFrame(actualizarFlechas);
+      const botonesColor = colores.map(color => {
+        const boton = document.createElement('button');
+        boton.type = 'button';
+        boton.className = 'paint-swatch';
+        if (/^NEGRO(?:\s|$)/.test(normalizarNombre(color.nombre))) {
+          boton.classList.add('paint-swatch-black');
+        }
+        boton.style.setProperty('--swatch-color', obtenerColorMuestra(color.nombre, grupo.linea));
+        boton.setAttribute('aria-label', color.nombre);
+        boton.setAttribute('title', color.nombre);
+        boton.addEventListener('click', () => {
+          colorSeleccionado = color;
+          presentacionSeleccionada = '';
+          actualizarPintura();
+        });
+        swatches.appendChild(boton);
+        return { color, boton };
+      });
+
+      const presentaciones = document.createElement('div');
+      presentaciones.className = 'paint-presentations';
+      const codigo = document.createElement('div');
+      codigo.className = 'product-code';
+      const precio = document.createElement('div');
+      precio.className = 'product-price';
+      const detallePrecio = document.createElement('div');
+      detallePrecio.className = 'product-price-details';
+      detallePrecio.append(codigo, precio);
+      const pie = document.createElement('div');
+      pie.className = 'product-card-footer';
+      pie.append(crearMarca(grupo.marca), detallePrecio);
+      if (colores.length) tarjeta.append(colorLabel, menuColores);
+      tarjeta.append(presentaciones, pie);
+
+      function obtenerVariantes() {
+        return colorSeleccionado.productos;
+      }
+
+      function actualizarPintura() {
+        const variantes = obtenerVariantes();
+        const presentacionesDisponibles = [...new Set(variantes.map(producto => String(producto.empaque || '').trim()))];
+        if (!presentacionesDisponibles.includes(presentacionSeleccionada)) {
+          presentacionSeleccionada = presentacionesDisponibles[0] || '';
+        }
+        const productoSeleccionado = variantes.find(producto =>
+          String(producto.empaque || '').trim() === presentacionSeleccionada
+        ) || variantes[0];
+
+        if (colores.length) colorLabel.textContent = formatearColorSeleccionado(colorSeleccionado.nombre, grupo.linea);
+        botonesColor.forEach(({ color, boton }) => {
+          boton.setAttribute('aria-pressed', String(color === colorSeleccionado));
+        });
+        presentaciones.replaceChildren();
+        presentacionesDisponibles.forEach(nombre => {
+          const boton = document.createElement('button');
+          boton.type = 'button';
+          boton.className = 'paint-presentation';
+          boton.textContent = nombre ? mostrarNombrePresentacion(nombre) : 'Única presentación';
+          boton.setAttribute('aria-pressed', String(nombre === presentacionSeleccionada));
+          boton.addEventListener('click', () => {
+            presentacionSeleccionada = nombre;
+            actualizarPintura();
+          });
+          presentaciones.appendChild(boton);
+        });
+        codigo.textContent = productoSeleccionado && productoSeleccionado.codigo
+          ? `COD: ${productoSeleccionado.codigo}`
+          : '';
+        precio.textContent = productoSeleccionado ? `$${Number(productoSeleccionado.precio).toFixed(2)}` : '';
+        const urlImagen = obtenerUrlImagen(productoSeleccionado && productoSeleccionado.imagen);
+        const actual = tarjeta.querySelector('.product-photo, .product-photo-fallback');
+        const necesitaActualizarImagen = urlImagen
+          ? !actual || actual.tagName !== 'IMG' || actual.src !== urlImagen
+          : actual && actual.tagName === 'IMG';
+        if (necesitaActualizarImagen) {
+          if (actual) actual.replaceWith(crearImagenProducto(productoSeleccionado));
+          else tarjeta.insertBefore(crearImagenProducto(productoSeleccionado), lineaNombre);
+        }
+      }
+
+      actualizarPintura();
+      columna.appendChild(tarjeta);
+      return columna;
+    }
+
+    function ordenarColoresCatalogo(colores, linea) {
+      const ordenes = {
+        'CAUCHO MATE CLASE A': [
+          'BLANCO NIEVE', 'BLANCO OSTRA', 'BEIGE ARENA', 'OCRE', 'NARANJA',
+          'ROSADO', 'LAVANDA', 'AZUL CIELO', 'AZUL', 'VERDE', 'VERDE MANZANA',
+          'AMARILLO OCRE', 'GRIS'
+        ],
+        'CAUCHO MATE CLASE B': [
+          'BLANCO NIEVE', 'BLANCO HUMO', 'MARFIL', 'ROJO', 'NARANJA',
+          'AMARILLO IMPERIAL', 'VERDE', 'VERDE GEMA', 'AZUL', 'VIOLETA',
+          'ROSADO ROMANCE', 'MARRON', 'DORADO', 'GRIS CEMENTO', 'NEGRO'
+        ],
+        'CAUCHO MATE CLASE C': [
+          'BLANCO NIEVE', 'BLANCO OSTRA', 'AMARILLO CREMA', 'AMARILLO',
+          'ROSADO SALMON', 'CEREZA', 'GUAYABA ROSA', 'FUCSIA', 'MORADO',
+          'AZUL TURQUESA', 'AZUL PROFUNDO', 'VERDE LIMON', 'VERDE PISTACHO',
+          'VERDE', 'MANDARINA', 'TERRACOTA', 'MARRON EGIPTO', 'VINOTINTO',
+          'GRIS', 'NEGRO'
+        ],
+        'ESMALTE': [
+          'MARFIL', 'AMARILLO PURO', 'AMARILLO ORO', 'AMARILLO BANDERA',
+          'ANARANJADO', 'AZUL CIELO', 'AZUL PROFUNDO', 'AZUL BANDERA',
+          'AGUAMARINA', 'ROJO VIVO', 'ROJO BANDERA', 'VERDE PRADERA',
+          'VERDE SELVA', 'CASTANO REAL', 'GRIS OSCURO', 'GRIS LIGERO',
+          'ALUMINIO', 'BLANCO OSTRA', 'BLANCO', 'BLANCO MATE', 'NEGRO',
+          'NEGRO MATE', 'ROJO RUBI', 'ROJA BANDERA', 'CHOCOLATE'
+        ],
+        'FONDO 2 EN 1': ['BLANCO', 'GRIS', 'ROJO', 'NEGRO'],
+        'FONDO ANTICORROSIVO': ['BLANCO', 'GRIS', 'ROJO', 'NEGRO']
+      };
+      const orden = ordenes[normalizarNombre(linea)];
+      if (!orden) return colores;
+      const posiciones = new Map(orden.map((nombre, indice) => [normalizarNombre(nombre), indice]));
+      return colores.sort((a, b) => {
+        const indiceA = posiciones.has(normalizarNombre(a.nombre))
+          ? posiciones.get(normalizarNombre(a.nombre))
+          : orden.length;
+        const indiceB = posiciones.has(normalizarNombre(b.nombre))
+          ? posiciones.get(normalizarNombre(b.nombre))
+          : orden.length;
+        return indiceA - indiceB;
+      });
+    }
+
+    function crearMarca(texto) {
+      const marca = document.createElement('span');
+      marca.className = 'product-brand';
+      marca.textContent = texto;
+      marca.setAttribute('aria-label', `Marca: ${texto}`);
+      return marca;
+    }
+
+    function formatearColorSeleccionado(nombre, linea) {
+      if (normalizarNombre(linea) === 'ESMALTE') {
+        const acabados = {
+          BLANCO: 'Blanco Brillante',
+          'BLANCO MATE': 'Blanco Mate',
+          NEGRO: 'Negro Brillante',
+          'NEGRO MATE': 'Negro Mate'
+        };
+        const acabado = acabados[normalizarNombre(nombre)];
+        if (acabado) return acabado;
+      }
+      return `Color: ${nombre}`;
+    }
+
+    function crearFlechaColores(direccion, etiqueta) {
+      const boton = document.createElement('button');
+      boton.type = 'button';
+      boton.className = 'paint-scroll-button';
+      boton.setAttribute('aria-label', etiqueta);
+      boton.title = etiqueta;
+      const icono = document.createElement('i');
+      icono.className = `bi bi-chevron-${direccion}`;
+      icono.setAttribute('aria-hidden', 'true');
+      boton.appendChild(icono);
+      return boton;
+    }
+
+    function crearImagenProducto(producto) {
+      const urlImagen = obtenerUrlImagen(producto && producto.imagen);
       if (urlImagen) {
         const imagen = document.createElement('img');
         imagen.className = 'product-photo';
         imagen.src = urlImagen;
-        imagen.alt = producto.nombre;
+        imagen.alt = producto.nombre || '';
         imagen.loading = 'lazy';
         imagen.addEventListener('error', () => {
-          const fallback = crearImagenAlternativa();
-          imagen.replaceWith(fallback);
+          imagen.replaceWith(crearImagenAlternativa());
         }, { once: true });
-        tarjeta.appendChild(imagen);
-      } else {
-        tarjeta.appendChild(crearImagenAlternativa());
+        return imagen;
       }
+      return crearImagenAlternativa();
+    }
 
-      const codigo = document.createElement('div');
-      codigo.className = 'd-flex justify-content-end align-items-start mb-2';
-      const etiquetaCodigo = document.createElement('span');
-      etiquetaCodigo.className = 'product-code';
-      etiquetaCodigo.textContent = producto.codigo ? `COD: ${producto.codigo}` : '';
-      codigo.appendChild(etiquetaCodigo);
+    function obtenerColorMuestra(nombre, linea) {
+      return window.obtenerColorMuestraCatalogo(nombre, linea);
+    }
 
-      const nombre = document.createElement('div');
-      nombre.className = 'product-name mb-3';
-      nombre.textContent = producto.empaque
-        ? `${producto.nombre} · Empaque: ${producto.empaque}`
-        : producto.nombre;
-
-      const pie = document.createElement('div');
-      pie.className = 'product-card-footer d-flex justify-content-between align-items-center gap-2 mt-auto';
-      const marca = document.createElement('span');
-      marca.className = 'badge badge-cat';
-      marca.textContent = producto.categoria || 'General';
-      marca.setAttribute('aria-label', `Marca: ${producto.categoria || 'General'}`);
-      const precio = document.createElement('span');
-      precio.className = 'product-price';
-      precio.textContent = `$${Number(producto.precio).toFixed(2)}`;
-      pie.append(marca, precio);
-      tarjeta.append(codigo, nombre, pie);
-      columna.appendChild(tarjeta);
-      return columna;
+    function mostrarNombrePresentacion(nombre) {
+      const normalizada = normalizarNombre(nombre);
+      if (normalizada === 'GAL') return 'Galón';
+      if (normalizada === 'CUÑETE' || normalizada === 'CUNETE') return 'Cuñete';
+      if (normalizada === '1/4 GAL' || normalizada === '1/4 DE GALON') return '1/4 Gal';
+      return nombre;
     }
 
     function crearImagenAlternativa() {
@@ -702,7 +1154,8 @@
       try {
         const url = new URL(valor.trim());
         if (url.protocol !== 'https:' && url.protocol !== 'http:') return '';
-        const idDrive = url.searchParams.get('id');
+        const idEnRuta = url.pathname.match(/^\/file\/d\/([^/]+)/);
+        const idDrive = url.searchParams.get('id') || (idEnRuta && idEnRuta[1]);
         if (url.hostname === 'drive.google.com' && idDrive) {
           return `https://drive.google.com/thumbnail?id=${encodeURIComponent(idDrive)}&sz=w800`;
         }
@@ -720,6 +1173,6 @@
       mensaje.classList.toggle('catalog-error', Boolean(texto) && esError);
     }
   </script>
-  <script src="usdt-rate.js?v=2"></script>
+  <script src="usdt-rate.js?v=6"></script>
 </body>
 </html>
