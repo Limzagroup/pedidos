@@ -428,6 +428,9 @@
     const PRODUCTOS_POR_PAGINA = 15;
     const getById = id => document.getElementById(id);
     const { esProductoValido, normalizarCodigo } = window.LimzaCatalogUtils;
+    const FILA_INICIO_MUESTRAS_CEBRA = 3;
+    const FILA_FIN_MUESTRAS_CEBRA = 134;
+    const FILA_INICIO_IMAGENES_CEBRA = 135;
     let productos = [];
     let generacionPdfActiva = null;
     let ocultarProgresoTimer = null;
@@ -489,6 +492,9 @@
           producto.disponible !== false
         ).map(producto => ({
           ...producto,
+          imagen: obtenerFilaCebra(producto) >= FILA_INICIO_IMAGENES_CEBRA
+            ? producto.imagen
+            : '',
           logoMarca: producto.logoMarca || buscarLogoMarca(producto.categoria)
         }));
         if (!productosPublicados.length) throw new Error('El catálogo digital no contiene productos válidos.');
@@ -507,6 +513,8 @@
           } else if (normalizarNombreMarca(productoExistente.categoria) === 'cebra') {
             porCodigo.set(codigo, {
               ...productoExistente,
+              id: producto.id,
+              imagen: producto.imagen,
               subcategoria: producto.subcategoria || productoExistente.subcategoria
             });
           }
@@ -554,6 +562,27 @@
         .replace(/[\u0300-\u036f]/g, '')
         .trim()
         .toLocaleLowerCase('es');
+    }
+
+    function obtenerFilaCebra(producto) {
+      const coincidencia = String(producto && producto.id || '').match(/-(\d+)$/);
+      return coincidencia ? Number(coincidencia[1]) : 0;
+    }
+
+    function obtenerImagenProductoPdf(producto) {
+      if (normalizarNombreMarca(producto && producto.categoria) !== 'cebra') {
+        return producto && producto.imagen || '';
+      }
+      return obtenerFilaCebra(producto) >= FILA_INICIO_IMAGENES_CEBRA
+        ? producto.imagen || ''
+        : '';
+    }
+
+    function obtenerPinturaMuestraPdf(producto) {
+      if (normalizarNombreMarca(producto && producto.categoria) !== 'cebra') return null;
+      const fila = obtenerFilaCebra(producto);
+      if (fila < FILA_INICIO_MUESTRAS_CEBRA || fila > FILA_FIN_MUESTRAS_CEBRA) return null;
+      return analizarPinturaCatalogoPdf(producto);
     }
 
     function crearBuscadorLogoMarca(logosMarcas) {
@@ -794,8 +823,8 @@
           pagina.drawPage(fondoPlantilla, { x: 0, y: 0, width: anchoPagina, height: altoPagina });
           for (let posicionPagina = 0; posicionPagina < PRODUCTOS_POR_PAGINA; posicionPagina += 1) {
             const producto = productosPagina[posicionPagina] || null;
-            const pintura = producto ? analizarPinturaCatalogoPdf(producto) : null;
-            const idImagen = producto && !pintura ? extraerIdImagenDrive(producto.imagen) : '';
+            const pintura = producto ? obtenerPinturaMuestraPdf(producto) : null;
+            const idImagen = producto && !pintura ? obtenerIdImagenProductoPdf(producto) : '';
             const idLogoMarca = producto ? extraerIdImagenDrive(producto.logoMarca) : '';
             const imagen = await incrustarImagenPdf(documento, imagenesIncrustadas, idImagen, imagenes);
             const logoMarca = await incrustarImagenPdf(documento, imagenesIncrustadas, idLogoMarca, imagenes);
@@ -1008,9 +1037,9 @@
     }
 
     function obtenerIdImagenProductoPdf(producto) {
-      return analizarPinturaCatalogoPdf(producto)
+      return obtenerPinturaMuestraPdf(producto)
         ? ''
-        : extraerIdImagenDrive(producto.imagen);
+        : extraerIdImagenDrive(obtenerImagenProductoPdf(producto));
     }
 
     async function incrustarMuestraPinturaPdf(documento, cache, pintura) {
