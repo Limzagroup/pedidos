@@ -48,7 +48,6 @@
       background: var(--navbar-bg);
       box-shadow: 0 4px 18px rgba(15, 23, 42, 0.16);
     }
-    .navbar .container { position: relative; }
     .navbar-actions {
       position: absolute;
       top: 0;
@@ -58,169 +57,6 @@
       align-items: center;
       justify-content: flex-end;
       gap: 10px;
-    }
-    .menu-toggle {
-      display: inline-flex;
-      width: 42px;
-      min-width: 42px;
-      height: 42px;
-      min-height: 42px;
-      align-items: center;
-      justify-content: center;
-      padding: 0;
-      border: 1px solid #3a3a3a;
-      border-radius: 12px;
-      background: #242424;
-      color: #f5f5f5;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
-    }
-    .menu-toggle-icon {
-      width: 15px;
-      height: 1.5px;
-      border-radius: 2px;
-      background: currentColor;
-      box-shadow: 0 -5px currentColor, 0 5px currentColor;
-    }
-    .menu-toggle:hover,
-    .menu-toggle:active,
-    .menu-toggle.show {
-      border-color: var(--brand-orange);
-      background: #333333;
-      color: var(--brand-orange);
-    }
-    body.light-mode .menu-toggle {
-      border-color: #4a4a4a;
-      background: #ffffff;
-      color: #333333;
-    }
-    .navbar-menu {
-      --bs-dropdown-bg: #181818;
-      --bs-dropdown-color: #f5f5f5;
-      --bs-dropdown-border-color: #3a3a3a;
-      --bs-dropdown-link-color: #f5f5f5;
-      --bs-dropdown-link-hover-bg: #292929;
-      --bs-dropdown-link-hover-color: #ffffff;
-      min-width: 216px;
-      padding: 8px 6px;
-      border-radius: 14px;
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
-    }
-    body.light-mode .navbar-menu {
-      --bs-dropdown-bg: #ffffff;
-      --bs-dropdown-color: #191919;
-      --bs-dropdown-border-color: #e5e5e5;
-      --bs-dropdown-link-color: #191919;
-      --bs-dropdown-link-hover-bg: #f3f3f3;
-      --bs-dropdown-link-hover-color: #191919;
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
-    }
-    .navbar-menu .dropdown-item {
-      display: flex;
-      min-height: 44px;
-      align-items: center;
-      gap: 12px;
-      border-radius: 8px;
-      font-size: 0.95rem;
-    }
-    .navbar-menu .dropdown-item i {
-      width: 16px;
-      text-align: center;
-    }
-    .navbar-menu .theme-setting {
-      display: flex;
-      min-height: 46px;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 7px 10px;
-    }
-    .navbar-menu .theme-label-group i {
-      width: 16px;
-      text-align: center;
-    }
-    .navbar-menu #btnCambiarTema {
-      display: inline-grid;
-      flex: 0 0 50px;
-      width: 50px;
-      height: 28px;
-      place-items: center;
-      margin: 0;
-      padding: 0;
-      border: 0;
-      border-radius: 999px;
-      background: transparent;
-      color: inherit;
-      cursor: pointer;
-    }
-    .theme-label-group {
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .navbar-menu #btnCambiarTema:hover,
-    .navbar-menu #btnCambiarTema:focus,
-    .navbar-menu #btnCambiarTema:active {
-      background: transparent;
-      box-shadow: none;
-    }
-    .theme-switch {
-      position: relative;
-      display: inline-block;
-      flex: 0 0 50px;
-      width: 50px;
-      height: 28px;
-      border: 1px solid #5a5a5a;
-      border-radius: 999px;
-      background: #3a3a3a;
-      transition: background-color 280ms cubic-bezier(0.4, 0, 0.2, 1), border-color 280ms cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .theme-switch-thumb {
-      position: absolute;
-      top: 3px;
-      left: 3px;
-      display: flex;
-      width: 20px;
-      height: 20px;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-      background: #f5f5f5;
-      transition: transform 280ms cubic-bezier(0.4, 0, 0.2, 1), background-color 180ms ease;
-    }
-    .theme-switch i {
-      display: block;
-      color: #333333;
-      font-size: 14px;
-      line-height: 1;
-      pointer-events: none;
-    }
-    #btnCambiarTema[aria-checked="true"] .theme-switch {
-      border-color: var(--brand-orange);
-      background: var(--brand-orange);
-    }
-    #btnCambiarTema[aria-checked="true"] .theme-switch-thumb {
-      background: #ffffff;
-      transform: translateX(22px);
-    }
-    @media (hover: hover) {
-      #btnCambiarTema:hover .theme-switch {
-        border-color: var(--brand-orange);
-        filter: brightness(1.12);
-      }
-    }
-    #btnCambiarTema:active .theme-switch-thumb {
-      transform: scale(0.9);
-    }
-    #btnCambiarTema[aria-checked="true"]:active .theme-switch-thumb {
-      transform: translateX(22px) scale(0.9);
-    }
-    #btnCambiarTema:focus-visible {
-      outline: none;
-      box-shadow: none;
-    }
-    #btnCambiarTema:focus-visible .theme-switch {
-      outline: 2px solid var(--brand-orange);
-      outline-offset: 2px;
     }
     :focus-visible {
       outline: 3px solid var(--brand-orange);
@@ -558,6 +394,7 @@
       }
     }
   </style>
+  <link rel="stylesheet" href="navigation.css">
 </head>
 <body>
   <a class="visually-hidden-focusable position-fixed top-0 start-0 m-2 p-2 bg-light text-dark rounded" href="#contenidoPrincipal">Saltar al contenido</a>
@@ -566,31 +403,28 @@
       <a href="./" aria-label="Ir a pedidos">
         <img src="https://limzagroup.github.io/pedidos/LIMZAGROUP_LOGO.webp" alt="LIMZA GROUP" width="220" height="55" fetchpriority="high" style="max-height: 55px; width: auto; object-fit: contain;">
       </a>
-      <div class="dropdown navbar-actions">
-        <button id="btnMenu" class="menu-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Abrir menú" title="Abrir menú">
+      <div class="navbar-actions">
+        <button id="btnAbrirMenu" class="menu-toggle" type="button" aria-expanded="false" aria-label="Abrir menú" title="Abrir menú" aria-controls="menuPrincipal">
           <span class="menu-toggle-icon" aria-hidden="true"></span>
         </button>
-        <div class="dropdown-menu dropdown-menu-end navbar-menu" aria-labelledby="btnMenu">
-          <a class="dropdown-item" href="./">
-            <i class="bi bi-receipt" aria-hidden="true"></i>
-            <span>Pedidos</span>
-          </a>
-          <a class="dropdown-item" href="catalogo.html" aria-current="page">
-            <i class="bi bi-grid-3x3-gap" aria-hidden="true"></i>
-            <span>Catálogo digital</span>
-          </a>
-          <a class="dropdown-item" href="descargar-catalogo.html">
-            <i class="bi bi-file-earmark-arrow-down" aria-hidden="true"></i>
-            <span>Descargar catálogo</span>
-          </a>
-          <div class="theme-setting">
-            <span class="theme-label-group"><i id="iconoTema" class="bi bi-moon" aria-hidden="true"></i><span id="etiquetaTema">Oscuro</span></span>
-            <button id="btnCambiarTema" type="button" role="switch" aria-label="Cambiar a modo claro" aria-checked="false">
-              <span class="theme-switch" aria-hidden="true"><span class="theme-switch-thumb"></span></span>
-            </button>
-          </div>
-        </div>
       </div>
+      <nav id="menuPrincipal" class="app-menu" aria-label="Menú principal" hidden>
+        <a href="./">
+          <i class="bi bi-bag-check" aria-hidden="true"></i><span>Pedidos</span>
+        </a>
+        <a href="catalogo.html" aria-current="page">
+          <i class="bi bi-grid" aria-hidden="true"></i><span>Catálogo digital</span>
+        </a>
+        <a href="descargar-catalogo.html">
+          <i class="bi bi-file-earmark-arrow-down" aria-hidden="true"></i><span>Descargar catálogo</span>
+        </a>
+        <div class="theme-setting">
+          <span class="theme-label-group"><i id="iconoTema" class="bi bi-moon" aria-hidden="true"></i><span id="etiquetaTema">Oscuro</span></span>
+          <button id="btnCambiarTema" type="button" role="switch" aria-label="Cambiar a modo claro" aria-checked="false">
+            <span class="theme-switch" aria-hidden="true"><span class="theme-switch-thumb"></span></span>
+          </button>
+        </div>
+      </nav>
     </div>
   </nav>
   <main id="contenidoPrincipal" tabindex="-1">
@@ -627,11 +461,6 @@
     document.addEventListener('DOMContentLoaded', iniciarCatalogo);
 
     function iniciarCatalogo() {
-      const botonSwitchTema = getById('btnCambiarTema');
-      botonSwitchTema.addEventListener('click', alternarTema);
-      botonSwitchTema.parentElement.addEventListener('click', (event) => {
-        if (!botonSwitchTema.contains(event.target)) event.stopPropagation();
-      });
       getById('buscador').addEventListener('input', filtrarCatalogo);
       getById('btnLimpiarBuscador').addEventListener('click', limpiarBusqueda);
       window.addEventListener('resize', () => {
@@ -648,40 +477,7 @@
         );
         ultimoDesplazamiento = Math.max(0, desplazamiento);
       }, { passive: true });
-      aplicarTema(leerTemaGuardado());
       cargarCatalogo();
-    }
-
-    function leerTemaGuardado() {
-      try {
-        return localStorage.getItem('limza-tema') === 'claro' ? 'claro' : 'oscuro';
-      } catch (error) {
-        console.warn('No se pudo recuperar la preferencia de tema:', error);
-        return 'oscuro';
-      }
-    }
-
-    function aplicarTema(tema) {
-      const esClaro = tema === 'claro';
-      document.body.classList.toggle('light-mode', esClaro);
-      const boton = getById('btnCambiarTema');
-      const temaDestino = esClaro ? 'oscuro' : 'claro';
-      boton.setAttribute('aria-label', `Cambiar a modo ${temaDestino}`);
-      boton.setAttribute('aria-checked', String(esClaro));
-      getById('etiquetaTema').textContent = esClaro ? 'Claro' : 'Oscuro';
-      getById('iconoTema').className = `bi bi-${esClaro ? 'sun' : 'moon'}`;
-    }
-
-    function alternarTema(event) {
-      event.stopPropagation();
-      const tema = document.body.classList.contains('light-mode') ? 'oscuro' : 'claro';
-      aplicarTema(tema);
-      try {
-        localStorage.setItem('limza-tema', tema);
-      } catch (error) {
-        console.warn('No se pudo guardar la preferencia de tema:', error);
-      }
-      if (event.detail > 0) event.currentTarget.blur();
     }
 
     function cargarCatalogo() {
@@ -1173,6 +969,7 @@
       mensaje.classList.toggle('catalog-error', Boolean(texto) && esError);
     }
   </script>
-  <script src="usdt-rate.js?v=6"></script>
+  <script src="navigation.js"></script>
+  <script src="usdt-rate.js?v=8"></script>
 </body>
 </html>

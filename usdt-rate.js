@@ -1,5 +1,5 @@
 (() => {
-  const menu = document.getElementById("btnMenu");
+  const menu = document.getElementById("btnAbrirMenu");
   const contenedor = menu && menu.parentElement;
   if (!contenedor || typeof URL_API_APPS_SCRIPT === "undefined") {
     console.error("No se pudo inicializar la tasa USDT: falta el menú o la URL de Apps Script.");
@@ -45,99 +45,6 @@
     .navbar .navbar-actions {
       gap: 8px;
     }
-    .navbar .navbar-actions .menu-toggle {
-      width: 42px;
-      min-width: 42px;
-      height: 42px;
-      min-height: 42px;
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      border-radius: 13px;
-      background: linear-gradient(145deg, #292929, #1b1b1b);
-      color: #f8fafc;
-      box-shadow: 0 5px 14px rgba(0, 0, 0, 0.26), inset 0 1px rgba(255, 255, 255, 0.05);
-      transition: transform 160ms ease, border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
-    }
-    .navbar .navbar-actions .menu-toggle-icon {
-      width: 17px;
-      height: 2px;
-      box-shadow: 0 -6px currentColor, 0 6px currentColor;
-    }
-    @media (hover: hover) and (pointer: fine) {
-      .navbar .navbar-actions .menu-toggle:hover {
-        border-color: rgba(249, 115, 22, 0.72);
-        background: linear-gradient(145deg, #33271f, #241c17);
-        color: #fb923c;
-        transform: translateY(-1px);
-      }
-    }
-    .navbar .navbar-actions .menu-toggle.show,
-    .navbar .navbar-actions .menu-toggle:active {
-      border-color: rgba(249, 115, 22, 0.72);
-      background: #30231b;
-      color: #fb923c;
-      box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.16), 0 5px 14px rgba(0, 0, 0, 0.24);
-    }
-    .navbar .navbar-actions .menu-toggle:focus-visible {
-      outline: 2px solid #fb923c;
-      outline-offset: 3px;
-    }
-    .navbar-menu {
-      --bs-dropdown-bg: rgba(27, 27, 27, 0.98);
-      --bs-dropdown-color: #f5f5f5;
-      --bs-dropdown-border-color: rgba(255, 255, 255, 0.1);
-      --bs-dropdown-link-color: #f5f5f5;
-      --bs-dropdown-link-hover-bg: rgba(249, 115, 22, 0.12);
-      --bs-dropdown-link-hover-color: #ffffff;
-      --bs-dropdown-link-active-bg: rgba(249, 115, 22, 0.16);
-      --bs-dropdown-link-active-color: #ffffff;
-      min-width: 216px;
-      max-width: calc(100vw - 24px);
-      padding: 8px 6px;
-      border-radius: 16px;
-      box-shadow: 0 18px 42px rgba(0, 0, 0, 0.38);
-      backdrop-filter: blur(14px);
-    }
-    .navbar-menu .dropdown-item {
-      min-height: 46px;
-      padding: 7px 10px;
-      gap: 11px;
-      border-radius: 11px;
-      font-weight: 600;
-      transition: transform 150ms ease, background-color 150ms ease, color 150ms ease;
-    }
-    .navbar-menu .dropdown-item + .dropdown-item {
-      margin-top: 6px;
-    }
-    .navbar-menu .theme-setting {
-      margin-top: 6px;
-      color: inherit;
-    }
-    .navbar-menu .dropdown-item i {
-      display: inline-grid;
-      flex: 0 0 30px;
-      width: 30px;
-      height: 30px;
-      place-items: center;
-      border-radius: 9px;
-      background: rgba(249, 115, 22, 0.13);
-      color: #fb923c;
-    }
-    .navbar-menu .dropdown-item:not(#btnCambiarTema):hover,
-    .navbar-menu .dropdown-item:not(#btnCambiarTema):focus-visible {
-      background: rgba(249, 115, 22, 0.12);
-      color: #ffffff;
-      transform: translateX(2px);
-    }
-    .navbar-menu .dropdown-item[aria-current="page"] {
-      background: rgba(249, 115, 22, 0.16);
-      color: #ffffff;
-    }
-    .navbar-menu #btnCambiarTema:hover .theme-switch,
-    .navbar-menu #btnCambiarTema:focus-visible .theme-switch,
-    .navbar-menu #btnCambiarTema:active .theme-switch {
-      border-color: rgba(249, 115, 22, 0.72);
-      filter: brightness(1.08);
-    }
     body.light-mode .usdt-rate {
       border-color: rgba(234, 88, 12, 0.3);
       background: linear-gradient(145deg, #ffffff, #fff7ed);
@@ -145,42 +52,6 @@
     }
     body.light-mode .usdt-rate > span:first-child {
       color: #c2410c;
-    }
-    body.light-mode .navbar .navbar-actions .menu-toggle {
-      border-color: #d7dce3;
-      background: linear-gradient(145deg, #ffffff, #f4f5f7);
-      color: #282828;
-      box-shadow: 0 5px 14px rgba(15, 23, 42, 0.12), inset 0 1px #ffffff;
-    }
-    body.light-mode .navbar .navbar-actions .menu-toggle.show,
-    body.light-mode .navbar .navbar-actions .menu-toggle:active {
-      border-color: rgba(234, 88, 12, 0.48);
-      background: #fff3e8;
-      color: #c2410c;
-    }
-    body.light-mode .navbar-menu {
-      --bs-dropdown-bg: rgba(255, 255, 255, 0.98);
-      --bs-dropdown-color: #20242b;
-      --bs-dropdown-border-color: #e7e9ed;
-      --bs-dropdown-link-color: #20242b;
-      --bs-dropdown-link-hover-bg: #fff3e8;
-      --bs-dropdown-link-hover-color: #9a3412;
-      --bs-dropdown-link-active-bg: #ffeddc;
-      --bs-dropdown-link-active-color: #9a3412;
-      box-shadow: 0 18px 42px rgba(15, 23, 42, 0.16);
-    }
-    body.light-mode .navbar-menu .dropdown-item i {
-      background: rgba(234, 88, 12, 0.1);
-      color: #c2410c;
-    }
-    body.light-mode .navbar-menu .dropdown-item:not(#btnCambiarTema):hover,
-    body.light-mode .navbar-menu .dropdown-item:not(#btnCambiarTema):focus-visible {
-      background: #fff3e8;
-      color: #9a3412;
-    }
-    body.light-mode .navbar-menu .dropdown-item[aria-current="page"] {
-      background: #ffeddc;
-      color: #9a3412;
     }
     @media (max-width: 375px) {
       .usdt-rate {

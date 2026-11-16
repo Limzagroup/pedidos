@@ -990,9 +990,6 @@
         transition-duration: 0.01ms !important;
       }
     }
-    .navbar .container {
-      position: relative;
-    }
     .navbar-actions {
       position: absolute;
       top: 0;
@@ -1002,177 +999,6 @@
       align-items: center;
       justify-content: flex-end;
       gap: 10px;
-    }
-    .menu-toggle {
-      width: 42px;
-      min-width: 42px;
-      height: 42px;
-      min-height: 42px;
-      padding: 0;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border: 1px solid #3a3a3a;
-      border-radius: 12px;
-      background: #242424;
-      color: #f5f5f5;
-      font-size: 1.1rem;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
-      touch-action: manipulation;
-      -webkit-tap-highlight-color: transparent;
-      transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
-    }
-    .menu-toggle-icon {
-      width: 15px;
-      height: 1.5px;
-      border-radius: 2px;
-      background: currentColor;
-      box-shadow: 0 -5px currentColor, 0 5px currentColor;
-    }
-    @media (hover: hover) and (pointer: fine) {
-      .menu-toggle:hover {
-        border-color: var(--brand-orange);
-        background: #333333;
-        color: var(--brand-orange);
-        box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2), 0 4px 12px rgba(249, 115, 22, 0.28);
-      }
-    }
-    .menu-toggle:active,
-    .menu-toggle.show {
-      border-color: var(--brand-orange);
-      background: #333333;
-      color: var(--brand-orange);
-      box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2), 0 4px 12px rgba(249, 115, 22, 0.28);
-    }
-    .menu-toggle:focus:not(:focus-visible):not(.show) {
-      outline: none;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
-    }
-    .menu-toggle:focus-visible {
-      box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.32), 0 4px 12px rgba(249, 115, 22, 0.24);
-    }
-    .navbar-menu {
-      --bs-dropdown-bg: #181818;
-      --bs-dropdown-color: #f5f5f5;
-      --bs-dropdown-border-color: #3a3a3a;
-      --bs-dropdown-link-color: #f5f5f5;
-      --bs-dropdown-link-hover-bg: #292929;
-      --bs-dropdown-link-hover-color: #ffffff;
-      --bs-dropdown-link-active-bg: #292929;
-      --bs-dropdown-link-active-color: #ffffff;
-      min-width: 216px;
-      padding: 8px 6px;
-      border-radius: 14px;
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
-    }
-    .navbar-menu .dropdown-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      min-height: 44px;
-      border-radius: 8px;
-      font-size: 0.95rem;
-      cursor: pointer;
-    }
-    .navbar-menu .dropdown-item i {
-      width: 16px;
-      text-align: center;
-    }
-    .navbar-menu .theme-setting {
-      display: flex;
-      min-height: 46px;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 7px 10px;
-    }
-    .navbar-menu .theme-label-group i {
-      width: 16px;
-      text-align: center;
-    }
-    .navbar-menu #btnCambiarTema {
-      display: inline-grid;
-      flex: 0 0 50px;
-      width: 50px;
-      height: 28px;
-      place-items: center;
-      margin: 0;
-      padding: 0;
-      border: 0;
-      border-radius: 999px;
-      background: transparent;
-      color: inherit;
-      cursor: pointer;
-    }
-    .theme-label-group {
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .navbar-menu #btnCambiarTema:hover,
-    .navbar-menu #btnCambiarTema:focus,
-    .navbar-menu #btnCambiarTema:active {
-      background: transparent;
-      box-shadow: none;
-    }
-    .theme-switch {
-      position: relative;
-      display: inline-block;
-      flex: 0 0 50px;
-      width: 50px;
-      height: 28px;
-      border: 1px solid #5a5a5a;
-      border-radius: 999px;
-      background: #3a3a3a;
-      transition: background-color 280ms cubic-bezier(0.4, 0, 0.2, 1), border-color 280ms cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .theme-switch-thumb {
-      position: absolute;
-      top: 3px;
-      left: 3px;
-      display: flex;
-      width: 20px;
-      height: 20px;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-      background: #f5f5f5;
-      transition: transform 280ms cubic-bezier(0.4, 0, 0.2, 1), background-color 180ms ease;
-    }
-    .theme-switch i {
-      display: block;
-      color: #333333;
-      font-size: 14px;
-      line-height: 1;
-      pointer-events: none;
-    }
-    #btnCambiarTema[aria-checked="true"] .theme-switch {
-      border-color: var(--brand-orange);
-      background: var(--brand-orange);
-    }
-    #btnCambiarTema[aria-checked="true"] .theme-switch-thumb {
-      background: #ffffff;
-      transform: translateX(22px);
-    }
-    @media (hover: hover) {
-      #btnCambiarTema:hover .theme-switch {
-        border-color: var(--brand-orange);
-        filter: brightness(1.12);
-      }
-    }
-    #btnCambiarTema:active .theme-switch-thumb {
-      transform: scale(0.9);
-    }
-    #btnCambiarTema[aria-checked="true"]:active .theme-switch-thumb {
-      transform: translateX(22px) scale(0.9);
-    }
-    #btnCambiarTema:focus-visible {
-      outline: none;
-      box-shadow: none;
-    }
-    #btnCambiarTema:focus-visible .theme-switch {
-      outline: 2px solid var(--brand-orange);
-      outline-offset: 2px;
     }
     :root {
       color-scheme: dark;
@@ -1549,6 +1375,7 @@
       box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.32), 0 4px 12px rgba(249, 115, 22, 0.24);
     }
   </style>
+  <link rel="stylesheet" href="navigation.css">
 </head>
 <body>
   <a class="skip-link" href="#contenidoPrincipal">Saltar al contenido</a>
@@ -1562,31 +1389,28 @@
     <div class="container py-2 d-flex justify-content-between align-items-center">
       <!-- LOGOTIPO CORPORATIVO -->
       <img src="https://limzagroup.github.io/pedidos/LIMZAGROUP_LOGO.webp" alt="LIMZA GROUP" width="220" height="55" fetchpriority="high" style="max-height: 55px; width: auto; object-fit: contain;">
-      <div class="dropdown navbar-actions">
-        <button id="btnMenu" class="menu-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Abrir menú" title="Abrir menú">
+      <div class="navbar-actions">
+        <button id="btnAbrirMenu" class="menu-toggle" type="button" aria-expanded="false" aria-label="Abrir menú" title="Abrir menú" aria-controls="menuPrincipal">
           <span class="menu-toggle-icon" aria-hidden="true"></span>
         </button>
-        <div class="dropdown-menu dropdown-menu-end navbar-menu" aria-labelledby="btnMenu">
-          <a class="dropdown-item" href="./" aria-current="page">
-            <i class="bi bi-receipt" aria-hidden="true"></i>
-            <span>Pedidos</span>
-          </a>
-          <a class="dropdown-item" href="catalogo.html">
-            <i class="bi bi-grid-3x3-gap" aria-hidden="true"></i>
-            <span>Catálogo digital</span>
-          </a>
-          <a class="dropdown-item" href="descargar-catalogo.html">
-            <i class="bi bi-file-earmark-arrow-down" aria-hidden="true"></i>
-            <span>Descargar catálogo</span>
-          </a>
-          <div class="theme-setting">
-            <span class="theme-label-group"><i id="iconoTema" class="bi bi-moon" aria-hidden="true"></i><span id="etiquetaTema">Oscuro</span></span>
-            <button id="btnCambiarTema" type="button" role="switch" aria-label="Cambiar a modo claro" aria-checked="false">
-              <span class="theme-switch" aria-hidden="true"><span class="theme-switch-thumb"></span></span>
-            </button>
-          </div>
-        </div>
       </div>
+      <nav id="menuPrincipal" class="app-menu" aria-label="Menú principal" hidden>
+        <a href="./" aria-current="page">
+          <i class="bi bi-bag-check" aria-hidden="true"></i><span>Pedidos</span>
+        </a>
+        <a href="catalogo.html">
+          <i class="bi bi-grid" aria-hidden="true"></i><span>Catálogo digital</span>
+        </a>
+        <a href="descargar-catalogo.html">
+          <i class="bi bi-file-earmark-arrow-down" aria-hidden="true"></i><span>Descargar catálogo</span>
+        </a>
+        <div class="theme-setting">
+          <span class="theme-label-group"><i id="iconoTema" class="bi bi-moon" aria-hidden="true"></i><span id="etiquetaTema">Oscuro</span></span>
+          <button id="btnCambiarTema" type="button" role="switch" aria-label="Cambiar a modo claro" aria-checked="false">
+            <span class="theme-switch" aria-hidden="true"><span class="theme-switch-thumb"></span></span>
+          </button>
+        </div>
+      </nav>
     </div>
   </nav>
   <main id="contenidoPrincipal" tabindex="-1">
@@ -1756,6 +1580,7 @@
     let cerrarRevisionTrasBorrado = false;
     const pulsacionesProlongadasActivas = new Map();
     const getById = (id) => document.getElementById(id);
+    const caracteresNoPermitidosComentario = /[^a-zA-ZáéíóúÁÉÍÓÚñÑ0-9 %\u0027\u0022\u2032\u2033]/g;
     const claveProducto = (producto) => String(producto.id || producto.codigo);
     function initApp() {
       carrito = leerCarritoGuardado();
@@ -1775,13 +1600,6 @@
       });
       instalarManejadoresPulsacionProlongada();
       instalarManejadoresResumen();
-      const temaGuardado = leerTemaGuardado();
-      aplicarTema(temaGuardado);
-      const botonSwitchTema = getById('btnCambiarTema');
-      botonSwitchTema.addEventListener('click', alternarTema);
-      botonSwitchTema.parentElement.addEventListener('click', (event) => {
-        if (!botonSwitchTema.contains(event.target)) event.stopPropagation();
-      });
       getById('buscador').addEventListener('input', manejarEntradaBuscador);
       getById('btnLimpiarBuscador').addEventListener('click', limpiarBuscadorManualmente);
       getById('btnAbrirModal').addEventListener('click', abrirModalFinalizar);
@@ -1800,7 +1618,9 @@
         limpiarCaracteresEspeciales(campo);
         validarCampoCliente();
       });
-      getById('comentarioPedido').addEventListener('input', () => limpiarCaracteresEspeciales(getById('comentarioPedido')));
+      getById('comentarioPedido').addEventListener('input', () =>
+        limpiarCaracteresEspeciales(getById('comentarioPedido'), caracteresNoPermitidosComentario)
+      );
       getById('zonaPedido').addEventListener('input', () => {
         forzarMayusculas(getById('zonaPedido'));
         validarCampoZona();
@@ -1918,35 +1738,6 @@
       clearTimeout(pulsacion.temporizador);
       clearInterval(pulsacion.intervalo);
       pulsacionesProlongadasActivas.delete(pointerId);
-    }
-    function leerTemaGuardado() {
-      try {
-        return localStorage.getItem('limza-tema') === 'claro' ? 'claro' : 'oscuro';
-      } catch (err) {
-        console.warn('No se pudo recuperar la preferencia de tema:', err);
-        return 'oscuro';
-      }
-    }
-    function aplicarTema(tema) {
-      const esClaro = tema === 'claro';
-      document.body.classList.toggle('light-mode', esClaro);
-      const botonTema = getById('btnCambiarTema');
-      const temaDestino = esClaro ? 'oscuro' : 'claro';
-      botonTema.setAttribute('aria-checked', String(esClaro));
-      botonTema.setAttribute('aria-label', `Cambiar a modo ${temaDestino}`);
-      getById('etiquetaTema').textContent = esClaro ? 'Claro' : 'Oscuro';
-      getById('iconoTema').className = `bi bi-${esClaro ? 'sun' : 'moon'}`;
-    }
-    function alternarTema(event) {
-      event.stopPropagation();
-      const tema = document.body.classList.contains('light-mode') ? 'oscuro' : 'claro';
-      aplicarTema(tema);
-      try {
-        localStorage.setItem('limza-tema', tema);
-      } catch (err) {
-        console.warn('No se pudo guardar la preferencia de tema:', err);
-      }
-      if (event.detail > 0) event.currentTarget.blur();
     }
     document.addEventListener('DOMContentLoaded', initApp);
     function cargarCatalogoRemoto() {
@@ -2457,15 +2248,15 @@
         el.setSelectionRange(nuevaPosicionInicio, nuevaPosicionFin);
       }
     }
-    function limpiarCaracteresEspeciales(el) {
+    function limpiarCaracteresEspeciales(el, caracteresNoPermitidos = /[^a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s]/g) {
       const valor = el.value.normalize('NFC');
       const posicion = el.selectionStart;
       const valorAntesDelCursor = posicion === null ? valor : valor.slice(0, posicion);
-      const valorLimpio = valor.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s]/g, '');
+      const valorLimpio = valor.replace(caracteresNoPermitidos, '');
       if (valorLimpio !== el.value) {
         el.value = valorLimpio;
         if (posicion !== null) {
-          const posicionLimpia = valorAntesDelCursor.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s]/g, '').length;
+          const posicionLimpia = valorAntesDelCursor.replace(caracteresNoPermitidos, '').length;
           el.setSelectionRange(posicionLimpia, posicionLimpia);
         }
       }
@@ -2740,6 +2531,7 @@
     }
   </script>
   <!-- Tasa USDT manual leída de G1 en la hoja del catálogo. -->
-  <script src="usdt-rate.js?v=6"></script>
+  <script src="navigation.js"></script>
+  <script src="usdt-rate.js?v=8"></script>
 </body>
 </html>

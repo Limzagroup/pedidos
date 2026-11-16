@@ -86,7 +86,6 @@
       background: var(--navbar-bg);
       box-shadow: 0 4px 18px rgba(15, 23, 42, 0.16);
     }
-    .navbar .container { position: relative; }
     .navbar-actions {
       position: absolute;
       top: 0;
@@ -96,169 +95,6 @@
       align-items: center;
       justify-content: flex-end;
       gap: 10px;
-    }
-    .menu-toggle {
-      display: inline-flex;
-      width: 42px;
-      min-width: 42px;
-      height: 42px;
-      min-height: 42px;
-      align-items: center;
-      justify-content: center;
-      padding: 0;
-      border: 1px solid #3a3a3a;
-      border-radius: 12px;
-      background: #242424;
-      color: #f5f5f5;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
-    }
-    .menu-toggle-icon {
-      width: 15px;
-      height: 1.5px;
-      border-radius: 2px;
-      background: currentColor;
-      box-shadow: 0 -5px currentColor, 0 5px currentColor;
-    }
-    .menu-toggle:hover,
-    .menu-toggle:active,
-    .menu-toggle.show {
-      border-color: var(--brand-orange);
-      background: #333333;
-      color: var(--brand-orange);
-    }
-    body.light-mode .menu-toggle {
-      border-color: #4a4a4a;
-      background: #ffffff;
-      color: #333333;
-    }
-    .navbar-menu {
-      --bs-dropdown-bg: #181818;
-      --bs-dropdown-color: #f5f5f5;
-      --bs-dropdown-border-color: #3a3a3a;
-      --bs-dropdown-link-color: #f5f5f5;
-      --bs-dropdown-link-hover-bg: #292929;
-      --bs-dropdown-link-hover-color: #ffffff;
-      min-width: 280px;
-      padding: 8px 6px;
-      border-radius: 14px;
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
-    }
-    body.light-mode .navbar-menu {
-      --bs-dropdown-bg: #ffffff;
-      --bs-dropdown-color: #191919;
-      --bs-dropdown-border-color: #e5e5e5;
-      --bs-dropdown-link-color: #191919;
-      --bs-dropdown-link-hover-bg: #f3f3f3;
-      --bs-dropdown-link-hover-color: #191919;
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
-    }
-    .navbar-menu .dropdown-item {
-      display: flex;
-      min-height: 44px;
-      align-items: center;
-      gap: 12px;
-      border-radius: 8px;
-      font-size: 0.95rem;
-    }
-    .navbar-menu .dropdown-item i {
-      width: 16px;
-      text-align: center;
-    }
-    .navbar-menu .theme-setting {
-      display: flex;
-      min-height: 46px;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 7px 10px;
-    }
-    .navbar-menu .theme-label-group i {
-      width: 16px;
-      text-align: center;
-    }
-    .navbar-menu #btnCambiarTema {
-      display: inline-grid;
-      flex: 0 0 50px;
-      width: 50px;
-      height: 28px;
-      place-items: center;
-      margin: 0;
-      padding: 0;
-      border: 0;
-      border-radius: 999px;
-      background: transparent;
-      color: inherit;
-      cursor: pointer;
-    }
-    .theme-label-group {
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .navbar-menu #btnCambiarTema:hover,
-    .navbar-menu #btnCambiarTema:focus,
-    .navbar-menu #btnCambiarTema:active {
-      background: transparent;
-      box-shadow: none;
-    }
-    .theme-switch {
-      position: relative;
-      display: inline-block;
-      flex: 0 0 50px;
-      width: 50px;
-      height: 28px;
-      border: 1px solid #5a5a5a;
-      border-radius: 999px;
-      background: #3a3a3a;
-      transition: background-color 280ms cubic-bezier(0.4, 0, 0.2, 1), border-color 280ms cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .theme-switch-thumb {
-      position: absolute;
-      top: 3px;
-      left: 3px;
-      display: flex;
-      width: 20px;
-      height: 20px;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-      background: #f5f5f5;
-      transition: transform 280ms cubic-bezier(0.4, 0, 0.2, 1), background-color 180ms ease;
-    }
-    .theme-switch i {
-      display: block;
-      color: #333333;
-      font-size: 14px;
-      line-height: 1;
-      pointer-events: none;
-    }
-    #btnCambiarTema[aria-checked="true"] .theme-switch {
-      border-color: var(--brand-orange);
-      background: var(--brand-orange);
-    }
-    #btnCambiarTema[aria-checked="true"] .theme-switch-thumb {
-      background: #ffffff;
-      transform: translateX(22px);
-    }
-    @media (hover: hover) {
-      #btnCambiarTema:hover .theme-switch {
-        border-color: var(--brand-orange);
-        filter: brightness(1.12);
-      }
-    }
-    #btnCambiarTema:active .theme-switch-thumb {
-      transform: scale(0.9);
-    }
-    #btnCambiarTema[aria-checked="true"]:active .theme-switch-thumb {
-      transform: translateX(22px) scale(0.9);
-    }
-    #btnCambiarTema:focus-visible {
-      outline: none;
-      box-shadow: none;
-    }
-    #btnCambiarTema:focus-visible .theme-switch {
-      outline: 2px solid var(--brand-orange);
-      outline-offset: 2px;
     }
     :focus-visible {
       outline: 3px solid var(--brand-orange);
@@ -523,20 +359,11 @@
         </button>
       </div>
       <nav id="menuPrincipal" class="app-menu" aria-label="Menú principal" hidden>
-        <a href="https://limzagroup.github.io/app/">
-          <i class="bi bi-grid" aria-hidden="true"></i><span>Catálogo</span>
-        </a>
         <a href="./">
           <i class="bi bi-bag-check" aria-hidden="true"></i><span>Pedidos</span>
         </a>
-        <a href="https://limzagroup.github.io/app/crear-guias.html">
-          <i class="bi bi-box-seam" aria-hidden="true"></i><span>Crear guías</span>
-        </a>
-        <a href="https://limzagroup.github.io/app/agregar-productos.html">
-          <i class="bi bi-pencil-square" aria-hidden="true"></i><span>Agregar producto</span>
-        </a>
-        <a href="https://limzagroup.github.io/app/carga-imagenes.html">
-          <i class="bi bi-images" aria-hidden="true"></i><span>Carga masiva de imágenes</span>
+        <a href="catalogo.html">
+          <i class="bi bi-grid" aria-hidden="true"></i><span>Catálogo digital</span>
         </a>
         <a href="descargar-catalogo.html" aria-current="page">
           <i class="bi bi-file-earmark-arrow-down" aria-hidden="true"></i><span>Descargar catálogo</span>
@@ -610,27 +437,7 @@
       getById('listaMarcas').addEventListener('change', actualizarSeleccion);
       getById('listaSubcategoriasCebra').addEventListener('change', actualizarResumen);
       getById('btnDescargar').addEventListener('click', descargarCatalogo);
-      aplicarTema(leerTemaGuardado());
       cargarCatalogo();
-    }
-
-    function leerTemaGuardado() {
-      try {
-        return localStorage.getItem('limza-tema') === 'claro' ? 'claro' : 'oscuro';
-      } catch (error) {
-        console.warn('No se pudo recuperar la preferencia de tema:', error);
-        return 'oscuro';
-      }
-    }
-
-    function aplicarTema(tema) {
-      const esClaro = tema === 'claro';
-      document.body.classList.toggle('light-mode', esClaro);
-      const destino = esClaro ? 'oscuro' : 'claro';
-      getById('btnCambiarTema').setAttribute('aria-label', `Cambiar a modo ${destino}`);
-      getById('btnCambiarTema').setAttribute('aria-checked', String(esClaro));
-      getById('etiquetaTema').textContent = esClaro ? 'Claro' : 'Oscuro';
-      getById('iconoTema').className = `bi bi-${esClaro ? 'sun' : 'moon'}`;
     }
 
     async function cargarCatalogo() {
@@ -1548,6 +1355,6 @@
 
   </script>
   <script src="navigation.js"></script>
-  <script src="usdt-rate.js?v=7"></script>
+  <script src="usdt-rate.js?v=8"></script>
 </body>
 </html>
