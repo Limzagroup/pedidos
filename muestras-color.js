@@ -41,134 +41,123 @@
     const color = normalizarNombre(nombre);
     if (normalizarNombre(linea) === "ESMALTE") {
       const coloresEsmalte = [
-        [/^MARFIL$/, "#d3c9b2"],
-        [/^AMARILLO PURO$/, "#e2b900"],
-        [/^AMARILLO ORO$/, "#c48a18"],
-        [/^AMARILLO BANDERA$/, "#e1b914"],
-        [/^ANARANJADO$/, "#e85b16"],
-        [/^AZUL CIELO$/, "#1380b7"],
-        [/^AZUL PROFUNDO$/, "#1b2942"],
-        [/^AZUL BANDERA$/, "#0c3479"],
-        [/^AGUAMARINA$/, "#78b8bc"],
-        [/^ROJO VIVO$/, "#c5203a"],
-        [/^ROJO RUBI$/, "#aa2134"],
-        [/^ROJA BANDERA$/, "#bf1e27"],
-        [/^ROJO BANDERA$/, "#bf1e27"],
-        [/^VERDE PRADERA$/, "#299c4a"],
-        [/^VERDE SELVA$/, "#153f3a"],
-        [/^CASTANO REAL$/, "#783a30"],
-        [/^CHOCOLATE$/, "#704036"],
-        [/^GRIS OSCURO$/, "#707782"],
-        [/^GRIS LIGERO$/, "#9a9ea5"],
-        [/^ALUMINIO$/, "linear-gradient(135deg, #d6dae0 0%, #7d8794 24%, #f0f2f4 45%, #929ca8 63%, #e2e5e9 82%, #9da6b1 100%)"],
-        [/^BLANCO OSTRA$/, "#bfbfb4"],
-        [/^BLANCO$/, "linear-gradient(135deg, #ffffff 0%, #f0f1f0 35%, #ffffff 50%, #e4e6e8 70%, #ffffff 100%)"],
+        [/^MARFIL$/, "#CEC7AE"],
+        [/^AMARILLO PURO$/, "#E5B013"],
+        [/^AMARILLO ORO$/, "#BA7448"],
+        [/^AMARILLO BANDERA$/, "#FFBF3E"],
+        [/^ANARANJADO$/, "#D5492E"],
+        [/^AZUL CIELO$/, "#047A9A"],
+        [/^AZUL PROFUNDO$/, "#163354"],
+        [/^AZUL BANDERA$/, "#113E7B"],
+        [/^AGUAMARINA$/, "#71AFAA"],
+        [/^ROJO VIVO$/, "#CE002C"],
+        [/^ROJO RUBI$/, "#5D1217"],
+        [/^ROJO BANDERA$/, "#A0000C"],
+        [/^VERDE PRADERA$/, "#29805A"],
+        [/^VERDE SELVA$/, "#183C30"],
+        [/^CASTANO REAL$/, "#5F2E28"],
+        [/^CHOCOLATE$/, "#442D20"],
+        [/^GRIS OSCURO$/, "#6E6D72"],
+        [/^GRIS LIGERO$/, "#999999"],
+        [/^ALUMINIO$/, "#AFAFAF"],
+        [/^BLANCO OSTRA$/, "#ECEFDC"],
+        [/^BLANCO$/, "#ffffff"],
         [/^BLANCO MATE$/, "#f4f3ee"],
-        [/^NEGRO$/, "linear-gradient(135deg, #62656b 0%, #1d1e22 24%, #050506 48%, #33353a 72%, #0b0b0c 100%)"],
-        [/^NEGRO MATE$/, "#111111"]
+        [/^NEGRO$/, "#060606"],
+        [/^NEGRO MATE$/, "#2c2c2c"]
       ];
       const coincidenciaEsmalte = coloresEsmalte.find(([patron]) => patron.test(color));
       if (coincidenciaEsmalte) return coincidenciaEsmalte[1];
     }
     if (normalizarNombre(linea) === "FONDO 2 EN 1") {
       const coloresFondoDosEnUno = [
-        [/^BLANCO$/, "#f4f2ea"],
-        [/^GRIS$/, "#2b2a2f"],
-        [/^ROJO$/, "#74281f"],
-        [/^NEGRO$/, "#111011"]
+        [/^BLANCO$/, "#FFFFFF"],
+        [/^GRIS$/, "#43484F"],
+        [/^ROJO$/, "#72201A"],
+        [/^NEGRO$/, "#0E0E0E"]
       ];
       const coincidencia = coloresFondoDosEnUno.find(([patron]) => patron.test(color));
       if (coincidencia) return coincidencia[1];
     }
     if (normalizarNombre(linea) === "FONDO ANTICORROSIVO") {
       const coloresFondoAnticorrosivo = [
-        [/^BLANCO$/, "#f2efe6"],
-        [/^GRIS$/, "#3a3a3d"],
-        [/^ROJO$/, "#812e22"],
-        [/^NEGRO$/, "#1d1b1c"]
+        [/^BLANCO$/, "#FFFFFF"],
+        [/^GRIS$/, "#4B5158"],
+        [/^ROJO$/, "#763930"],
+        [/^NEGRO$/, "#2D2D2D"]
       ];
       const coincidencia = coloresFondoAnticorrosivo.find(([patron]) => patron.test(color));
       if (coincidencia) return coincidencia[1];
     }
+    if (normalizarNombre(linea) === "FONDO ANTIALCALINO" && color === "BLANCO MATE") {
+      return "#FFFFFF";
+    }
+    if (normalizarNombre(linea) === "CAUCHO MATE CLASE A") {
+      const coloresClaseA = [
+        [/^BLANCO NIEVE$/, "#FFFFFF"],
+        [/^BLANCO OSTRA$/, "#C2C3BC"],
+        [/^BEIGE ARENA$/, "#E6DEC6"],
+        [/^OCRE$/, "#A67458"],
+        [/^NARANJA$/, "#EC7358"],
+        [/^ROSADO$/, "#CD8EAC"],
+        [/^LAVANDA$/, "#8A81B6"],
+        [/^AZUL CIELO$/, "#B5EAFE"],
+        [/^AZUL$/, "#5F86B8"],
+        [/^VERDE$/, "#29A98E"],
+        [/^VERDE MANZANA$/, "#87CB80"],
+        [/^AMARILLO OCRE$/, "#D4AA5E"],
+        [/^GRIS$/, "#979797"]
+      ];
+      const coincidenciaClaseA = coloresClaseA.find(([patron]) => patron.test(color));
+      if (coincidenciaClaseA) return coincidenciaClaseA[1];
+    }
     if (normalizarNombre(linea) === "CAUCHO MATE CLASE C") {
       const coloresClaseC = [
-        [/^BLANCO NIEVE$/, "#f5f5f5"],
-        [/^BLANCO OSTRA$/, "#c9c5bb"],
-        [/^AMARILLO CREMA$/, "#dccea9"],
-        [/^AMARILLO$/, "#e1a900"],
-        [/^ROSADO SALMON$/, "#d89b89"],
-        [/^CEREZA$/, "#c9242e"],
-        [/^GUAYABA ROSA$/, "#cc7777"],
-        [/^FUCSIA$/, "#b33e5c"],
-        [/^MORADO$/, "#7873a6"],
-        [/^AZUL TURQUESA$/, "#36a2b6"],
-        [/^AZUL PROFUNDO$/, "#1456a8"],
-        [/^VERDE LIMON$/, "#c6c982"],
-        [/^VERDE PISTACHO$/, "#7cc77c"],
-        [/^VERDE$/, "#18836f"],
-        [/^MANDARINA$/, "#e75918"],
-        [/^TERRACOTA$/, "#c76755"],
-        [/^MARRON EGIPTO$/, "#827253"],
-        [/^VINOTINTO$/, "#a8404b"],
-        [/^GRIS$/, "#706b65"],
-        [/^NEGRO$/, "#1f1f1f"]
+        [/^BLANCO NIEVE$/, "#FFFFFF"],
+        [/^BLANCO OSTRA$/, "#BCBCBC"],
+        [/^AMARILLO CREMA$/, "#EDE6CD"],
+        [/^AMARILLO$/, "#F2B844"],
+        [/^ROSADO SALMON$/, "#C49487"],
+        [/^CEREZA$/, "#DF2950"],
+        [/^GUAYABA ROSA$/, "#D37482"],
+        [/^FUCSIA$/, "#B94A69"],
+        [/^MORADO$/, "#6B70A4"],
+        [/^AZUL TURQUESA$/, "#4DB8C1"],
+        [/^AZUL PROFUNDO$/, "#275B96"],
+        [/^VERDE LIMON$/, "#DEDDAE"],
+        [/^VERDE PISTACHO$/, "#63C592"],
+        [/^VERDE$/, "#1D6F68"],
+        [/^MANDARINA$/, "#D6654E"],
+        [/^TERRACOTA$/, "#A15F58"],
+        [/^MARRON EGIPTO$/, "#5F6059"],
+        [/^VINOTINTO$/, "#994357"],
+        [/^GRIS$/, "#565656"],
+        [/^NEGRO$/, "#323232"]
       ];
       const coincidenciaClaseC = coloresClaseC.find(([patron]) => patron.test(color));
       if (coincidenciaClaseC) return coincidenciaClaseC[1];
     }
     if (normalizarNombre(linea) === "CAUCHO MATE CLASE B") {
       const coloresClaseB = [
-        [/^BLANCO NIEVE$/, "#f5f5f5"],
-        [/^BLANCO HUMO$/, "#d0c9bc"],
-        [/^MARFIL$/, "#e6d0a7"],
-        [/^ROJO$/, "#ca3025"],
-        [/^NARANJA$/, "#e64a13"],
-        [/^AMARILLO IMPERIAL$/, "#ddb725"],
-        [/^VERDE$/, "#a4b70b"],
-        [/^VERDE GEMA$/, "#168f70"],
-        [/^AZUL$/, "#0573c3"],
-        [/^VIOLETA$/, "#8a508b"],
-        [/^ROSADO ROMANCE$/, "#e69c9c"],
-        [/^MARRON$/, "#835148"],
-        [/^DORADO$/, "#a68132"],
-        [/^GRIS CEMENTO$/, "#928c80"],
-        [/^NEGRO$/, "#1f1d1e"]
+        [/^BLANCO NIEVE$/, "#FFFFFF"],
+        [/^BLANCO HUMO$/, "#E3E4DD"],
+        [/^MARFIL$/, "#FFFCE0"],
+        [/^ROJO$/, "#B43F4B"],
+        [/^NARANJA$/, "#D05F48"],
+        [/^AMARILLO IMPERIAL$/, "#EFCB78"],
+        [/^VERDE$/, "#9DC156"],
+        [/^VERDE GEMA$/, "#0D997E"],
+        [/^AZUL$/, "#0380AE"],
+        [/^VIOLETA$/, "#80558A"],
+        [/^ROSADO ROMANCE$/, "#EBA7AC"],
+        [/^MARRON$/, "#815B5A"],
+        [/^DORADO$/, "#8B774E"],
+        [/^GRIS CEMENTO$/, "#7F7C74"],
+        [/^NEGRO$/, "#343434"]
       ];
       const coincidenciaClaseB = coloresClaseB.find(([patron]) => patron.test(color));
       if (coincidenciaClaseB) return coincidenciaClaseB[1];
     }
-    const colores = [
-      [/^BLANCO NIEVE$/, "#f5f5f5"],
-      [/^BLANCO OSTRA$/, "#d0c4b4"],
-      [/^GRIS$/, "#9d9d9a"],
-      [/^AZUL$/, "#6a89c1"],
-      [/^AZUL CIELO$/, "#a8cbde"],
-      [/^VERDE$/, "#56b39f"],
-      [/^VERDE MANZANA$/, "#9dd26a"],
-      [/^NARANJA$/, "#e86023"],
-      [/^BEIGE ARENA$/, "#d6bea1"],
-      [/^AMARILLO OCRE$/, "#e3b612"],
-      [/^OCRE$/, "#b77747"],
-      [/^ROSADO$/, "#e2a6b5"],
-      [/^LAVANDA$/, "#b89ecd"],
-      [/BLANCO NIEVE|BLANCO/, "#ffffff"],
-      [/OSTRA/, "#e4dac3"],
-      [/GRIS|CEMENTO|ALUMINIO/, "#92979d"],
-      [/AZUL CIELO/, "#67b7e5"],
-      [/TURQUESA/, "#36a9aa"],
-      [/AZUL/, "#2879ca"],
-      [/VERDE MANZANA/, "#58ad50"],
-      [/VERDE/, "#31975a"],
-      [/NARANJA|ANARANJADO|MANDARINA|TERRACOTA/, "#ed861c"],
-      [/BEIGE|ARENA|MARFIL/, "#d6c29d"],
-      [/AMARILLO|OCRE|DORADO/, "#d9af22"],
-      [/ROSADO|ROSA|FUCSIA|GUAYABA/, "#d7839a"],
-      [/LAVANDA|VIOLETA/, "#a18bc6"],
-      [/MARRON|CASTANO|CHOCOLATE/, "#80583f"],
-      [/NEGRO/, "#111111"],
-      [/ROJO/, "#d92934"]
-    ];
-    const coincidencia = colores.find(([patron]) => patron.test(color));
-    return coincidencia ? coincidencia[1] : "#a9adb5";
+    return "#a9adb5";
   };
 })(window);
