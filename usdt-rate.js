@@ -6,7 +6,6 @@
     return;
   }
 
-  const CACHE_TASA_USDT_KEY = "limza-tasa-usdt-v1";
   const MAX_INTENTOS = 3;
   const REINTENTOS_MS = [1500, 5000];
 
@@ -78,19 +77,17 @@
   elemento.setAttribute("role", "status");
   elemento.setAttribute("aria-live", "polite");
   elemento.setAttribute("aria-label", "Tasa manual de USDT/VES");
-  elemento.title = "Tasa USDT/VES ingresada en la celda G1 de la hoja Multimarcas.";
+  elemento.title = 'Tasa USDT/VES de la celda E1 en la pestaña "historial usdt".';
   const etiqueta = document.createElement("span");
   etiqueta.textContent = "USDT / VES";
   const valor = document.createElement("span");
-  valor.textContent = "Bs. consultando...";
+  valor.textContent = "Bs. buscando...";
   elemento.append(etiqueta, valor);
   contenedor.insertBefore(elemento, menu);
 
-  let tasaGuardada = leerTasaGuardada();
   let intentos = 0;
   let consultando = false;
   let temporizadorReintento = null;
-  if (tasaGuardada) mostrarTasa(tasaGuardada.tasa, tasaGuardada.guardadoEn, true);
 
   function formatearTasa(tasa) {
     return new Intl.NumberFormat("es-VE", {
@@ -99,49 +96,19 @@
     }).format(tasa);
   }
 
-  function mostrarTasa(tasa, fecha, guardada) {
+  function mostrarTasa(tasa, fecha) {
     const tasaFormateada = formatearTasa(tasa);
     valor.textContent = `Bs. ${tasaFormateada}`;
     const fechaFormateada = new Intl.DateTimeFormat("es-VE", {
       dateStyle: "short",
       timeStyle: "short"
     }).format(new Date(fecha));
-    elemento.title = guardada
-      ? `Última tasa USDT/VES guardada: Bs. ${tasaFormateada} (${fechaFormateada}). Se está verificando si hay una tasa más reciente.`
-      : `Tasa manual USDT/VES: Bs. ${tasaFormateada} (actualizada ${fechaFormateada}).`;
-  }
-
-  function leerTasaGuardada() {
-    try {
-      const datos = JSON.parse(localStorage.getItem(CACHE_TASA_USDT_KEY) || "null");
-      if (!datos || !Number.isFinite(datos.tasa) || datos.tasa <= 0 ||
-          !Number.isFinite(datos.guardadoEn) ||
-          !Number.isFinite(new Date(datos.guardadoEn).getTime())) {
-        return null;
-      }
-      return datos;
-    } catch (error) {
-      console.warn("No se pudo leer la tasa USDT guardada:", error);
-      return null;
-    }
-  }
-
-  function guardarTasa(tasa, guardadoEn) {
-    tasaGuardada = { tasa, guardadoEn };
-    try {
-      localStorage.setItem(CACHE_TASA_USDT_KEY, JSON.stringify(tasaGuardada));
-    } catch (error) {
-      console.warn("No se pudo guardar la tasa USDT localmente:", error);
-    }
+    elemento.title = `Tasa manual USDT/VES (actualizada ${fechaFormateada}).`;
   }
 
   function manejarFallo(error) {
-    if (tasaGuardada) {
-      mostrarTasa(tasaGuardada.tasa, tasaGuardada.guardadoEn, true);
-    } else {
-      valor.textContent = "Bs. no disponible";
-      elemento.title = "No se pudo leer la tasa USDT/VES. Se volverá a intentar automáticamente.";
-    }
+    valor.textContent = "Bs. buscando...";
+    elemento.title = "No se pudo leer la tasa USDT/VES. Se volverá a intentar automáticamente.";
 
     if (intentos < MAX_INTENTOS) {
       console.warn("No se pudo actualizar la tasa USDT; se volverá a intentar:", error);
@@ -185,9 +152,7 @@
       }
 
       const tasa = Number(datos.tasa);
-      const guardadoEn = Date.now();
-      guardarTasa(tasa, guardadoEn);
-      mostrarTasa(tasa, guardadoEn, false);
+      mostrarTasa(tasa, Date.now());
       intentos = 0;
       window.clearTimeout(temporizadorReintento);
       temporizadorReintento = null;

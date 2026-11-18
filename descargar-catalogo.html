@@ -613,13 +613,25 @@
     }
 
     function construirListaMarcas() {
+      const lista = getById('listaMarcas');
+      const marcasSeleccionadas = new Set(
+        [...lista.querySelectorAll('input[type="checkbox"]:checked')]
+          .map(casilla => normalizarNombreMarca(casilla.value))
+      );
+      const casillasSubcategorias = [
+        ...getById('listaSubcategoriasCebra').querySelectorAll('input[type="checkbox"]')
+      ];
+      const subcategoriasSeleccionadas = casillasSubcategorias.length
+        ? new Set(casillasSubcategorias
+          .filter(casilla => casilla.checked)
+          .map(casilla => normalizarNombreMarca(casilla.value)))
+        : null;
       const marcas = [...new Set(productos.map(producto =>
         String(producto.categoria || 'General').trim() || 'General'
       ))];
       const marcaCebra = marcas.find(marca => normalizarNombreMarca(marca) === 'cebra');
       const marcasOrdenadas = marcas.filter(marca => normalizarNombreMarca(marca) !== 'cebra');
       if (marcaCebra) marcasOrdenadas.push(marcaCebra);
-      const lista = getById('listaMarcas');
       lista.replaceChildren();
       marcasOrdenadas.forEach((marca, indice) => {
         if (normalizarNombreMarca(marca) === 'cebra') {
@@ -634,18 +646,18 @@
         const casilla = document.createElement('input');
         casilla.type = 'checkbox';
         casilla.value = marca;
-        casilla.checked = false;
+        casilla.checked = marcasSeleccionadas.has(normalizarNombreMarca(marca));
         casilla.id = `marca-${indice}`;
         const texto = document.createElement('span');
         texto.textContent = marca;
         etiqueta.append(casilla, texto);
         lista.appendChild(etiqueta);
       });
-      construirListaSubcategoriasCebra();
+      construirListaSubcategoriasCebra(subcategoriasSeleccionadas);
       actualizarSeleccion();
     }
 
-    function construirListaSubcategoriasCebra() {
+    function construirListaSubcategoriasCebra(seleccionadas = null) {
       const lista = getById('listaSubcategoriasCebra');
       const subcategorias = [...new Map(productos
         .filter(producto => normalizarNombreMarca(producto.categoria) === 'cebra')
@@ -662,7 +674,8 @@
         const casilla = document.createElement('input');
         casilla.type = 'checkbox';
         casilla.value = subcategoria;
-        casilla.checked = true;
+        casilla.checked = seleccionadas === null ||
+          seleccionadas.has(normalizarNombreMarca(subcategoria));
         casilla.id = `cebra-subcategoria-${indice}`;
         const texto = document.createElement('span');
         texto.textContent = subcategoria;
@@ -683,7 +696,7 @@
       getById('listaMarcas').querySelectorAll('input[type="checkbox"]').forEach(casilla => {
         casilla.checked = todas;
       });
-      actualizarResumen();
+      actualizarSeleccion();
     }
 
     function actualizarSeleccion() {
@@ -749,6 +762,31 @@
       if (generacionPdfActiva) return;
       const generacion = { controller: new AbortController() };
       generacionPdfActiva = generacion;
+      let bloqueoPantalla = null;
+      let solicitandoBloqueoPantalla = false;
+      const mantenerPantallaActiva = async () => {
+        if (
+          !('wakeLock' in navigator) ||
+          document.visibilityState !== 'visible' ||
+          solicitandoBloqueoPantalla ||
+          (bloqueoPantalla && !bloqueoPantalla.released)
+        ) {
+          return;
+        }
+
+        solicitandoBloqueoPantalla = true;
+        try {
+          bloqueoPantalla = await navigator.wakeLock.request('screen');
+        } catch (error) {
+          console.warn('El navegador no pudo mantener la pantalla activa durante la descarga:', error);
+        } finally {
+          solicitandoBloqueoPantalla = false;
+        }
+      };
+      const reanudarBloqueoPantalla = () => {
+        if (document.visibilityState === 'visible') mantenerPantallaActiva();
+      };
+      document.addEventListener('visibilitychange', reanudarBloqueoPantalla);
       const inicioGeneracion = performance.now();
       const estadoTiempo = {
         fase: 'Calculando estimación...',
@@ -784,6 +822,7 @@
       actualizarProgresoPdf(0, 'Generando tu catálogo...');
 
       try {
+        await mantenerPantallaActiva();
         const { PDFDocument, StandardFonts, rgb } = window.PDFLib;
         const bytesPlantilla = await cargarPlantillaCatalogoPdf(generacion.controller.signal);
         actualizarProgresoPdf(2, 'Preparando el diseño del catálogo...');
@@ -907,6 +946,14 @@
           true
         );
       } finally {
+        document.removeEventListener('visibilitychange', reanudarBloqueoPantalla);
+        if (bloqueoPantalla && !bloqueoPantalla.released) {
+          try {
+            await bloqueoPantalla.release();
+          } catch (error) {
+            console.warn('No se pudo liberar el bloqueo de pantalla:', error);
+          }
+        }
         if (generacionPdfActiva === generacion) {
           generacionPdfActiva = null;
           window.clearInterval(temporizadorTiempo);
@@ -1395,6 +1442,6 @@
 
   </script>
   <script src="navigation.js"></script>
-  <script src="usdt-rate.js?v=8"></script>
+  <script src="usdt-rate.js?v=12"></script>
 </body>
 </html>
